@@ -8,14 +8,17 @@ class STLModelService(object):
     def GET(self):
         return 'wee'
         
-    def POST(self, nwlat, nwlon, selat, selon, size=200, rez=50):
-        fn = self._build_model()
+    #def POST(self, elevation, nwlat, nwlon, selat, selon, size=200, rez=50):
+    def POST(self, elevation, size=200, rez=50):
+        copy_elevation_filename = "elevation_cache.tif" 
+        # XXX we need to copy the elevation file in so we can gdal.Open it
+        fn = self._build_model(elevation.file.name, int(size), int(rez))
         return fn
 
-    def _build_model(self):
-        model_config = { 'src': 'test-data/mtr-sq.tif',
-                         'output_resolution_max': 100,
-                         'output_physical_max': 200 }
+    def _build_model(self, elevation, size, rez):
+        model_config = { 'src': elevation,
+                         'output_resolution_max': rez,
+                         'output_physical_max': size }
         model = cove.model.SolidElevationModel(model_config)
         return model.build_stl()
 
