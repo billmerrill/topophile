@@ -40,3 +40,4 @@ class SolidElevationModel(Model):
         canvas.write_stl(self.builder.get_output_file_name())
         
         elevation.close_dataset()
+        return(self.builder.get_output_file_name())
