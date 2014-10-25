@@ -30,29 +30,7 @@ class Elevation(object):
         x_size_m = haversine((0,0),(x_size_deg, 0)) * 1000
         y_size_m = haversine((0,0), (0, y_size_deg)) * 1000
         return (math.copysign(x_size_m, x_size_deg), math.copysign(y_size_m, y_size_deg))
-
         
-    def get_elevation_in_meters(self):
-        sample_rate = self.builder.get_input_sample_rate()
-        pixel_in_meters = self.get_pixel_meters()
-        sample_ysize = self.dataset.RasterYSize / sample_rate 
-        sample_xsize = self.dataset.RasterXSize / sample_rate
-   
-        elevation_matrix = []
-        band = self.dataset.GetRasterBand(1)
-        for i in range(0, sample_ysize):
-            scanline = band.ReadRaster(0, i * sample_rate, band.XSize, 1,
-                band.XSize, 1, gdal.GDT_Float32) 
-            elevations = struct.unpack ('f' * band.XSize, scanline)
-            points = []
-            for j in range(0, sample_xsize):
-                points.append( [sample_rate * pixel_in_meters[PX] * j,
-                                        sample_rate * pixel_in_meters[PY] * i,
-                                        elevations[j * sample_rate] ])
-            elevation_matrix.append(points)    
-            
-        return elevation_matrix
-
     def get_longest_raster_size(self):
         return max(self.dataset.RasterXSize, self.dataset.RasterYSize)
         
