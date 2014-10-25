@@ -5,7 +5,9 @@ s = requests.Session()
 kv = {'size': '200',
       'rez': '50'}      
       
-files = {'elevation': open('../bam/test-data/mtr-sq.tif', 'rb')}
+files = {'elevation': open('../bam/test-data/mto.tif', 'rb')}
+
+print files['elevation']
 
 r = s.post(url, params=kv, files=files)
 print r.text

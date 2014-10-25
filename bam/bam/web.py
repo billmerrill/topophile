@@ -1,3 +1,4 @@
+import tempfile
 import cherrypy
 import cove.model
 
@@ -10,14 +11,28 @@ class STLModelService(object):
         
     #def POST(self, elevation, nwlat, nwlon, selat, selon, size=200, rez=50):
     def POST(self, elevation, size=200, rez=50):
-        copy_elevation_filename = "elevation_cache.tif" 
-        # XXX we need to copy the elevation file in so we can gdal.Open 
-        
-        fn = self._build_model(elevation.file.name, int(size), int(rez))
+        elevation_data = tempfile.NamedTemporaryFile(delete=False)
+        try:
+            while True:
+                data = elevation.file.read(100000)
+                if not data:
+                    break
+                elevation_data.write(data)
+                
+            elevation_data.seek(0)
+            elevation_data.flush()
+            
+            # XXX we need to copy the elevation file in so we can gdal.Open 
+            
+            fn = self._build_model(elevation_data.name, int(size), int(rez))
+        finally:
+            elevation_data.close()
+            
         return fn
 
-    def _build_model(self, elevation, size, rez):
-        model_config = { 'src': 'test-data/mtr-sq.tif',
+    def _build_model(self, elevation_filename, size, rez):
+        model_config = { 'src': elevation_filename,
+                         'dst': 'test-data/latest-output.stl',
                          'output_resolution': rez,
                          'output_physical_max': size }
         model = cove.model.SolidElevationModel(model_config)
