@@ -49,15 +49,15 @@ class Elevation(object):
             print("*** not resampling")
             scaled_data = self.dataset.ReadAsArray()
             scaled_pixel_meters = self.get_pixel_meters()
-            dst_dim = [self.dataset.RasterYSize,
-                         self.dataset.RasterXSize]
+            dst_dim = [self.dataset.RasterXSize,
+                         self.dataset.RasterYSize]
         else:
             print("*** resampling it")
             src_xform = self.dataset.GetGeoTransform()
             src_datatype = self.dataset.GetRasterBand(1).DataType
             
-            dst_dim = [int(self.dataset.RasterYSize * resize_ratio[PX]),
-                       int(self.dataset.RasterXSize * resize_ratio[PY])]
+            dst_dim = [int(self.dataset.RasterXSize * resize_ratio[PX]),
+                       int(self.dataset.RasterYSize * resize_ratio[PY])]
             dst_pixel_spacing = [src_xform[1] / resize_ratio[PX], 
                                  src_xform[5] / resize_ratio[PY] ]           
 
