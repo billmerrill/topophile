@@ -1,13 +1,15 @@
 import tempfile
 import cherrypy
 import cove.model
-
+import job
 class STLModelService(object):
     exposed = True
 
     # @cherrypy.tools.accept(media='text/plain')
-    def GET(self):
-        return 'wee'
+    def GET(self, nwlat, nwlon, selat, selon, size, rez):
+        gig = job.ModelJob(nwlat, nwlon, selat, selon, size, rez)
+        model_fn = gig.run()
+        return model_fn
         
     #def POST(self, elevation, nwlat, nwlon, selat, selon, size=200, rez=50):
     def POST(self, elevation, size=200, rez=50):
