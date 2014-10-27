@@ -2,6 +2,7 @@ import requests
 import re
 import os.path
 from contextlib import closing
+import sys
 
 # http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem?service=wcs&version=1.0.0&request=getcoverage&coverage=SRTM_90m_Global&bbox=-90,38,-89,39&crs=epsg:4326&format=image/geotiff&store=true
 
@@ -48,9 +49,6 @@ def get_elevation_image(url):
                     if chunk: # filter out keep-alive new chunks
                         save.write(chunk)
                         save.flush()
-                # save.write(response.content)
-                # save.flush()
-                # save.close()
             ret = os.path.join(os.getcwd(), filename)
         else:
             ret = "error " + response.status_code
@@ -65,5 +63,9 @@ def main():
         
     print fn
     
-main()
+def test():
+    print get_elevation_image("http://monkey.org/~bill/geo/test.tif")
+    
+# main()
+test()
  
