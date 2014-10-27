@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Coverages xmlns="http://www.opengis.net/wcs/1.0"
+xmlns:ows="http://www.opengis.net/ows"
+xmlns:owcs="http://www.opengis.net/wcs/1.1/ows"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://schemas.opengis.net/ows/1.1.0 ../owsCoverages.xsd">
+  <Coverage>
+     <Abstract>Coverage created from GetCoverage operation request to a WCS</Abstract>
+     <Reference xlink:href="http://geobrain.laits.gmu.edu/geoportal_data_cache/data/1926E8D6-AFEF-4CC4-A52B-D1D4B548D939.tif"
+     xlink:role="urn:ogc:def:role:WCS:1.1:coverage"/>
+  </Coverage>
+</Coverages>
+
