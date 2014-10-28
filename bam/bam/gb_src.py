@@ -35,7 +35,7 @@ def get_elevation_url(nwlat, nwlon, selat, selon):
     #     'store':'true'}
 
     # hax, gb requires params to be in order
-    gburl = "http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem?service=wcs&version=1.0.0&request=getcoverage&coverage=SRTM_90m_Global&bbox=%s&crs=epsg:4326&format=image/geotiff&store=true" % bbox
+    gburl = "http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem?service=wcs&version=1.0.0&request=getcoverage&coverage=SRTM_30m_USA&bbox=%s&crs=epsg:4326&format=image/geotiff&store=true" % bbox
         
     print '### URL ', gburl
         
