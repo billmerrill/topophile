@@ -5,18 +5,23 @@ import job
 class STLModelService(object):
     exposed = True
 
-    # @cherrypy.tools.accept(media='text/plain')
     def GET(self, nwlat, nwlon, selat, selon, size, rez):
-        gig = job.ModelJob(nwlat, nwlon, selat, selon, size, rez)
+        '''
+        use the bounding box to query for elevation data, and build a model
+        return the stl file
+        '''
+        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez)
         model_fn = gig.run()
         return model_fn
         
-    #def POST(self, elevation, nwlat, nwlon, selat, selon, size=200, rez=50):
     def POST(self, elevation, size=200, rez=50):
+        '''
+        accept an uploaded geotiff, return an stl model
+        '''
         elevation_data = tempfile.NamedTemporaryFile(delete=False)
         try:
             while True:
-                data = elevation.file.read(100000)
+                data = elevation.file.read(1024)
                 if not data:
                     break
                 elevation_data.write(data)
@@ -24,21 +29,13 @@ class STLModelService(object):
             elevation_data.seek(0)
             elevation_data.flush()
             
-            # XXX we need to copy the elevation file in so we can gdal.Open 
-            
-            fn = self._build_model(elevation_data.name, int(size), int(rez))
+            gig = job.GeoTiffJob(elevation_data.name, size, rez)
+            model_fn = gig.run()
         finally:
             elevation_data.close()
             
-        return fn
+        return model_fn
 
-    def _build_model(self, elevation_filename, size, rez):
-        model_config = { 'src': elevation_filename,
-                         'dst': 'test-data/latest-output.stl',
-                         'output_resolution': rez,
-                         'output_physical_max': size }
-        model = cove.model.SolidElevationModel(model_config)
-        return model.build_stl()
 
      
 
