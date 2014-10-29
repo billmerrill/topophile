@@ -4,6 +4,11 @@ var indexController = (function(){
     var map, model,
         bbox,
         bamService = "http://climb.local:8080/",
+        nwlatDisplay,
+        nwlonDisplay,
+        selatDisplay,
+        selonDisplay,
+        
     
         setBBox = function() {
             bbox = {'nwlat': $("#nwlat").value,
@@ -36,14 +41,33 @@ var indexController = (function(){
         generateModel = function() {
             setBBox();
             getModelUrl();
-        };
+        },
+        
+        newBBox = function(newBBox) {
+            bbox = newBBox
+            updateBBoxDisplay()
+        },
+        
+        updateBBoxDisplay = function() {
+            nwlatDisplay.val(bbox['nwlat']);
+            nwlonDisplay.val(bbox['nwlon']);
+            selatDisplay.val(bbox['selat']);
+            selonDisplay.val(bbox['selon']);
+        }
   
     
     
     return{
         init: function(map, model) {
-            this.map = map;
-            this.model = model;
+            map = map;
+            model = model;
+          
+            nwlatDisplay = $("#nwlat");
+            nwlonDisplay = $("#nwlon");
+            selatDisplay = $("#selat");
+            selonDisplay = $("#selon");
+            
+            map.newBBoxHandler(newBBox)
             // setup Map and Model here
         },
 

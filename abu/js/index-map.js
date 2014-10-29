@@ -1,7 +1,11 @@
 var indexMap = (function() {
+    var newBBoxHandler;
 
     return { 
         init: function() {
+            newBBoxHandler = null;
+            
+            
             var raster = new ol.layer.Tile({
                 source: new ol.source.MapQuest({layer: 'sat'})
             });
@@ -57,8 +61,18 @@ var indexMap = (function() {
                 $('#map-info').text(
                         ol.coordinate.format([currentExtent[0], currentExtent[3]], "{x}, {y}", 2) + " by  " +
                         ol.coordinate.format([currentExtent[2], currentExtent[1]], "{x}, {y}", 2));
+                if (newBBoxHandler) {
+                    newBBoxHandler({'nwlat': currentExtent[0],
+                                    'nwlon': currentExtent[3],
+                                    'selat': currentExtent[2],
+                                    'selon': currentExtent[1]});
+                }
                 map.removeInteraction(selectionInteraction);
             });
+        }, 
+        
+        newBBoxHandler: function(handler) {
+            newBBoxHandler = handler;
         }
     }
 
