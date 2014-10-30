@@ -12,18 +12,18 @@
     <script src="vendor/jquery-1.11.1.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.js"></script>
     <script src="vendor/openlayers/v3.0.0/build/ol-debug.js" type="text/javascript"></script>
-    <script src="vendor/three/three.js" type="text/javascript"></script>
-    <script src="vendor/three/examples/js/loaders/STLLoader.js"></script>
-    <script src="vendor/three/Detector.js" type="text/javascript"></script>
+    
+    <script src="vendor/jsc3d/jsc3d.js"></script>
 
-    <script src="js/index-model.js"></script>
     <script src="js/index-map.js"></script>
+    <script src="js/index-jsc-model.js"></script>
     <script src="js/index-controller.js"></script>
 
     <script type="text/javascript">
         $(document).ready( function() {
                 indexMap.init();
-                indexModel.init(true);
+                indexModel.init("model-canvas");
+                indexModel.showModel('./assets/rainier.stl');
                 indexController.init(indexMap, indexModel);
             }
         );
@@ -57,7 +57,8 @@
         <div class="col-md-6">
             Model
             <div class="model-container" id="model-container">
-                <div id="model"></div>
+                <!--<div id="model"></div>-->
+                <canvas id="model-canvas" width="400" height="300"></canvas>
             </div>
         </div>
 
