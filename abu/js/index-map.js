@@ -62,10 +62,10 @@ var indexMap = (function() {
                         ol.coordinate.format([currentExtent[0], currentExtent[3]], "{x}, {y}", 2) + " by  " +
                         ol.coordinate.format([currentExtent[2], currentExtent[1]], "{x}, {y}", 2));
                 if (newBBoxHandler) {
-                    newBBoxHandler({'nwlat': currentExtent[0],
-                                    'nwlon': currentExtent[3],
-                                    'selat': currentExtent[2],
-                                    'selon': currentExtent[1]});
+                    newBBoxHandler({'nwlat': currentExtent[3],
+                                    'nwlon': currentExtent[0],
+                                    'selat': currentExtent[1],
+                                    'selon': currentExtent[2]});
                 }
                 map.removeInteraction(selectionInteraction);
             });
