@@ -30,12 +30,3 @@ div#model {
     height: 400px;
 }
 
-/*****/
-
-#extent-selector {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #3f3;
-    margin: 0px;
-    padding: 0px;
-}
