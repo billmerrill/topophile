@@ -4,13 +4,10 @@ var indexMap = (function() {
    
     return {
         init: function(mapDisplayId) {
-            map = L.map(mapDisplayId).setView([34.5, 131.6], 13);
-            L.tileLayer('http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-                maxZoom: 18,
-    			id: 'examples.map-i875mjb7'
-
-                }).addTo(map);
+            map = L.map(mapDisplayId, {
+              layers: MQ.satelliteLayer(),
+              center: [ 34.5, 131.6 ],
+              zoom: 13 } );
         }
     }
     
