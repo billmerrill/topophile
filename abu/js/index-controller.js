@@ -56,7 +56,7 @@ var indexController = (function(){
         },
         
         geocoderResultHandler = function(data, status) {
-            
+            map.showSearchResult(data[0]['lat'], data[0]['lon'])
         };
   
     
@@ -77,6 +77,8 @@ var indexController = (function(){
             nwlonDisplay = $("#nwlon");
             selatDisplay = $("#selat");
             selonDisplay = $("#selon");
+            
+            map.showSearchResult(0, 0);
         },
 
         previewTopo: function() {
