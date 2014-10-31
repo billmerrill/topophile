@@ -1,13 +1,15 @@
 var indexMap = (function() {
-    var map;
-  
-   
+    var map, newBBoxCallback;
+    
     return {
-        init: function(mapDisplayId) {
+        init: function(mapDisplayId, newBBoxCb) {
+            newBBoxCallback = newBBoxCb;
+            
             map = L.map(mapDisplayId, {
-              layers: MQ.satelliteLayer(),
+              layers: MQ.hybridLayer(),
               center: [ 34.5, 131.6 ],
               zoom: 13 } );
+              
         }
     }
     

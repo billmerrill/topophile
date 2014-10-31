@@ -19,15 +19,13 @@
     <script src="vendor/jsc3d/jsc3d.js"></script>
 
     <script src="js/index-leaflet-map.js"></script>
+    <script src="js/index-mapquest-osm-geocoder.js"></script>
     <script src="js/index-jsc-model.js"></script>
     <script src="js/index-controller.js"></script>
 
     <script type="text/javascript">
         $(document).ready( function() {
-                indexMap.init("map");
-                indexModel.init("model-canvas");
-                indexModel.showModel('./assets/rainier.stl');
-                indexController.init(indexMap, indexModel);
+                indexController.init(indexMap, indexModel, indexGeocoder);
             }
         );
     </script>
@@ -101,7 +99,5 @@
         </div>
     </div>
 </div>
-    <!--<script src="js/index-map.js"></script>-->
-    <!--<script src="js/index-model.js"></script>-->
 </body>
 </html>

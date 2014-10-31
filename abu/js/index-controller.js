@@ -1,7 +1,7 @@
 var indexController = (function(){
     "use strict";
     
-    var map, model,
+    var map, model, geocoder,
         bbox,
         bamService = "http://climb.local:8080/",
         nwlatDisplay,
@@ -43,7 +43,7 @@ var indexController = (function(){
             getModelUrl();
         },
         
-        newBBox = function(newBBox) {
+        newBBoxHandler = function(newBBox) {
             bbox = newBBox
             updateBBoxDisplay()
         },
@@ -53,22 +53,30 @@ var indexController = (function(){
             nwlonDisplay.val(bbox['nwlon']);
             selatDisplay.val(bbox['selat']);
             selonDisplay.val(bbox['selon']);
-        }
+        },
+        
+        geocoderResultHandler = function(data, status) {
+            
+        };
   
     
     
     return{
-        init: function(map, model) {
+        init: function(map, model, geocoder) {
             map = map;
             model = model;
+            geocoder = geocoder;
+            
+            map.init("map", newBBoxHandler);
+            model.init("model-canvas");
+            model.showModel('./assets/rainier.stl');    
+            geocoder.init(geocoderResultHandler);
+            
           
             nwlatDisplay = $("#nwlat");
             nwlonDisplay = $("#nwlon");
             selatDisplay = $("#selat");
             selonDisplay = $("#selon");
-            
-            map.newBBoxHandler(newBBox)
-            // setup Map and Model here
         },
 
         previewTopo: function() {

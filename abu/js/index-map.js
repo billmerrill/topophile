@@ -1,9 +1,10 @@
 var indexMap = (function() {
-    var newBBoxHandler;
+    var mapDisplayId, newBBoxHandler;
 
     return { 
-        init: function() {
-            newBBoxHandler = null;
+        init: function(mapId, newBBoxCb) {
+            newBBoxHandler = newBBoxCb;
+            mapDisplayId = mapId;
             
             
             var raster = new ol.layer.Tile({
@@ -13,7 +14,7 @@ var indexMap = (function() {
             var currentExtent;
 
             var map = new ol.Map({
-                target: 'map',
+                target: mapDisplayId,
                 layers: [ raster],
                 view: new ol.View({
                     center: ol.proj.transform([131.6, 34.5], 'EPSG:4326', 'EPSG:3857'),
