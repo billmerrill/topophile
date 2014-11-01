@@ -3,7 +3,7 @@ var indexController = (function(){
     
     var map, model, geocoder,
         bbox,
-        bamService = "http://climb.local:8080/",
+        bamService = "climb.local:8080/",
         nwlatDisplay,
         nwlonDisplay,
         selatDisplay,
@@ -16,9 +16,8 @@ var indexController = (function(){
                     'selon': $("#selon").val()};
         },
         
-        updateModel = function(modelUrl) {
-            alert("got model " + modelUrl);
-            // model.setModel(modelUrl);
+        updateModel = function(data, status) {
+            alert("model update status \"" + status + "\"");
         },
         
         getModelUrl = function() {
@@ -33,7 +32,8 @@ var indexController = (function(){
                         'rez': 50 }
             })
             .done(function(data, status, jqxhr) {
-                updateModel(data)
+                
+                updateModel(data, status)
             });
         },
         
@@ -59,10 +59,21 @@ var indexController = (function(){
         },
         
         previewTopo = function() {
-            alert('yo');
             setBBox();
             getModelUrl();
+        },
+        
+        initRainierDemo = function() {
+            //Upper Left  (-121.8229167,  46.9290278) (121d49'22.50"W, 46d55'44.50"N)
+            //Lower Right (-121.6701389,  46.7762500) (121d40'12.50"W, 46d46'34.50"N)
+
+            $("#nwlat").val(46.9290278);
+            $("#nwlon").val(-121.8229167);
+            $("#selat").val(46.7762500);
+            $("#selon").val(-121.6701389);
         };
+        
+        
 
     return{
         init: function(mapModule, modelModule, geocoderModule) {
@@ -92,6 +103,8 @@ var indexController = (function(){
             $("#preview-topo").click( function() {
                 previewTopo();} 
             );
+            
+            initRainierDemo();
 
 
         }
