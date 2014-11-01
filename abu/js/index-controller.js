@@ -78,6 +78,17 @@ var indexController = (function(){
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
             );
+            $("#gc-search").keyup(function(e){
+                if(e.keyCode == 13)
+                {
+                    $(this).trigger("enterKey");
+                }
+            });
+            
+            $("#gc-search").bind("enterKey",function(e){
+                geocoder.search($("#gc-search").val())
+            });
+
         },
 
         previewTopo: function() {
