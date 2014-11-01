@@ -10,10 +10,10 @@ var indexController = (function(){
         selonDisplay,
     
         setBBox = function() {
-            bbox = {'nwlat': $("#nwlat").value,
-                    'nwlon': $("#nwlon").value,
-                    'selat': $("#selat").value,
-                    'selon': $("#selon").value};
+            bbox = {'nwlat': $("#nwlat").val(),
+                    'nwlon': $("#nwlon").val(),
+                    'selat': $("#selat").val(),
+                    'selon': $("#selon").val()};
         },
         
         updateModel = function(modelUrl) {
@@ -56,8 +56,14 @@ var indexController = (function(){
         
         geocoderResultHandler = function(data, status) {
             map.showSearchResult(data[0]['lat'], data[0]['lon'])
+        },
+        
+        previewTopo = function() {
+            alert('yo');
+            setBBox();
+            getModelUrl();
         };
-  
+
     return{
         init: function(mapModule, modelModule, geocoderModule) {
             map = mapModule;
@@ -82,13 +88,12 @@ var indexController = (function(){
                 if(e.keyCode == 13) {
                     geocoder.search($("#gc-search").val());
                 }});
+            
+            $("#preview-topo").click( function() {
+                previewTopo();} 
+            );
 
 
-
-        },
-
-        previewTopo: function() {
-            generateModel();
         }
     };
     
