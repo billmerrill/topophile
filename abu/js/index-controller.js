@@ -59,10 +59,10 @@ var indexController = (function(){
         };
   
     return{
-        init: function(map, model, geocoder) {
-            map = map;
-            model = model;
-            geocoder = geocoder;
+        init: function(mapModule, modelModule, geocoderModule) {
+            map = mapModule;
+            model = modelModule;
+            geocoder = geocoderModule;
             
             map.init("map", newBBoxHandler);
             model.init("model-canvas");
@@ -74,6 +74,10 @@ var indexController = (function(){
             nwlonDisplay = $("#nwlon");
             selatDisplay = $("#selat");
             selonDisplay = $("#selon");
+            
+            $("#gc-search-button").click(
+                function() {geocoder.search($("#gc-search").val())}
+            );
         },
 
         previewTopo: function() {
