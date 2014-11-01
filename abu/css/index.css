@@ -30,3 +30,6 @@ div#model {
     height: 400px;
 }
 
+span.map-section {
+    font-variant: small-caps;
+}

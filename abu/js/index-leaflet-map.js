@@ -5,10 +5,11 @@ var indexMap = (function() {
         init: function(mapDisplayId, newBBoxCb) {
             newBBoxCallback = newBBoxCb;
             
+            // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
               layers: MQ.hybridLayer(),
-              center: [ 34.5, 131.6 ],
-              zoom: 13 } );
+              center: [ 46.852947, -121.760424 ], // mt rainier
+              zoom: 12 } );
               
         },
         

@@ -8,7 +8,6 @@ var indexController = (function(){
         nwlonDisplay,
         selatDisplay,
         selonDisplay,
-        
     
         setBBox = function() {
             bbox = {'nwlat': $("#nwlat").value,
@@ -59,8 +58,6 @@ var indexController = (function(){
             map.showSearchResult(data[0]['lat'], data[0]['lon'])
         };
   
-    
-    
     return{
         init: function(map, model, geocoder) {
             map = map;
@@ -77,8 +74,6 @@ var indexController = (function(){
             nwlonDisplay = $("#nwlon");
             selatDisplay = $("#selat");
             selonDisplay = $("#selon");
-            
-            map.showSearchResult(0, 0);
         },
 
         previewTopo: function() {

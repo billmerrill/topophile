@@ -59,9 +59,6 @@ var indexMap = (function() {
                 scaleSelectron(selextent);
                 selectron.setPosition([selextent[0], selextent[3]]);
                 $(selectron.getElement()).show();
-                $('#map-info').text(
-                        ol.coordinate.format([currentExtent[0], currentExtent[3]], "{x}, {y}", 2) + " by  " +
-                        ol.coordinate.format([currentExtent[2], currentExtent[1]], "{x}, {y}", 2));
                 if (newBBoxHandler) {
                     newBBoxHandler({'nwlat': currentExtent[3],
                                     'nwlon': currentExtent[0],
