@@ -2,9 +2,10 @@ import tempfile
 import cherrypy
 import cove.model
 import job
+
 class STLModelService(object):
     exposed = True
-
+    
     def GET(self, nwlat, nwlon, selat, selon, size, rez):
         '''
         use the bounding box to query for elevation data, and build a model
@@ -12,6 +13,7 @@ class STLModelService(object):
         '''
         gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez)
         model_fn = gig.run()
+        
         return model_fn
         
     def POST(self, elevation, size=200, rez=50):
@@ -36,16 +38,19 @@ class STLModelService(object):
             
         return model_fn
 
+def CORS():
+    cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
 
-     
 
 if __name__ == '__main__':
+    cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
     conf = {
         '/': {
          'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
          'tools.sessions.on': True,
          'tools.response_headers.on': True,
          'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+         'tools.CORS.on': True
         }
     }
     cherrypy.quickstart(STLModelService(), '/', conf)
