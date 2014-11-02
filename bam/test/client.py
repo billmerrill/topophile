@@ -22,6 +22,7 @@ def run_model_get():
           'selon':'-121.6701389'
           }      
     r = requests.get(url, params=kv)      
+    print r.headers
     print r.status_code
     print r.text
     
