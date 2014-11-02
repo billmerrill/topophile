@@ -3,7 +3,7 @@ var indexController = (function(){
     
     var map, model, geocoder,
         bbox,
-        bamService = "climb.local:8080/",
+        bamService = "http://127.0.0.1:8080/",
         nwlatDisplay,
         nwlonDisplay,
         selatDisplay,
