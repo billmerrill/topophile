@@ -1,0 +1,5 @@
+-nginx static web server
+    -http://localhost:8888 - abu
+    
+-cherrypy application
+    -http://localhost:8080 - bam
