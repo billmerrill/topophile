@@ -6,8 +6,6 @@ import job
 
 class STLModelService(object):
     exposed = True
-    BAM_MODEL_URL = "http://127.0.0.1:9999/"
-    
    
     def GET(self, nwlat, nwlon, selat, selon, size, rez):
         '''
@@ -20,7 +18,7 @@ class STLModelService(object):
             return "GB Error"
         
         model_name = os.path.split(model_fn)[1]
-        return self.BAM_MODEL_URL + model_name
+        return "http://127.0.0.1:9999/" + model_name
         
     def POST(self, elevation, size=200, rez=50):
         '''

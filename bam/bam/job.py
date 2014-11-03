@@ -25,7 +25,7 @@ class BoundingBoxJob(object):
         if elevation_filename is None:
             return None
             
-        model_filename = self.build_model(elevation_filename )
+        model_filename = self.build_model(elevation_filename)
         return model_filename 
         
     def build_model(self, elevation_filename):

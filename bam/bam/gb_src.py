@@ -4,27 +4,21 @@ import os.path
 from contextlib import closing
 import sys
 
-safari_headers = {
-    'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/600.1.25 (KHTML, like Gecko) Version/8.0 Safari/600.1.25',
-    'DNT':'1'}
     
 safari_headers = {}
 
 def get_elevation(nwlat, nwlon, selat, selon, retry = 0):
     if retry == 2:
-        print "GB Max Retry Reached, retry %s.  Get Elevation ended." % retry
         return None
     
     elevation_img_url = get_elevation_url(nwlat, nwlon, selat, selon)
-    print "### Atempting elevation: %s" % elevation_img_url
     fn = "Error"
     if elevation_img_url:
         fn = get_elevation_image(elevation_img_url)
     
     if fn is None:
         retry = retry+1
-        get_elevation(nwlat, nwlon, selat, selon, retry=retry)        
+        return get_elevation(nwlat, nwlon, selat, selon, retry=retry)        
         
     return fn
 
@@ -79,7 +73,9 @@ def get_elevation_image(url):
     print ("Content-size: %s vs Written %s " % (content_size, written))
     
     if content_size != written:
+        print "\n###############################"
         print ("Bad GB Elevation Image: content-size: %s vs received-size %s " % (content_size, written))
+        print "###############################\n"
         ret['file'] = None
         
            
