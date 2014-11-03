@@ -22,6 +22,9 @@ class BoundingBoxJob(object):
         
     def run(self):
         elevation_filename = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)
+        if elevation_filename is None:
+            return None
+            
         model_filename = self.build_model(elevation_filename )
         return model_filename 
         

@@ -11,11 +11,20 @@ safari_headers = {
     
 safari_headers = {}
 
-def get_elevation(nwlat, nwlon, selat, selon):
+def get_elevation(nwlat, nwlon, selat, selon, retry = 0):
+    if retry == 2:
+        print "GB Max Retry Reached, retry %s.  Get Elevation ended." % retry
+        return None
+    
     elevation_img_url = get_elevation_url(nwlat, nwlon, selat, selon)
+    print "### Atempting elevation: %s" % elevation_img_url
     fn = "Error"
     if elevation_img_url:
         fn = get_elevation_image(elevation_img_url)
+    
+    if fn is None:
+        retry = retry+1
+        get_elevation(nwlat, nwlon, selat, selon, retry=retry)        
         
     return fn
 
@@ -53,17 +62,26 @@ def get_elevation_image(url):
     filename = os.path.join(os.getcwd(), 'app/elevation_cache', filename)
     ret = {'file':None, 'status':None}
     content_size = 0
+    written = 0
     with closing(requests.get(url, headers=safari_headers, stream=True)) as response:
     # Do things with the response here.
         ret['status'] = response.status_code
-        content_size = response.headers['content-length']
+        content_size = int(response.headers['content-length'])
         if response.status_code == 200:
             with open(filename, "wb") as save:
                 for chunk in response.iter_content(chunk_size=1024): 
                     if chunk: # filter out keep-alive new chunks
                         save.write(chunk)
                         save.flush()
+                        written = written + len(chunk)
             ret['file'] = filename
+    
+    print ("Content-size: %s vs Written %s " % (content_size, written))
+    
+    if content_size != written:
+        print ("Bad GB Elevation Image: content-size: %s vs received-size %s " % (content_size, written))
+        ret['file'] = None
+        
            
     return ret['file']
     
