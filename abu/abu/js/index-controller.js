@@ -32,8 +32,8 @@ var indexController = (function(){
                         'rez': 50 }
             })
             .done(function(data, status, jqxhr) {
-                
-                updateModel(data, status)
+                model.showModel(data);
+                alert("yep!");
             });
         },
         
