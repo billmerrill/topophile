@@ -13,6 +13,7 @@ var indexModel = (function() {
             viewer.setParameter('BackgroundColor1', '#E5D7BA');
             viewer.setParameter('BackgroundColor2', '#383840');
             viewer.setParameter('RenderMode',       'flat');
+            viewer.setParameter('Renderer',         'webgl');
             viewer.init();
             viewer.update();
        }
