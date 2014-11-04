@@ -10,8 +10,10 @@ var indexMap = (function() {
               layers: MQ.hybridLayer(),
               center: [ 46.852947, -121.760424 ], // mt rainier
               zoom: 12 } );
-              
-            locationFilter = new L.LocationFilter().addTo(map);
+             
+            var lfOptions = {'adjustButton': null,
+                             'buttonPosition': 'topright'};
+            locationFilter = new L.LocationFilter(lfOptions).addTo(map);
             locationFilter.on("change", function (e) {
                     var alterBounds = locationFilter.getBounds();
                     newBBoxCallback({"nwlat": alterBounds.getNorth(),
@@ -19,8 +21,10 @@ var indexMap = (function() {
                                      "selat": alterBounds.getSouth(),
                                      "selon": alterBounds.getEast()});
             });
-
-              
+            
+            locationFilter.on("disabled", function(e) {
+                locationFilter.clearBounds();
+            });
         },
         
         showSearchResult: function(lat, lon) {
