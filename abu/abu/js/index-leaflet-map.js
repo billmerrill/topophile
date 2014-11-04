@@ -1,5 +1,5 @@
 var indexMap = (function() {
-    var map, newBBoxCallback;
+    var map, locationFilter, newBBoxCallback;
     
     return {
         init: function(mapDisplayId, newBBoxCb) {
@@ -10,6 +10,17 @@ var indexMap = (function() {
               layers: MQ.hybridLayer(),
               center: [ 46.852947, -121.760424 ], // mt rainier
               zoom: 12 } );
+              
+            locationFilter = new L.LocationFilter().addTo(map);
+            locationFilter.on("change", function (e) {
+                    var alterBounds = locationFilter.getBounds();
+                    var bounds =  {"nwlat": alterBounds.getNorth(),
+                                   "nwlon": alterBounds.getWest(),
+                                   "selat": alterBounds.getSouth(),
+                                   "selon": alterBounds.getEast()}
+                    newBBoxCallback(bounds);
+            });
+
               
         },
         
