@@ -9,11 +9,14 @@ var indexModel = (function() {
        
        showModel: function(modelUrl) {
             viewer.setParameter('SceneUrl',         modelUrl);
-            viewer.setParameter('ModelColor',       '#CAA618');
-            viewer.setParameter('BackgroundColor1', '#E5D7BA');
-            viewer.setParameter('BackgroundColor2', '#383840');
+            // viewer.setParameter('ModelColor',       '#CAA618');
+            viewer.setParameter('ModelColor',       '#999999');
+            // viewer.setParameter('BackgroundColor1', '#E5D7BA');
+            // viewer.setParameter('BackgroundColor2', '#383840');
+            viewer.setParameter('BackgroundColor1', '#FFFFFF');
+            viewer.setParameter('BackgroundColor2', '#FFFFFF');
             viewer.setParameter('RenderMode',       'flat');
-            viewer.setParameter('Renderer',         'webgl');
+            viewer.setParameter('Renderer',       'webgl');
             viewer.init();
             viewer.update();
        }
