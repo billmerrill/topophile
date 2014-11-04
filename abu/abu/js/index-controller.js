@@ -33,7 +33,6 @@ var indexController = (function(){
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
-                alert("yep!");
             });
         },
         

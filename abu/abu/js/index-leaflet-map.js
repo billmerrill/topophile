@@ -14,11 +14,10 @@ var indexMap = (function() {
             locationFilter = new L.LocationFilter().addTo(map);
             locationFilter.on("change", function (e) {
                     var alterBounds = locationFilter.getBounds();
-                    var bounds =  {"nwlat": alterBounds.getNorth(),
-                                   "nwlon": alterBounds.getWest(),
-                                   "selat": alterBounds.getSouth(),
-                                   "selon": alterBounds.getEast()}
-                    newBBoxCallback(bounds);
+                    newBBoxCallback({"nwlat": alterBounds.getNorth(),
+                                     "nwlon": alterBounds.getWest(),
+                                     "selat": alterBounds.getSouth(),
+                                     "selon": alterBounds.getEast()});
             });
 
               
