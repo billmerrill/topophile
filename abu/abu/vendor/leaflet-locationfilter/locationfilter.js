@@ -147,6 +147,16 @@ L.LocationFilter = L.Class.extend({
             this.fire("change", {bounds: bounds});
         }
     },
+    
+    clearBounds: function() {
+        if (this.isEnabled()) {
+            $this.disable();
+        }
+        this._nw = null;
+        this._ne = null;
+        this._sw = null;
+        this._se = null;
+    },
 
     isEnabled: function() {
         return this._enabled;
