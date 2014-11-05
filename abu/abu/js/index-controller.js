@@ -29,7 +29,7 @@ var indexController = (function(){
                         'selat': bbox['selat'],
                         'selon': bbox['selon'],
                         'size': 200, 
-                        'rez': 50 }
+                        'rez': 75 }
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
@@ -81,6 +81,10 @@ var indexController = (function(){
             geocoder = geocoderModule;
             
             map.init("map", newBBoxHandler);
+            
+        
+            $("#model-canvas").width($("#map").width());
+            $("#model-canvas").height($("#map").height());
             model.init("model-canvas");
             model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);
