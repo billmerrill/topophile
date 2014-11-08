@@ -10,4 +10,4 @@ def main():
     model = SolidElevationModel(model_config)
     model.build_stl()
     
-main()
+main()      
