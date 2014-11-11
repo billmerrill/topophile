@@ -81,11 +81,7 @@ var indexController = (function(){
             geocoder = geocoderModule;
             
             map.init("map", newBBoxHandler);
-            
-        
-            $("#model-canvas").width($("#map").width());
-            $("#model-canvas").height($("#map").height());
-            model.init("model-canvas");
+            model.init("modelcanvas");
             model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);
             

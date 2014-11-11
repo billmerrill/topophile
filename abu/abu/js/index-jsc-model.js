@@ -8,6 +8,7 @@ var indexModel = (function() {
             canvas = document.getElementById(displayCanvasId);
             viewer = new JSC3D.Viewer(canvas);
             viewer.setParameter('ModelColor',       '#9999FF');
+            viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
             viewer.setParameter('RenderMode',       'flat');
