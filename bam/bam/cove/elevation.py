@@ -18,78 +18,9 @@ class Elevation(object):
     def close_dataset(self):
        self.dataset = None
             
-    def get_pixel_meters(self):
-        ''' get the length in meters of each pixel, x and y '''
-        geotransform = self.dataset.GetGeoTransform()
-        x_size_deg = geotransform[1]
-        y_size_deg = geotransform[5]
-        x_size_m = haversine((0,0),(x_size_deg, 0)) * 1000
-        y_size_m = haversine((0,0), (0, y_size_deg)) * 1000
-        return (math.copysign(x_size_m, x_size_deg), math.copysign(y_size_m, y_size_deg))
-        
-    def compute_pixel_meters(self, x_size_deg, y_size_deg):
-        x_size_m = haversine((0,0),(x_size_deg, 0)) * 1000
-        y_size_m = haversine((0,0), (0, y_size_deg)) * 1000
-        return (math.copysign(x_size_m, x_size_deg), math.copysign(y_size_m, y_size_deg))
-        
     def get_longest_raster_size(self):
         return max(self.dataset.RasterXSize, self.dataset.RasterYSize)
         
-    def get_elevation_in_meters_with_gdal_resample(self):
-        longest = self.get_longest_raster_size()
-        print("longest ", longest)
-        resize_ratio = self.builder.get_resize_ratio(self.get_longest_raster_size())
-    
-        pprint.pprint("new resize ration")
-        pprint.pprint(resize_ratio)
- 
-        scaled_pixel_meters = ()
-        scaled_data = []
-        dst_dim = []
-        if resize_ratio[PX] == 1 and resize_ratio[PY] == 1:
-            print("*** not resampling")
-            scaled_data = self.dataset.ReadAsArray()
-            scaled_pixel_meters = self.get_pixel_meters()
-            dst_dim = [self.dataset.RasterXSize,
-                         self.dataset.RasterYSize]
-        else:
-            print("*** resampling it")
-            src_xform = self.dataset.GetGeoTransform()
-            src_datatype = self.dataset.GetRasterBand(1).DataType
-            
-            dst_dim = [int(self.dataset.RasterXSize * resize_ratio[PX]),
-                       int(self.dataset.RasterYSize * resize_ratio[PY])]
-            dst_pixel_spacing = [src_xform[1] / resize_ratio[PX], 
-                                 src_xform[5] / resize_ratio[PY] ]           
-
-            mem_driver = gdal.GetDriverByName('MEM')            
-            dst = mem_driver.Create('', dst_dim[PX], dst_dim[PY], 1, src_datatype)
-            dst_xform = (src_xform[0],
-                         dst_pixel_spacing[PX],
-                         src_xform[2],
-                         src_xform[3],
-                         src_xform[4],
-                         dst_pixel_spacing[PY])
-            dst.SetProjection(self.dataset.GetProjection())
-            dst.SetGeoTransform(dst_xform)
-            res = gdal.ReprojectImage(self.dataset, dst, self.dataset.GetProjection(), 
-                    dst.GetProjection(), gdal.GRA_Bilinear)
-            scaled_data = dst.ReadAsArray()
-            scaled_pixel_meters = self.compute_pixel_meters(dst_xform[1], dst_xform[5])
-            
-        
-        elevation_matrix = []
-        for i in range(0, dst_dim[PY]):
-            points = []
-            for j in range(0, dst_dim[PX]):
-                points.append ( [scaled_pixel_meters[PX] * j,
-                                 scaled_pixel_meters[PY] * i,
-                                 scaled_data[i][j]])
-            elevation_matrix.append(points)
-        
-        dst = None
-        return elevation_matrix
-                
     def reproject_and_resample(self):
         '''
             Reproject the source data to the target projection
