@@ -3,6 +3,8 @@ var indexController = (function(){
     
     var map, model, geocoder,
         bamService = "http://127.0.0.1:8080/",
+        firstBounds = true,
+        firstTopo = true,
         nwlatDisplay,
         nwlonDisplay,
         selatDisplay,
@@ -27,7 +29,10 @@ var indexController = (function(){
         },
         
         newBoundsHandler = function(newBounds) {
-            $("#preview-topo").prop('disabled', false);
+            if (firstBounds) {
+                $("#preview-topo").prop('disabled', false);
+                firstBounds = false;
+            }
             updateBoundsDisplay(newBounds)
         },
         
@@ -47,6 +52,10 @@ var indexController = (function(){
         },
         
         previewTopo = function() {
+            if (firstTopo) {
+                $("#instructions").hide();        
+                firstTopo = false;
+            }
             getModelUrl();
         },
         

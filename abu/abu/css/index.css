@@ -18,3 +18,8 @@
 span.map-section {
     font-variant: small-caps;
 }
+
+#instructions {
+    position: absolute;
+    float: left;
+}
