@@ -27,6 +27,7 @@ var indexController = (function(){
         },
         
         newBoundsHandler = function(newBounds) {
+            $("#preview-topo").prop('disabled', false);
             updateBoundsDisplay(newBounds)
         },
         
@@ -64,7 +65,6 @@ var indexController = (function(){
             
             map.init("map", mt_rainier, newBoundsHandler, clearedBoundsHandler);
             model.init("model-canvas");
-            model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);
         },
         
@@ -75,7 +75,6 @@ var indexController = (function(){
             selonDisplay = $("#selon");
             zFactorDisplay = $("#zfactor");
             
-            initRainierBounds()
             zFactorDisplay.val("1.5");
             
             $("#gc-search-button").click(
@@ -88,7 +87,7 @@ var indexController = (function(){
             
             $("#preview-topo").click( function() {
                 previewTopo();} 
-            );
+            ).prop('disabled', true);
         };
         
         
