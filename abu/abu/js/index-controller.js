@@ -2,7 +2,6 @@ var indexController = (function(){
     "use strict";
     
     var map, model, geocoder,
-        bbox,
         bamService = "http://127.0.0.1:8080/",
         nwlatDisplay,
         nwlonDisplay,
@@ -10,44 +9,36 @@ var indexController = (function(){
         selonDisplay,
         zFactorDisplay,
     
-        setBBox = function() {
-            bbox = {'nwlat': $("#nwlat").val(),
-                    'nwlon': $("#nwlon").val(),
-                    'selat': $("#selat").val(),
-                    'selon': $("#selon").val()};
-        },
-        
         getModelUrl = function() {
             $.ajax({
                 type: "GET",
                 url: bamService,
-                data: { 'nwlat': bbox['nwlat'],
-                        'nwlon': bbox['nwlon'],
-                        'selat': bbox['selat'],
-                        'selon': bbox['selon'],
+                data: { 'nwlat': nwlatDisplay.val(),
+                        'nwlon': nwlonDisplay.val(),
+                        'selat': selatDisplay.val(),
+                        'selon': selonDisplay.val(),
                         'size': 200, 
                         'rez': 75,
-                        'zfactor': 2}
+                        'zfactor': zFactorDisplay.val()}
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
             });
         },
         
-        newBBoxHandler = function(newBBox) {
-            bbox = newBBox
-            updateBBoxDisplay()
+        newBoundsHandler = function(newBounds) {
+            updateBoundsDisplay(newBounds)
         },
         
-        clearedBBoxHandler = function() {
+        clearedBoundsHandler = function() {
             // something
         },
         
-        updateBBoxDisplay = function() {
-            nwlatDisplay.val(bbox['nwlat']);
-            nwlonDisplay.val(bbox['nwlon']);
-            selatDisplay.val(bbox['selat']);
-            selonDisplay.val(bbox['selon']);
+        updateBoundsDisplay = function(bounds) {
+            nwlatDisplay.val(bounds['nwlat']);
+            nwlonDisplay.val(bounds['nwlon']);
+            selatDisplay.val(bounds['selat']);
+            selonDisplay.val(bounds['selon']);
         },
         
         geocoderResultHandler = function(data, status) {
@@ -55,11 +46,10 @@ var indexController = (function(){
         },
         
         previewTopo = function() {
-            setBBox();
             getModelUrl();
         },
         
-        initRainierBbox = function() {
+        initRainierBounds = function() {
             //Upper Left  (-121.8229167,  46.9290278) (121d49'22.50"W, 46d55'44.50"N)
             //Lower Right (-121.6701389,  46.7762500) (121d40'12.50"W, 46d46'34.50"N)
 
@@ -72,7 +62,7 @@ var indexController = (function(){
         initComponents = function() {
             var mt_rainier = [ 46.852947, -121.760424 ];
             
-            map.init("map", mt_rainier, newBBoxHandler, clearedBBoxHandler);
+            map.init("map", mt_rainier, newBoundsHandler, clearedBoundsHandler);
             model.init("model-canvas");
             model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);
@@ -85,7 +75,7 @@ var indexController = (function(){
             selonDisplay = $("#selon");
             zFactorDisplay = $("#zfactor");
             
-            initRainierBbox()
+            initRainierBounds()
             zFactorDisplay.val("1.5");
             
             $("#gc-search-button").click(

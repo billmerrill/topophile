@@ -20,7 +20,7 @@ class BoundingBoxJob(object):
         self.selon = selon
         self.rez = int(rez)
         self.size = int(size)
-        self.zfactor = int(zfactor)
+        self.zfactor = float(zfactor)
         
     def run(self):
         elevation_filename = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)

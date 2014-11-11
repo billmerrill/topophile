@@ -1,10 +1,10 @@
 var indexMap = (function() {
-    var map, locationFilter, newBBoxCallback, clearedBBoxCallback,
+    var map, locationFilter, newBoundsCallback, clearedBoundsCallback,
     
     handleNewBounds = function(e) {
         var alterBounds = locationFilter.getBounds();
         if (alterBounds.isValid()) {
-            newBBoxCallback({"nwlat": alterBounds.getNorth(),
+            newBoundsCallback({"nwlat": alterBounds.getNorth(),
                          "nwlon": alterBounds.getWest(),
                          "selat": alterBounds.getSouth(),
                          "selon": alterBounds.getEast()});
@@ -14,9 +14,9 @@ var indexMap = (function() {
     
     
     return {
-        init: function(mapDisplayId, mapCenter, newBBoxCb, clearedBBoxCb) {
-            newBBoxCallback = newBBoxCb;
-            clearedBBoxCallback = clearedBBoxCb
+        init: function(mapDisplayId, mapCenter, newBoundsCb, clearedBoundsCb) {
+            newBoundsCallback = newBoundsCb;
+            clearedBoundsCallback = clearedBoundsCb
             
             // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
@@ -37,7 +37,7 @@ var indexMap = (function() {
             
             locationFilter.on("disabled", function(e) {
                 locationFilter.clearBounds();
-                clearedBBoxCallback();
+                clearedBoundsCallback();
             });
         },
         
