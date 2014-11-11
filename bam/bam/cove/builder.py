@@ -12,6 +12,7 @@ class Builder(object):
         self.output_size_x = kwargs.get('output_size_x', 200)
         self.resize_ratio = kwargs.get('resize_ratio', (1,1))
         self.output_projection_epsg = 3857
+        self.z_factor = kwargs.get('z_factor', 1.0)
         
     def _default_dst_name(self):
         return self.src_filename.replace(".tif", ".stl")
@@ -43,3 +44,6 @@ class Builder(object):
     
     def get_output_projection(self):
         return self.output_projection_epsg
+        
+    def get_z_factor(self):
+        return self.z_factor

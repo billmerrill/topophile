@@ -29,7 +29,8 @@ var indexController = (function(){
                         'selat': bbox['selat'],
                         'selon': bbox['selon'],
                         'size': 200, 
-                        'rez': 75 }
+                        'rez': 75,
+                        'zfactor': 2}
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
@@ -44,6 +45,10 @@ var indexController = (function(){
         newBBoxHandler = function(newBBox) {
             bbox = newBBox
             updateBBoxDisplay()
+        },
+        
+        clearedBBoxHandler = function() {
+            // something
         },
         
         updateBBoxDisplay = function() {
@@ -80,7 +85,7 @@ var indexController = (function(){
             model = modelModule;
             geocoder = geocoderModule;
             
-            map.init("map", newBBoxHandler);
+            map.init("map", newBBoxHandler, clearedBBoxHandler);
             model.init("modelcanvas");
             model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);

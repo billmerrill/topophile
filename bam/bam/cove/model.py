@@ -24,6 +24,7 @@ class SolidElevationModel(Model):
         
         top = Mesh()
         top.load_matrix(elevation_data) 
+        top.transform((1,1,self.builder.get_z_factor()), (0,0,0))
         top.scale_to_output_size(self.builder.get_physical_max())
         
         print("Top plate physical size: %s x %s " % (top.get_data_x_size(), top.get_data_y_size()))

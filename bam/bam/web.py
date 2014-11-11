@@ -7,12 +7,12 @@ import job
 class STLModelService(object):
     exposed = True
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
         '''
-        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez)
+        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor)
         model_fn = gig.run()
         if model_fn is None:
             return "GB Error"

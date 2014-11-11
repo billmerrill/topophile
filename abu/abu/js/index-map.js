@@ -1,9 +1,22 @@
 var indexMap = (function() {
-    var map, locationFilter, newBBoxCallback;
+    var map, locationFilter, newBBoxCallback, clearedBBoxCallback,
+    
+    handleNewBounds = function(e) {
+        var alterBounds = locationFilter.getBounds();
+        if (alterBounds.isValid()) {
+            newBBoxCallback({"nwlat": alterBounds.getNorth(),
+                         "nwlon": alterBounds.getWest(),
+                         "selat": alterBounds.getSouth(),
+                         "selon": alterBounds.getEast()});
+        }  
+    };
+    
+    
     
     return {
-        init: function(mapDisplayId, newBBoxCb) {
+        init: function(mapDisplayId, newBBoxCb, clearedBBoxCb) {
             newBBoxCallback = newBBoxCb;
+            clearedBBoxCallback = clearedBBoxCb
             
             // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
@@ -14,16 +27,17 @@ var indexMap = (function() {
             var lfOptions = {'adjustButton': null,
                              'buttonPosition': 'topright'};
             locationFilter = new L.LocationFilter(lfOptions).addTo(map);
-            locationFilter.on("change", function (e) {
-                    var alterBounds = locationFilter.getBounds();
-                    newBBoxCallback({"nwlat": alterBounds.getNorth(),
-                                     "nwlon": alterBounds.getWest(),
-                                     "selat": alterBounds.getSouth(),
-                                     "selon": alterBounds.getEast()});
-            });
+            
+            locationFilter.on("change", function(e) {
+                handleNewBounds();
+            }); 
+            locationFilter.on("enabled", function(e) {
+                handleNewBounds();
+            }); 
             
             locationFilter.on("disabled", function(e) {
                 locationFilter.clearBounds();
+                clearedBBoxCallback();
             });
         },
         
