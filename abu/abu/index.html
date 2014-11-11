@@ -60,7 +60,7 @@
         <div class="col-md-6">
             Model
             <div class="model-container" id="model-container">
-                <canvas id="modelcanvas" width="600" height="400"></canvas>
+                <canvas id="model-canvas" width="600" height="400"></canvas>
             </div>
         </div>
 
@@ -110,11 +110,17 @@
                 <input type="text" class="form-control" name="selon" id="selon"/>
                 <span class="input-group-addon" style="width: 80px">E Lon</span>
             </div>
+        </div>
+        <div class="col-md-6" >
+            <div class="input-group">
+                <span class="input-group-addon" style="width: 80px">Height Mulitplier</span>
+                <input type="number" id="zfactor" name="zfactor" class="form-control" step="0.1"/>
+            </div>
             <button type="button" class="btn btn-default btn-md" id="preview-topo">
                 Preview Topo <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
-        </div>
-        <div class="col-md-6" id="console-area">
+ 
+            <div id="console-area"></div>
         </div>
     </div>
     </form>

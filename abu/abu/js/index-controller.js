@@ -8,16 +8,13 @@ var indexController = (function(){
         nwlonDisplay,
         selatDisplay,
         selonDisplay,
+        zFactorDisplay,
     
         setBBox = function() {
             bbox = {'nwlat': $("#nwlat").val(),
                     'nwlon': $("#nwlon").val(),
                     'selat': $("#selat").val(),
                     'selon': $("#selon").val()};
-        },
-        
-        updateModel = function(data, status) {
-            alert("model update status \"" + status + "\"");
         },
         
         getModelUrl = function() {
@@ -35,11 +32,6 @@ var indexController = (function(){
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
             });
-        },
-        
-        generateModel = function() {
-            setBBox();
-            getModelUrl();
         },
         
         newBBoxHandler = function(newBBox) {
@@ -67,34 +59,34 @@ var indexController = (function(){
             getModelUrl();
         },
         
-        initRainierDemo = function() {
+        initRainierBbox = function() {
             //Upper Left  (-121.8229167,  46.9290278) (121d49'22.50"W, 46d55'44.50"N)
             //Lower Right (-121.6701389,  46.7762500) (121d40'12.50"W, 46d46'34.50"N)
 
-            $("#nwlat").val(46.9290278);
-            $("#nwlon").val(-121.8229167);
-            $("#selat").val(46.7762500);
-            $("#selon").val(-121.6701389);
-        };
+            nwlatDisplay.val(46.9290278);
+            nwlonDisplay.val(-121.8229167);
+            selatDisplay.val(46.7762500);
+            selonDisplay.val(-121.6701389);
+        },
         
-        
-
-    return{
-        init: function(mapModule, modelModule, geocoderModule) {
-            map = mapModule;
-            model = modelModule;
-            geocoder = geocoderModule;
+        initComponents = function() {
+            var mt_rainier = [ 46.852947, -121.760424 ];
             
-            map.init("map", newBBoxHandler, clearedBBoxHandler);
-            model.init("modelcanvas");
+            map.init("map", mt_rainier, newBBoxHandler, clearedBBoxHandler);
+            model.init("model-canvas");
             model.showModel('./assets/rainier.stl');    
             geocoder.init(geocoderResultHandler);
-            
-          
+        },
+        
+        initUi = function() {
             nwlatDisplay = $("#nwlat");
             nwlonDisplay = $("#nwlon");
             selatDisplay = $("#selat");
             selonDisplay = $("#selon");
+            zFactorDisplay = $("#zfactor");
+            
+            initRainierBbox()
+            zFactorDisplay.val("1.5");
             
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
@@ -107,10 +99,18 @@ var indexController = (function(){
             $("#preview-topo").click( function() {
                 previewTopo();} 
             );
-            
-            initRainierDemo();
+        };
+        
+        
 
+    return{
+        init: function(mapModule, modelModule, geocoderModule) {
+            map = mapModule;
+            model = modelModule;
+            geocoder = geocoderModule;
 
+            initComponents();
+            initUi();
         }
     };
     

@@ -14,14 +14,14 @@ var indexMap = (function() {
     
     
     return {
-        init: function(mapDisplayId, newBBoxCb, clearedBBoxCb) {
+        init: function(mapDisplayId, mapCenter, newBBoxCb, clearedBBoxCb) {
             newBBoxCallback = newBBoxCb;
             clearedBBoxCallback = clearedBBoxCb
             
             // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
               layers: MQ.hybridLayer(),
-              center: [ 46.852947, -121.760424 ], // mt rainier
+              center: mapCenter, // mt rainier
               zoom: 12 } );
              
             var lfOptions = {'adjustButton': null,
