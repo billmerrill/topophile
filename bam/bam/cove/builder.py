@@ -11,6 +11,7 @@ class Builder(object):
         self.sample_rate = kwargs.get('sample_rate', 1)
         self.output_size_x = kwargs.get('output_size_x', 200)
         self.resize_ratio = kwargs.get('resize_ratio', (1,1))
+        self.output_projection_epsg = 3857
         
     def _default_dst_name(self):
         return self.src_filename.replace(".tif", ".stl")
@@ -37,3 +38,8 @@ class Builder(object):
     def get_physical_max(self):
         return self.output_physical_max
         
+    def get_output_resolution(self):
+        return self.output_resolution
+    
+    def get_output_projection(self):
+        return self.output_projection_epsg

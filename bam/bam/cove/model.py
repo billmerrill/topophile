@@ -17,7 +17,7 @@ class SolidElevationModel(Model):
         elevation.load_dataset()
         elevation.display_summary()
         print ("loading elevation")
-        elevation_data = elevation.get_elevation_in_meters_with_gdal_resample()
+        elevation_data = elevation.get_meters_matrix()
         print ("Elevation is %s x %s" % (len(elevation_data), len(elevation_data[0])))
         
         print ("starting mesh")
