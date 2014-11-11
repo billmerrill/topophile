@@ -18,9 +18,6 @@ class Elevation(object):
     def close_dataset(self):
        self.dataset = None
             
-    def get_longest_raster_size(self):
-        return max(self.dataset.RasterXSize, self.dataset.RasterYSize)
-        
     def reproject_and_resample(self):
         '''
             Reproject the source data to the target projection
