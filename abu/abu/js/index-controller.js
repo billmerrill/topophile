@@ -25,10 +25,15 @@ var indexController = (function(){
                         'zfactor': zFactorDisplay.val()}
             })
             .done(function(data, status, jqxhr) {
-                $("#model-building").hide();
-                $("#model-canvas").show()
                 model.showModel(data);
 
+            })
+            .fail(function(data, stats, error) {
+                alert("Sorry, I couldn't build a model.")
+            })
+            .always(function(data) {
+                $("#model-building").hide();
+                $("#model-canvas").show()
             });
         },
         
