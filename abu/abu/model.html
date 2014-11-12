@@ -6,9 +6,7 @@
     <title>Topofile: Abu</title>
 
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css" type="text/css" media="screen"  charset="utf-8">
-    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="vendor/leaflet-locationfilter/locationfilter.css" />
-    <link rel="stylesheet" href="css/index.css" type="text/css" media="screen"  charset="utf-8">
+    <link rel="stylesheet" href="css/model.css" type="text/css" media="screen"  charset="utf-8">
 
     <script src="vendor/jquery-1.11.1.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.js"></script>
@@ -23,7 +21,7 @@
 
     <script type="text/javascript">
         $(document).ready( function() { 
-            indexController.init(indexMap, indexModel, indexGeocoder); 
+            modelController.init(modelModel); 
         });
     </script>
 </head>
@@ -44,15 +42,11 @@
 </div>
 
 <div class="container-fluid">
+    <form>
     <div class="row">
 
-        <div class="col-md-6">
-            <div id="map" class="map"></div>
-        </div>
-        
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="model-container" id="model-container">
-                <img src="assets/model_instructions.jpg" id="instructions">
                 <div id="model-building">
                     <span class="building-status">building preview</span>
                     <div class="progress">
@@ -61,73 +55,10 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="model-canvas" width="600" height="400"></canvas>
+                <canvas id="model-canvas" width="800" height="400"></canvas>
             </div>
         </div>
 
-    </div>
-       
-    <div class="row">
-        <div class="col-md-6">
-            <span class="map-section">search</span>
-        </div>
-    </div> 
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" class="form-control" name="gc-search" id="gc-search"/>
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-default btn-md" id="gc-search-button">
-                Search <span class="glyphicon glyphicon-search"></span>
-            </button>
-        </div>
-    </div>    
-    
-    <div class="row">
-        <div class="col-md-6">
-            <span class="map-section">selection</span>
-        </div>
-    </div>
-    <form>
-    <div class="row">
-        <div class="col-md-3">
-            <span class="bbox-corner">Northwest Corner</span>
-            <div class="input-group">
-                <input type="text" class="form-control" id="nwlat" name="nwlat"/>
-                <span class="input-group-addon" style="width: 80px">N Lat</span>
-            </div>
-            <div class="input-group">
-                <input type="text" class="form-control" id="nwlon" name="nwlon"/>
-                <span class="input-group-addon" style="width: 80px">E Lon</span>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <span class="bbox-corner">Southwest Corner</span>
-            <div class="input-group">
-                <input type="text" class="form-control" id="selat" name="selat"/>
-                <span class="input-group-addon" style="width: 80px">N Lat</span>
-            </div>
-            <div class="input-group">
-                <input type="text" class="form-control" name="selon" id="selon"/>
-                <span class="input-group-addon" style="width: 80px">E Lon</span>
-            </div>
-        </div>
-        <div class="col-md-3" >
-            <div class="input-group">
-                <span class="input-group-addon" style="width: 80px">Height Mulitplier</span>
-                <input type="number" id="zfactor" name="zfactor" class="form-control" step="0.1"/>
-            </div>
-            <button type="button" class="btn btn-default btn-md" id="preview-topo">
-                Preview Topo <span class="glyphicon glyphicon-thumbs-up"></span>
-            </button>
- 
-            <div id="console-area"></div>
-        </div>
-        <div class="col-md-3" >
-            <button type="button" class="btn btn-default btn-md" id="build-model">
-                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
-        </div>
     </div>
     </form>
     
