@@ -12,6 +12,7 @@ var indexController = (function(){
         zFactorDisplay,
     
         getModelUrl = function() {
+            $("#model-building").show();
             $.ajax({
                 type: "GET",
                 url: bamService,
@@ -24,7 +25,10 @@ var indexController = (function(){
                         'zfactor': zFactorDisplay.val()}
             })
             .done(function(data, status, jqxhr) {
+                $("#model-building").hide();
+                $("#model-canvas").show()
                 model.showModel(data);
+
             });
         },
         
@@ -56,6 +60,7 @@ var indexController = (function(){
                 $("#instructions").hide();        
                 firstTopo = false;
             }
+            $("#model-canvas").hide()
             getModelUrl();
         },
         
@@ -97,6 +102,8 @@ var indexController = (function(){
             $("#preview-topo").click( function() {
                 previewTopo();} 
             ).prop('disabled', true);
+            
+            $("#model-building").hide();
         };
         
         

@@ -22,4 +22,20 @@ span.map-section {
 #instructions {
     position: absolute;
     float: left;
+    z-index: 1000;
+}
+
+#model-building {
+    /*position: absolute;*/
+    /*height: 400px;*/
+    padding-top: 180px;
+    /*z-index: 100;*/
+}
+
+#model-canvas {
+    /*position: absolute;*/
+    /*z-index: 10;*/
+}
+.building-status {
+    font-variant: small-caps;
 }
