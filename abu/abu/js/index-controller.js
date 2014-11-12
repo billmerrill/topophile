@@ -26,6 +26,7 @@ var indexController = (function(){
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data);
+                $("#build-model").prop('disabled', false);
 
             })
             .fail(function(data, stats, error) {
@@ -107,6 +108,8 @@ var indexController = (function(){
             $("#preview-topo").click( function() {
                 previewTopo();} 
             ).prop('disabled', true);
+            
+            $("#build-model").prop('disabled', true);
             
             $("#model-building").hide();
         };
