@@ -31,7 +31,7 @@ class MeshSandwich(GridShape):
         self.ysize = top.ysize
         self.top = top
         self.bottom = bottom
- 
+        
     def triangulate(self):
         triangles = self.top.triangulate()
         triangles.extend(self.bottom.triangulate())
@@ -112,6 +112,15 @@ class Mesh(GridShape):
     
     def get_max_corner(self):
         return self.mesh[self.y_max()][self.x_max()]
+        
+    def get_low_z(self):
+        low_z = 999999
+        for sy in range(0, self.ysize):
+            for sx in range(0, self.xsize):
+                if self.mesh[sy][sx][PZ] < low_z:
+                    low_z = self.mesh[sy][sx][PZ]
+                    
+        return low_z
     
     def get(self, x, y):
         return self.mesh[y][x]

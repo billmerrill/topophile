@@ -2,6 +2,7 @@ from mesh import Mesh, HorizontalPointPlane, MeshSandwich, MeshBasePlate
 from stl_canvas import STLCanvas
 from builder import Builder
 from elevation import Elevation
+from indicies import *
 
 
 class Model(object):
@@ -10,7 +11,15 @@ class Model(object):
         self.builder = Builder(config)
 
 class SolidElevationModel(Model):
-    
+   
+    def _raise_the_roof(self, top):
+        low_z = top.get_low_z()
+        min_thick = self.builder.get_min_thickness()
+        if low_z < min_thick[PZ]:
+            roof_xform_vector = (0, 0, min_thick[PZ] - low_z)
+            print ("Raising the roof %s" % roof_xform_vector[PZ])
+            top.transform((1,1,1), roof_xform_vector)
+            
     def build_stl(self):
         
         elevation = Elevation(self.builder)
@@ -26,6 +35,8 @@ class SolidElevationModel(Model):
         top.load_matrix(elevation_data) 
         top.transform((1,1,self.builder.get_z_factor()), (0,0,0))
         top.scale_to_output_size(self.builder.get_physical_max())
+        
+        self._raise_the_roof(top)
         
         print("Top plate physical size: %s x %s " % (top.get_data_x_size(), top.get_data_y_size()))
 

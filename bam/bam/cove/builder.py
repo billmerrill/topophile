@@ -13,6 +13,7 @@ class Builder(object):
         self.resize_ratio = kwargs.get('resize_ratio', (1,1))
         self.output_projection_epsg = 3857
         self.z_factor = kwargs.get('z_factor', 1.0)
+        self.min_model_thickness = [10,10,10]
         
     def _default_dst_name(self):
         return self.src_filename.replace(".tif", ".stl")
@@ -47,3 +48,6 @@ class Builder(object):
         
     def get_z_factor(self):
         return self.z_factor
+        
+    def get_min_thickness(self):
+        return self.min_model_thickness
