@@ -1,10 +1,12 @@
 var modelController = (function() {
-    var bamService = "http://127.0.0.1:8080/",
+    "use strict";
+    
+    var bamService = "http://127.0.0.1:8080/test",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
-        model, nwlat, nwlon, selat, selon, zfactor,
+        modelCanvas, nwlat, nwlon, selat, selon, zfactor,
   
     getParams = function() {
-        url = document.location;
+        var url = document.location;
         var searchObject = {},
             queries, split, i;
 
@@ -14,8 +16,7 @@ var modelController = (function() {
             searchObject[split[0]] = split[1];
         }
         return searchObject;
-    }
-
+    },
 
     getModelUrl = function() {
         $("#model-building").show();
@@ -31,7 +32,8 @@ var modelController = (function() {
                     'zfactor': zfactor}
         })
         .done(function(data, status, jqxhr) {
-            model.showModel(data);
+            modelCanvas.showModel(data['url']);
+            updateStats(data)
             $("#build-model").prop('disabled', false);
 
         })
@@ -43,9 +45,15 @@ var modelController = (function() {
             $("#model-canvas").show()
         });
     },
+    
+    updateStats = function(model) {
+        physicalXDisplay.val(model['x-size'])
+        physicalYDisplay.val(model['y-size'])
+        physicalZDisplay.val(model['z-size'])
+    },
    
     initComponents = function() {
-        model.init("model-canvas");
+        modelCanvas.init("model-canvas");
     },
     
     initUi = function() {
@@ -61,19 +69,24 @@ var modelController = (function() {
         selat = 46.7762500;
         selon = -121.6701389;
         zfactor = 1.5;
-        physicalXDisplay.val("200.0")
-        physicalYDisplay.val("400.0")
-        physicalZDisplay.val("300.0")
+    }, 
+    
+    initPage = function() {
+        getModelUrl()
     };
    
     return {
         init: function(modelModule) {
-            model = modelModule;
-            params = getParams();
+            modelCanvas = modelModule;
+            // params = getParams();
             initComponents();
             initUi();
+            
             fakeUpData();
-            model.showModel('http://127.0.0.1:9999/3E225D98-E9FE-458F-A1D2-EFD54FCBAF26.stl');
+            initPage();
+            
+            // model.showModel('http://127.0.0.1:9999/3E225D98-E9FE-458F-A1D2-EFD54FCBAF26.stl');
+            // updateStats()
             // getModelUrl();
         }
     }

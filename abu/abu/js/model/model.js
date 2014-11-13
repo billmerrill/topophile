@@ -1,4 +1,6 @@
 var modelModel = (function() {
+    "use strict";
+
     var canvas,viewer;
      
     return {

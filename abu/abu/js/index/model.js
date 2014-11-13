@@ -1,4 +1,6 @@
 var indexModel = (function() {
+    "use strict";
+
     var canvas,viewer;
      
     return {

@@ -1,4 +1,6 @@
 var indexMap = (function() {
+    "use strict";
+
     var map, locationFilter, newBoundsCallback, clearedBoundsCallback,
     
     handleNewBounds = function(e) {

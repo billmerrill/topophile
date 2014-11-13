@@ -5,8 +5,24 @@ import cherrypy
 import cove.model
 import job
 
+class ModelStub(object):
+    exposed = True
+
+    def GET(self, *args, **kwargs):
+        '''
+        use the bounding box to query for elevation data, and build a model
+        return the stl file
+        '''
+        model = {'url': "http://127.0.0.1:9999/3E225D98-E9FE-458F-A1D2-EFD54FCBAF26.stl",
+                 'x-size': 100.0,
+                 'y-size': 200.0,
+                 'z-size': 300.0}
+        return json.dumps(model)
+
 class STLModelService(object):
     exposed = True
+    def __init__(self):
+        self.test = ModelStub()
    
     def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor):
         '''
