@@ -25,7 +25,7 @@ var indexController = (function(){
                         'zfactor': zFactorDisplay.val()}
             })
             .done(function(data, status, jqxhr) {
-                model.showModel(data);
+                model.showModel(data['url']);
                 $("#build-model").prop('disabled', false);
 
             })

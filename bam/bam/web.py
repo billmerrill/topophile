@@ -1,5 +1,6 @@
 import os
 import tempfile
+import json
 import cherrypy
 import cove.model
 import job
@@ -17,8 +18,9 @@ class STLModelService(object):
         if model is None:
             return "GB Error"
         
-        model_name = os.path.split(model['filename'])[1]
-        return "http://127.0.0.1:9999/" + model_name
+        model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
+        del(model['filename'])
+        return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):
         '''
@@ -53,7 +55,7 @@ if __name__ == '__main__':
          'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
          'tools.sessions.on': True,
          'tools.response_headers.on': True,
-         'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+         'tools.response_headers.headers': [('Content-Type', 'application/json')],
          'tools.CORS.on': True
         }
     }

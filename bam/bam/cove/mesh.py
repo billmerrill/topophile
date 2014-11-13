@@ -106,10 +106,10 @@ class Mesh(GridShape):
         self.transform(scalar, translate)
                                    
     def get_data_x_size(self):
-        return self.mesh[0][self.x_max()][PX] - self.mesh[0][0][PX]
+        return abs(self.mesh[0][self.x_max()][PX] - self.mesh[0][0][PX])
         
     def get_data_y_size(self):
-        return self.mesh[self.y_max()][0][PY] - self.mesh[0][0][PY]
+        return abs(self.mesh[self.y_max()][0][PY] - self.mesh[0][0][PY])
         
     def get_max_corner(self):
         return self.mesh[self.y_max()][self.x_max()]
@@ -128,7 +128,7 @@ class Mesh(GridShape):
         for sy in range(0, self.ysize):
             for sx in range(0, self.xsize):
                 if self.mesh[sy][sx][PZ] > high_z:
-                    low_z = self.mesh[sy][sx][PZ]
+                    high_z = self.mesh[sy][sx][PZ]
                     
         return high_z
 
