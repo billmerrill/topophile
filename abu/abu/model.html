@@ -48,7 +48,7 @@
         <div class="col-md-8">
             <div class="model-container" id="model-container">
                 <div id="model-building">
-                    <span class="building-status">building preview</span>
+                    <span class="building-status">building terrain model</span>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                             <span class="sr-only">working</span>
@@ -58,7 +58,37 @@
                 <canvas id="model-canvas" width="800" height="400"></canvas>
             </div>
         </div>
+        <div class="col-md-4" id="controls">
+            <h3>Dimensions<h3>
 
+            <div class="input-group">
+                <span class="input-group-addon" style="width: 80px">Length</span>
+                <input type="number" name="xsize" id="xsize" class="form-control size-field" step=".1" min="1">
+                <span class="input-group-addon" style="width: 40px">mm</span>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" style="width: 80px">Width</span>
+                <input type="number" name="ysize" id="ysize" class="form-control size-field" step=".1" min="1">
+                <span class="input-group-addon" style="width: 40px">mm</span>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" style="width: 80px">Height</span>
+                <input type="number" name="zsize" id="zsize" class="form-control size-field" step=".1" min="1">
+                <span class="input-group-addon" style="width: 40px">mm</span>
+            </div>
+        
+                
+                
+        
+            
+            <h3>Sizes<h3>
+            <div class="btn-group" role="group" aria-label="Model Size Choices">
+              <button type="button" class="btn btn-default" id="small-size-preset">Small</button>
+              <button type="button" class="btn btn-default" id="medium-size-preset">Medium</button>
+              <button type="button" class="btn btn-default" id="large-size-preset">Large</button>
+              <button type="button" class="btn btn-default" id="custom-size-preset">Custom</button>
+            </div>
+        </div>
     </div>
     </form>
     

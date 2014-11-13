@@ -39,3 +39,7 @@ span.map-section {
 .building-status {
     font-variant: small-caps;
 }
+
+.size-field{
+    text-align: right;
+}

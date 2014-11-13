@@ -1,5 +1,6 @@
 var modelController = (function() {
     var bamService = "http://127.0.0.1:8080/",
+        physicalXDisplay, physicalYDisplay, physicalZDisplay,
         model, nwlat, nwlon, selat, selon, zfactor,
   
     getParams = function() {
@@ -49,6 +50,9 @@ var modelController = (function() {
     
     initUi = function() {
         $('#model-building').hide();
+        physicalXDisplay = $('#xsize')
+        physicalYDisplay = $('#ysize')
+        physicalZDisplay = $('#zsize')
     },
     
     fakeUpData = function() {
@@ -57,16 +61,20 @@ var modelController = (function() {
         selat = 46.7762500;
         selon = -121.6701389;
         zfactor = 1.5;
+        physicalXDisplay.val("200.0")
+        physicalYDisplay.val("400.0")
+        physicalZDisplay.val("300.0")
     };
    
     return {
         init: function(modelModule) {
             model = modelModule;
             params = getParams();
-            fakeUpData();
             initComponents();
             initUi();
-            getModelUrl();
+            fakeUpData();
+            model.showModel('http://127.0.0.1:9999/3E225D98-E9FE-458F-A1D2-EFD54FCBAF26.stl');
+            // getModelUrl();
         }
     }
     
