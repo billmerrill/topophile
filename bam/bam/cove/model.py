@@ -20,22 +20,22 @@ class SolidElevationModel(Model):
             print ("Raising the roof %s" % roof_xform_vector[PZ])
             top.transform((1,1,1), roof_xform_vector)
             
+    def _compute_model_z_size(self, sandwich):
+        top_max_z = sandwich.top.get_high_z()
+        return top_max_z - sandwich.bottom.elevation
+            
     def build_stl(self):
-        
         elevation = Elevation(self.builder)
         elevation.load_dataset()
-        elevation.display_summary()
-        print ("loading elevation")
+        # elevation.display_summary()
         elevation_data = elevation.get_meters_matrix()
-        print ("Elevation is %s x %s" % (len(elevation_data), len(elevation_data[0])))
-        
-        print ("starting mesh")
         
         top = Mesh()
         top.load_matrix(elevation_data) 
         top.transform((1,1,self.builder.get_z_factor()), (0,0,0))
         top.scale_to_output_size(self.builder.get_physical_max())
-        
+       
+        # make sure the top layer of the model is taller than the min thickness
         self._raise_the_roof(top)
         
         print("Top plate physical size: %s x %s " % (top.get_data_x_size(), top.get_data_y_size()))
@@ -43,13 +43,17 @@ class SolidElevationModel(Model):
         print ("starting bottom")
         bottom = MeshBasePlate(top, 0)
         
-        sammy = MeshSandwich(top, bottom)
+        sandwich = MeshSandwich(top, bottom)
         
         canvas = STLCanvas()
-        print ("building sandwich")
-        canvas.add_shape(sammy)
-        print("writing stl")
+        canvas.add_shape(sandwich)
         canvas.write_stl(self.builder.get_output_file_name())
         
+        desc = {'filename': self.builder.get_output_file_name(),
+                'x-size': top.get_data_x_size(),
+                'y-size': top.get_data_y_size(),
+                'z-size': self._compute_model_z_size(sandwich) }
+                
         elevation.close_dataset()
-        return(self.builder.get_output_file_name())
+        
+        return desc

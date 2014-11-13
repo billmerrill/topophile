@@ -13,11 +13,11 @@ class STLModelService(object):
         return the stl file
         '''
         gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor)
-        model_fn = gig.run()
-        if model_fn is None:
+        model = gig.run()
+        if model is None:
             return "GB Error"
         
-        model_name = os.path.split(model_fn)[1]
+        model_name = os.path.split(model['filename'])[1]
         return "http://127.0.0.1:9999/" + model_name
         
     def POST(self, elevation, size=200, rez=50):
