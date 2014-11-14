@@ -15,27 +15,56 @@ modelSizing = (function(){
                 return dimensions[currentSizePreset][dim]
             }
         },
+        
+        changePresetSize = function(newPreset) {
+            currentSizePreset = newPreset;
+            updateDisplay();
+            // switch(this.currentSizePreset) {
+            //     case 'small':
+            //         
+            //         break;
+            //     case 'medium':
+            //         break;
+            //     case 'large':
+            //         break;
+            //     case 'custom':
+            //         break;
+            // }
+        },
+        
+        
+        updateDisplay =  function() {
+            xDisplay.val(xSize());
+            yDisplay.val(ySize());
+            zDisplay.val(zSize());
+        },
+    
         xSize = function(val) { return accessDimension(0,val) },
         ySize = function(val) { return accessDimension(1,val) },
         zSize = function(val) { return accessDimension(2,val) },
-        xDisplay, yDisplay, zDisplay;
-        
+        xDisplay, yDisplay, zDisplay, smallButton, mediumButton,
+        largeButton, customButton;
         return {
     
-            initDisplay: function(x,y,z){
+            initDisplay: function(x, y, z, presetS, presetM, presetL, presetC){
                 xDisplay = $(x);
                 yDisplay = $(y);
                 zDisplay = $(z);
+                smallButton = $(presetS);
+                mediumButton = $(presetM);
+                largeButton = $(presetL);
+                customButton = $(presetC);
+                
+                smallButton.click(function() {changePresetSize('small');});
+                mediumButton.click(function() {changePresetSize('medium');});
+                largeButton.click(function() {changePresetSize('large');});
+                customButton.click(function() {changePresetSize('custom');});
             },
             
-            updateDisplay: function() {
-                xDisplay.val(xSize());
-                yDisplay.val(ySize());
-                zDisplay.val(zSize());
-            },
             
             setSize: function(x,y,z) {
                 dimensions[currentSizePreset] = [x,y,z];
+                updateDisplay();
             },
             
             initPresets: function() {
@@ -54,20 +83,6 @@ modelSizing = (function(){
                 return dimensions[currentSizePreset]
             },
             
-            changePresetSize: function(newPreset) {
-                this.currentSizePreset = newPreset;
-                this.updateDisplay();
-                // switch(this.currentSizePreset) {
-                //     case 'small':
-                //         
-                //         break;
-                //     case 'medium':
-                //         break;
-                //     case 'large':
-                //         break;
-                //     case 'custom':
-                //         break;
-                // }
-            }
+
     }
 }());

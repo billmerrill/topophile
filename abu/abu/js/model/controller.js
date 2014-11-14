@@ -35,7 +35,7 @@ var modelController = (function() {
             modelCanvas.showModel(data['url']);
             sizeTools.setSize(data['x-size'], data['y-size'], data['z-size']);
             sizeTools.initPresets();
-            sizeTools.updateDisplay();
+            // sizeTools.updateDisplay();
 
         })
         .fail(function(data, stats, error) {
@@ -49,7 +49,8 @@ var modelController = (function() {
     
     initComponents = function() {
         modelCanvas.init("model-canvas");
-        sizeTools.initDisplay('#xsize', '#ysize', '#zsize');
+        sizeTools.initDisplay('#xsize', '#ysize', '#zsize', '#small-size-preset',
+                    '#medium-size-preset', '#large-size-preset', '#custom-size-preset');
     },
     
     initUi = function() {
