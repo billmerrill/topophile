@@ -3,7 +3,7 @@ var modelController = (function() {
     
     var bamService = "http://127.0.0.1:8080/test",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
-        modelCanvas, nwlat, nwlon, selat, selon, zfactor, md,
+        modelCanvas, nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
     getParams = function() {
         var url = document.location;
@@ -33,10 +33,9 @@ var modelController = (function() {
         })
         .done(function(data, status, jqxhr) {
             modelCanvas.showModel(data['url']);
-            md.setSize(data['x-size'], data['y-size'], data['z-size']);
-            md.initPresets();
-            md.updateDisplay();
-            $("#build-model").prop('disabled', false);
+            sizeTools.setSize(data['x-size'], data['y-size'], data['z-size']);
+            sizeTools.initPresets();
+            sizeTools.updateDisplay();
 
         })
         .fail(function(data, stats, error) {
@@ -50,6 +49,7 @@ var modelController = (function() {
     
     initComponents = function() {
         modelCanvas.init("model-canvas");
+        sizeTools.initDisplay('#xsize', '#ysize', '#zsize');
     },
     
     initUi = function() {
@@ -73,16 +73,14 @@ var modelController = (function() {
    
     return {
         init: function(modelModule, sizingModule) {
-            md = sizingModule;
-            md.initDisplay('#xsize', '#ysize', '#zsize');
-            
             modelCanvas = modelModule;
+            sizeTools = sizingModule;
+            
             initComponents();
             initUi();
             
             fakeUpData();
             initPage();
-            
         }
     }
     
