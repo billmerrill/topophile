@@ -62,7 +62,7 @@ var modelController = (function() {
         })
         .done(function(data, status, jqxhr) {
             modelCanvas.showModel(data['url']);
-            md.setSize(model['x-size'], model['y-size'], model['z-size']);
+            md.setSize(data['x-size'], data['y-size'], data['z-size']);
             md.updateDisplay();
             $("#build-model").prop('disabled', false);
 
