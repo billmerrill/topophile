@@ -3,7 +3,36 @@ var modelController = (function() {
     
     var bamService = "http://127.0.0.1:8080/test",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
-        modelCanvas, nwlat, nwlon, selat, selon, zfactor,
+        modelCanvas, nwlat, nwlon, selat, selon, zfactor, md,
+ 
+    modelData = function(){
+        
+        this.xSize = 0;
+        this.ySize = 0;
+        this.zSize = 0;
+        this.xDisplay = null;
+        this.yDisplay = null;
+        this.zDisplay = null;
+        this.currentSizePreset = 'small',
+        this.initDisplay = function(x,y,z){
+            this.xDisplay = $(x);
+            this.yDisplay = $(y);
+            this.zDisplay = $(z);
+        }
+        this.updateDisplay = function() {
+            this.xDisplay.val(this.xSize);
+            this.yDisplay.val(this.ySize);
+            this.zDisplay.val(this.zSize);
+        }
+        this.setSize = function(x,y,z) {
+            this.xSize = x;
+            this.ySize = y;
+            this.zSize = z;
+        };
+        this.changePresetSize = function(newPreset) {
+            this.currentSizePreset = newPreset;
+        }
+    },
   
     getParams = function() {
         var url = document.location;
@@ -33,7 +62,8 @@ var modelController = (function() {
         })
         .done(function(data, status, jqxhr) {
             modelCanvas.showModel(data['url']);
-            updateStats(data)
+            md.setSize(model['x-size'], model['y-size'], model['z-size']);
+            md.updateDisplay();
             $("#build-model").prop('disabled', false);
 
         })
@@ -46,12 +76,6 @@ var modelController = (function() {
         });
     },
     
-    updateStats = function(model) {
-        physicalXDisplay.val(model['x-size'])
-        physicalYDisplay.val(model['y-size'])
-        physicalZDisplay.val(model['z-size'])
-    },
-   
     initComponents = function() {
         modelCanvas.init("model-canvas");
     },
@@ -72,22 +96,21 @@ var modelController = (function() {
     }, 
     
     initPage = function() {
-        getModelUrl()
+        getModelUrl();
     };
    
     return {
         init: function(modelModule) {
+            md = new modelData();
+            md.initDisplay('#xsize', '#ysize', '#zsize')
+            
             modelCanvas = modelModule;
-            // params = getParams();
             initComponents();
             initUi();
             
             fakeUpData();
             initPage();
             
-            // model.showModel('http://127.0.0.1:9999/3E225D98-E9FE-458F-A1D2-EFD54FCBAF26.stl');
-            // updateStats()
-            // getModelUrl();
         }
     }
     
