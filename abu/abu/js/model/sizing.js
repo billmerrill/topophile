@@ -54,11 +54,18 @@ modelSizing = (function(){
                 mediumButton = $(presetM);
                 largeButton = $(presetL);
                 customButton = $(presetC);
+                smallButton.toggleClass("active");
                 
-                smallButton.click(function() {changePresetSize('small');});
-                mediumButton.click(function() {changePresetSize('medium');});
-                largeButton.click(function() {changePresetSize('large');});
-                customButton.click(function() {changePresetSize('custom');});
+                var presetClick = function(size, e) {
+                    changePresetSize(size);
+                    $("#presets button").removeClass("active");
+                    $(e.target).toggleClass("active");
+                }
+              
+                smallButton.click(function(e) { presetClick('small',e);});
+                mediumButton.click(function(e) { presetClick('medium',e);});
+                largeButton.click(function(e) { presetClick('large',e);});
+                customButton.click(function(e) { presetClick('custom',e);});
             },
             
             
