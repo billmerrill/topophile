@@ -14,6 +14,8 @@ var modelModel = (function() {
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
             viewer.setParameter('RenderMode',       'flat');
             viewer.setParameter('Renderer',         'webgl');
+            viewer.setParameter('InitRotationX',     '-70');
+            viewer.setParameter('InitRotationY' ,    '45');
             viewer.init();
             viewer.update();
        },
