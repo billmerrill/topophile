@@ -7,30 +7,66 @@ var modelController = (function() {
  
     modelData = function(){
         
-        this.xSize = 0;
-        this.ySize = 0;
-        this.zSize = 0;
+        this.currentSizePreset = 'small',
+        this.dimensions = {'small': [],
+                           'medium': [],
+                           'large': [],
+                           'custom': []};
+        this.accessDimension = function(dim, val) {
+            if (val) {
+                this.dimensions[this.currentSizePreset][dim] = val;
+                return val;
+            } else {
+                return this.dimensions[this.currentSizePreset][dim]
+            }
+        };
+        this.xSize = function(val) { return this.accessDimension(0,val) };
+        this.ySize = function(val) { return this.accessDimension(1,val) };
+        this.zSize = function(val) { return this.accessDimension(2,val) };
         this.xDisplay = null;
         this.yDisplay = null;
         this.zDisplay = null;
-        this.currentSizePreset = 'small',
         this.initDisplay = function(x,y,z){
             this.xDisplay = $(x);
             this.yDisplay = $(y);
             this.zDisplay = $(z);
-        }
-        this.updateDisplay = function() {
-            this.xDisplay.val(this.xSize);
-            this.yDisplay.val(this.ySize);
-            this.zDisplay.val(this.zSize);
-        }
-        this.setSize = function(x,y,z) {
-            this.xSize = x;
-            this.ySize = y;
-            this.zSize = z;
         };
+        this.updateDisplay = function() {
+            this.xDisplay.val(this.xSize());
+            this.yDisplay.val(this.ySize());
+            this.zDisplay.val(this.zSize());
+        };
+        this.setSize = function(x,y,z) {
+            this.dimensions[this.currentSizePreset] = [x,y,z];
+        };
+        this.initPresets = function() {
+            this.dimensions['medium'] = [this.dimensions['small'][0] * 2,
+                                         this.dimensions['small'][1] * 2,
+                                         this.dimensions['small'][2] * 2];
+            this.dimensions['large'] = [this.dimensions['small'][0] * 3,
+                                         this.dimensions['small'][1] * 3,
+                                         this.dimensions['small'][2] * 3];
+            this.dimensions['custom'] = [this.dimensions['small'][0] * 5,
+                                         this.dimensions['small'][1] * 5,
+                                         this.dimensions['small'][2] * 5];
+        }
+        this.getCurrentDimensions = function() {
+            return this.dimensions[this.currentSizePreset]
+        }
         this.changePresetSize = function(newPreset) {
             this.currentSizePreset = newPreset;
+            this.updateDisplay();
+            // switch(this.currentSizePreset) {
+            //     case 'small':
+            //         
+            //         break;
+            //     case 'medium':
+            //         break;
+            //     case 'large':
+            //         break;
+            //     case 'custom':
+            //         break;
+            // }
         }
     },
   
@@ -63,6 +99,7 @@ var modelController = (function() {
         .done(function(data, status, jqxhr) {
             modelCanvas.showModel(data['url']);
             md.setSize(data['x-size'], data['y-size'], data['z-size']);
+            md.initPresets();
             md.updateDisplay();
             $("#build-model").prop('disabled', false);
 

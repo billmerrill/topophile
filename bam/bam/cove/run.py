@@ -3,7 +3,7 @@ from model import SolidElevationModel
 
 model_config = { 'src': '539445F7-171F-49C0-96C4-99826E684551.tif',
                  'output_resolution': 50,
-                 'output_physical_max': 200,
+                 'output_physical_max': 100,
                  'z_factor': 20
                  }
 
