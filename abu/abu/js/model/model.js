@@ -1,10 +1,11 @@
 var modelModel = (function() {
     "use strict";
 
-    var canvas,viewer;
+    var canvas,viewer, references;
      
     return {
-       init: function(displayCanvasId) {
+       init: function(displayCanvasId, referenceModule) {
+            references = referenceModule;
     		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
             viewer = new JSC3D.Viewer(canvas);
@@ -21,7 +22,14 @@ var modelModel = (function() {
        },
        
        showModel: function(modelUrl) {
-           viewer.replaceSceneFromUrl(modelUrl);
+            // viewer.replaceSceneFromUrl(modelUrl);
+            var xform = {scale: [1,1,1], translate: [250,0,1]};
+            var loader = new JSC3D.StlLoader;
+            loader.onload = function(scene) {
+                scene.addChild(references.token(xform));
+                viewer.replaceScene(scene);
+            };
+            loader.loadFromUrl(modelUrl);
        }
        
     } 
