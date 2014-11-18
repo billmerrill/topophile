@@ -3,7 +3,9 @@ var modelController = (function() {
     
     var bamService = "http://127.0.0.1:8080/test",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
-        modelCanvas, nwlat, nwlon, selat, selon, zfactor, sizeTools,
+        comparisonButton,
+        modelCanvas, 
+        nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
     getParams = function() {
         var url = document.location;
@@ -48,7 +50,8 @@ var modelController = (function() {
     initComponents = function() {
         modelCanvas.init("model-canvas", referenceObjects);
         sizeTools.initDisplay('#xsize', '#ysize', '#zsize', '#small-size-preset',
-                    '#medium-size-preset', '#large-size-preset', '#custom-size-preset');
+                    '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
+                    '#toggle-size-comparison');
     },
     
     initUi = function() {
@@ -56,6 +59,10 @@ var modelController = (function() {
         physicalXDisplay = $('#xsize')
         physicalYDisplay = $('#ysize')
         physicalZDisplay = $('#zsize')
+        comparisonButton = $('#toggle-size-comparison');
+        comparisonButton.click(function(e) {
+            modelCanvas.toggleSizeReference();
+        })
     },
     
     fakeUpData = function() {

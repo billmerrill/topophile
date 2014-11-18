@@ -1,10 +1,19 @@
 var modelModel = (function() {
     "use strict";
 
-    var canvas,viewer, references;
+    var canvas,
+        viewer, 
+        references, 
+        showSizeReference = false, 
+        comparisonMesh,
+        
+        buildComparison = function(size) {
+            var xform = {scale: [1,1,1], translate: [250,24.26,1]};
+            comparisonMesh = references.token(xform);
+        }; 
      
     return {
-       init: function(displayCanvasId, referenceModule) {
+        init: function(displayCanvasId, referenceModule) {
             references = referenceModule;
     		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
@@ -19,24 +28,45 @@ var modelModel = (function() {
             // viewer.setParameter('InitRotationY' ,    '45');
             viewer.init();
             viewer.update();
-       },
+        },
+      
+        
        
-       showChit: function() {
+        toggleSizeReference: function() {
+            showSizeReference = !showSizeReference; 
+            if (comparisonMesh) {
+                // comparisonMesh.visible = showSizeReference;
+                var currScene = viewer.getScene();
+                if (showSizeReference) {
+                    currScene.addChild(comparisonMesh);
+                } else {
+                    currScene.removeChild(comparisonMesh);
+                }    
+                currScene.calcAABB();
+                // viewer.replaceScene(currScene);
+                // viewer.replaceScene(viewer.getScene().calcAABB());
+              viewer.update();
+            }
+        },
+       
+        showChit: function() {
             var scene = new JSC3D.Scene();
             scene.addChild(references.token());
             viewer.replaceScene(scene);
-       },
+        },
        
-       showModel: function(modelUrl, width) {
+        showModel: function(modelUrl, width) {
             // viewer.replaceSceneFromUrl(modelUrl);
-            var xform = {scale: [1,1,1], translate: [250,24.26,1]};
+            buildComparison();
             var loader = new JSC3D.StlLoader;
             loader.onload = function(scene) {
-                scene.addChild(references.token(xform));
-                viewer.replaceScene(scene);
+                if (showSizeReference) {
+                    scene.addChild(comparisonMesh);
+                }
+                    viewer.replaceScene(scene);
             };
             loader.loadFromUrl(modelUrl);
-       }
+        }
        
     } 
     

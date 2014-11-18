@@ -285,8 +285,7 @@ referenceObjects = (function() {
             vertices = vn;
         }
         
-        var mesh = new JSC3D.Mesh;
-        mesh.name = 'token';
+        var mesh = new JSC3D.Mesh('comparison');
         mesh.isDoubleSided = false;
 
         mesh.vertexBuffer = vertices;
@@ -344,9 +343,6 @@ referenceObjects = (function() {
         token: function(transform) {
             // return USQuarter(transform);
             return USOneDollar(transform);
-        },
-        quarter: function() {
-            
         }
     }
     

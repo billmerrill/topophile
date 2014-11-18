@@ -46,7 +46,7 @@ modelSizing = (function(){
         largeButton, customButton;
         return {
     
-            initDisplay: function(x, y, z, presetS, presetM, presetL, presetC){
+            initDisplay: function(x, y, z, presetS, presetM, presetL, presetC) {
                 xDisplay = $(x);
                 yDisplay = $(y);
                 zDisplay = $(z);
@@ -54,6 +54,7 @@ modelSizing = (function(){
                 mediumButton = $(presetM);
                 largeButton = $(presetL);
                 customButton = $(presetC);
+                
                 smallButton.toggleClass("active");
                 
                 var presetClick = function(size, e) {
