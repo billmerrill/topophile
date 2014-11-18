@@ -1,7 +1,107 @@
 referenceObjects = (function() {
     var
     
-    getUSQuarter = function(transform) {
+    USQuarter = function(transform) {
+        var vertices = [
+            -24.26, 0, 0         ,
+            -23.073, 7.497, 0    ,
+            -19.627, 14.26, 0    ,
+            -14.26, 19.627, 0    ,
+            -7.497, 23.073, 0    ,
+            0, 24.26, 0          ,
+            7.497, 23.073, 0     ,
+            14.26, 19.627, 0     ,
+            19.627, 14.26, 0     ,
+            23.073, 7.497, 0     ,
+            24.26, 0, 0          ,
+            
+            23.073, -7.497, 0    ,
+            19.627, -14.26, 0    ,
+            14.26, -19.627, 0    ,
+            7.497, -23.073, 0    ,
+            0, -24.26, 0         ,
+            -7.497, -23.073, 0   ,
+            -14.26, -19.627, 0   ,
+            -19.627, -14.26, 0   ,
+            -23.073, -7.497, 0   ,
+            
+            -24.26, 0, 1.75      ,
+            -23.073, 7.497, 1.75 ,
+            -19.627, 14.26, 1.75 ,
+            -14.26, 19.627, 1.75 ,
+            -7.497, 23.073, 1.75 ,
+            0, 24.26, 1.75       ,
+            7.497, 23.073, 1.75  ,
+            14.26, 19.627, 1.75  ,
+            19.627, 14.26, 1.75  ,
+            23.073, 7.497, 1.75  ,
+            24.26, 0, 1.75       ,
+            23.073, -7.497, 1.75 ,
+            19.627, -14.26, 1.75 ,
+            14.26, -19.627, 1.75 ,
+            7.497, -23.073, 1.75 ,
+            0, -24.26, 1.75      ,
+            -7.497, -23.073, 1.75,
+            -14.26, -19.627, 1.75,
+            -19.627, -14.26, 1.75,
+            -23.073, -7.497, 1.75];    
+            
+
+        var indicies = [
+            0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,0,-1,
+            39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,39,-1,
+            19,18,38,39,-1,
+            18,17,37,38,-1,
+            17,16,36,37,-1,
+            16,15,35,36,-1,
+            15,14,34,35,-1,
+            14,13,33,34,-1,
+            13,12,32,33,-1,
+            12,11,31,32,-1,
+            11,10,30,31,-1,
+            10,9,29,30,-1,
+            9,8,28,29,-1, 
+            8,7,27,28,-1,
+            7,6,26,27,-1,
+            6,5,25,26,-1,
+            5,4,24,25,-1,
+            4,3,23,24,-1,
+            3,2,22,23,-1,
+            2,1,21,22,-1,
+            1,0,20,21,-1,
+            0,19,39,20,-1 ]; 
+    
+        if (transform) {
+            var vn = [];
+            var i = j = 0;
+            while (i < vertices.length) {
+                var nx = vertices[i] * transform['scale'][0] + transform['translate'][0]
+                var ny = vertices[i+1] * transform['scale'][1] + transform['translate'][1]
+                var nz = vertices[i+2] * transform['scale'][2] + transform['translate'][2]
+                i += 3;
+                vn[j++] = nx;
+                vn[j++] = ny;
+                vn[j++] = nz;
+            }
+            vertices = vn;
+        }
+        
+        var mesh = new JSC3D.Mesh;
+        mesh.name = 'token';
+        mesh.isDoubleSided = false; 
+
+        mesh.vertexBuffer = vertices;
+        mesh.indexBuffer = indicies;
+        
+        // (name, ambientColor, diffuseColor, transparency, simulateSpecular)
+        mesh.setMaterial(new JSC3D.Material('coiny', 0, 0x00cc00));
+        
+        mesh.init();
+        return mesh;
+        
+    },
+    
+    AutoDisc = function(transform) {
         var vertices = [-24.26, 0, 0         ,
             -23.073, 7.497, 0    ,
             -19.627, 14.26, 0    ,
@@ -143,6 +243,10 @@ referenceObjects = (function() {
 
         mesh.vertexBuffer = vertices;
         mesh.indexBuffer = indicies;
+        
+        // (name, ambientColor, diffuseColor, transparency, simulateSpecular)
+        mesh.setMaterial(new JSC3D.Material('coiny', 0, 0xcccccc));
+        
         mesh.init();
         return mesh;
         
@@ -197,8 +301,8 @@ referenceObjects = (function() {
     return {
         token: function(transform) {
             // return getUSQuarterChip(transform);
-            return getUSQuarter(transform);
-            // return blork(transform);
+            // return getUSQuarter(transform);
+            return USQuarter(transform);
         },
         quarter: function() {
             
