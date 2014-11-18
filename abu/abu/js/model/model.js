@@ -21,9 +21,15 @@ var modelModel = (function() {
             viewer.update();
        },
        
-       showModel: function(modelUrl) {
+       showChit: function() {
+            var scene = new JSC3D.Scene();
+            scene.addChild(references.token());
+            viewer.replaceScene(scene);
+       },
+       
+       showModel: function(modelUrl, width) {
             // viewer.replaceSceneFromUrl(modelUrl);
-            var xform = {scale: [1,1,1], translate: [250,0,1]};
+            var xform = {scale: [1,1,1], translate: [250,24.26,1]};
             var loader = new JSC3D.StlLoader;
             loader.onload = function(scene) {
                 scene.addChild(references.token(xform));

@@ -32,7 +32,7 @@ var modelController = (function() {
                     'zfactor': zfactor}
         })
         .done(function(data, status, jqxhr) {
-            modelCanvas.showModel(data['url']);
+            modelCanvas.showModel(data['url'], data['width']);
             sizeTools.setSize(data['x-size'], data['y-size'], data['z-size']);
             sizeTools.initPresets();
         })
@@ -80,7 +80,9 @@ var modelController = (function() {
             initUi();
             
             fakeUpData();
+            // modelCanvas.showChit();
             initPage();
+            
         }
     }
     
