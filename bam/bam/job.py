@@ -1,4 +1,5 @@
-import gb_src as el_src
+# import gb_src as el_src
+import sample_src as el_src
 import cove
 import os
 
@@ -23,11 +24,11 @@ class BoundingBoxJob(object):
         self.zfactor = float(zfactor)
         
     def run(self):
-        elevation_filename = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)
-        if elevation_filename is None:
+        elevation_data = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)
+        if elevation_data is None:
             return None
             
-        model_filename = self.build_model(elevation_filename)
+        model_filename = self.build_model(elevation_data['filename'])
         return model_filename 
         
     def build_model(self, elevation_filename):

@@ -20,7 +20,11 @@ def get_elevation(nwlat, nwlon, selat, selon, retry = 0):
         retry = retry+1
         return get_elevation(nwlat, nwlon, selat, selon, retry=retry)        
         
-    return fn
+    return  {'filename': fn,
+             'nwlat': nwlat,
+             'nwlon': nwlon,
+             'selat': selat,
+             'selon': selon}
 
 def get_elevation_url(nwlat, nwlon, selat, selon):
     # http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem?service=wcs&version=1.0.0&request=getcoverage&coverage=SRTM_90m_Global&bbox=-90,38,-89,39&crs=epsg:4326&format=image/geotiff&store=true

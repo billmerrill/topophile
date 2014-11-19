@@ -1,3 +1,5 @@
+import os
+import random
 
 '''
 2166AC10-449E-48DF-99FE-751B7DA45F43.tif - Upper Left  (-121.8530000,  46.8999000) - Lower Right (-121.6838333,  46.8057333)
@@ -41,4 +43,11 @@ samples = [ {'filename': '2166AC10-449E-48DF-99FE-751B7DA45F43.tif',
              ]
 
 def get_elevation(nwlat, nwlon, selat, selon):
-    
+    random.shuffle(samples)
+    filename = os.path.join(os.getcwd(), 'sample-elevation', samples[0]['filename'])
+
+    return {'filename': filename ,
+            'nwlat': samples[0]['nwlat'],
+            'nwlon': samples[0]['nwlon'],
+            'selat': samples[0]['selat'],
+            'selon': samples[0]['selon']}
