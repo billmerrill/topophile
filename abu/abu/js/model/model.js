@@ -74,7 +74,13 @@ var modelModel = (function() {
                     viewer.replaceScene(scene);
             };
             loader.loadFromUrl(modelUrl);
+        },
+        
+        resetScene: function() {
+            viewer.resetScene();
+            viewer.update();
         }
+        
        
     } 
     

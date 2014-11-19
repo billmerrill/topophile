@@ -4,6 +4,7 @@ var modelController = (function() {
     var bamService = "http://127.0.0.1:8080/test",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
+        resetViewButton,
         modelCanvas, 
         nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
@@ -79,6 +80,10 @@ var modelController = (function() {
         comparisonButton = $('#toggle-size-comparison');
         comparisonButton.click(function(e) {
             modelCanvas.toggleSizeReference();
+        })
+        resetViewButton = ($('#reset-view'));
+        resetViewButton.click(function(e) {
+            modelCanvas.resetScene();
         })
     },
     
