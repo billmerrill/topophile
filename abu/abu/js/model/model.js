@@ -59,7 +59,9 @@ var modelModel = (function() {
             var currScene = viewer.getScene();
             currScene.removeChild(comparisonMesh);
             buildComparison([scale,scale,scale]);
-            currScene.addChild(comparisonMesh);
+            if (showSizeReference) {
+                currScene.addChild(comparisonMesh);
+            }
             viewer.update();
         },
        
