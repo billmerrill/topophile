@@ -21,7 +21,7 @@ var indexController = (function(){
                         'nwlon': nwlonDisplay.val(),
                         'selat': selatDisplay.val(),
                         'selon': selonDisplay.val(),
-                        'size': 200, 
+                        'size': 100, 
                         'rez': 75,
                         'zfactor': zFactorDisplay.val()}
             })
@@ -111,7 +111,7 @@ var indexController = (function(){
             ).prop('disabled', true);
             
             $("#build-model").prop('disabled', true).click(function() { 
-                var url = abuService + "model.html?nwlat=" + nwlatDisplay.val() 
+                var url = abuService + "model.html?nwlat=" + nwlatDisplay.val() +
                             "&nwlon=" + nwlonDisplay.val() +
                             "&selat=" + selatDisplay.val() + 
                             "&selon=" + selonDisplay.val() +

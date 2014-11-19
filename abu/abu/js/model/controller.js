@@ -100,7 +100,7 @@ var modelController = (function() {
     },
     
     initInput = function() {
-        params = getParams();
+        var params = getParams();
         nwlat = params['nwlat'];
         nwlon = params['nwlon'];
         selat = params['selat'];
