@@ -7,6 +7,23 @@ var modelController = (function() {
         modelCanvas, 
         nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
+    presetChangeHandler = function(data) {
+        switch (data['preset']) {
+            case 'small':
+                modelCanvas.scaleReferenceObject(1);
+                break;
+            case 'medium': 
+                modelCanvas.scaleReferenceObject(.5);
+                break;
+            case 'large': 
+                modelCanvas.scaleReferenceObject(1.0/3.0);
+                break;
+            case 'custom': 
+                modelCanvas.scaleReferenceObject(.2);
+                break;
+        }
+    },
+    
     getParams = function() {
         var url = document.location;
         var searchObject = {},
@@ -49,7 +66,7 @@ var modelController = (function() {
     
     initComponents = function() {
         modelCanvas.init("model-canvas", referenceObjects);
-        sizeTools.initDisplay('#xsize', '#ysize', '#zsize', '#small-size-preset',
+        sizeTools.init(presetChangeHandler, '#xsize', '#ysize', '#zsize', '#small-size-preset',
                     '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                     '#toggle-size-comparison');
     },
@@ -76,6 +93,7 @@ var modelController = (function() {
     initPage = function() {
         getModelUrl();
     };
+    
    
     return {
         init: function(modelModule, sizingModule, objectModule) {

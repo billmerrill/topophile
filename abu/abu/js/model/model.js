@@ -7,8 +7,11 @@ var modelModel = (function() {
         showSizeReference = false, 
         comparisonMesh,
         
-        buildComparison = function(size) {
-            var xform = {scale: [1,1,1], translate: [250,24.26,1]};
+        buildComparison = function(scale) {
+            if (!scale) {
+                scale = [1,1,1]
+            }
+            var xform = {scale: scale, translate: [250,24.26,1]};
             comparisonMesh = references.token(xform);
         }; 
      
@@ -35,7 +38,6 @@ var modelModel = (function() {
         toggleSizeReference: function() {
             showSizeReference = !showSizeReference; 
             if (comparisonMesh) {
-                // comparisonMesh.visible = showSizeReference;
                 var currScene = viewer.getScene();
                 if (showSizeReference) {
                     currScene.addChild(comparisonMesh);
@@ -43,9 +45,7 @@ var modelModel = (function() {
                     currScene.removeChild(comparisonMesh);
                 }    
                 currScene.calcAABB();
-                // viewer.replaceScene(currScene);
-                // viewer.replaceScene(viewer.getScene().calcAABB());
-              viewer.update();
+                viewer.update();
             }
         },
        
@@ -53,6 +53,14 @@ var modelModel = (function() {
             var scene = new JSC3D.Scene();
             scene.addChild(references.token());
             viewer.replaceScene(scene);
+        },
+        
+        scaleReferenceObject: function(scale) {
+            var currScene = viewer.getScene();
+            currScene.removeChild(comparisonMesh);
+            buildComparison([scale,scale,scale]);
+            currScene.addChild(comparisonMesh);
+            viewer.update();
         },
        
         showModel: function(modelUrl, width) {

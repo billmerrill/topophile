@@ -1,7 +1,7 @@
 modelSizing = (function(){
     "use strict";
     
-    var currentSizePreset = 'small',
+    var presetChangeCallback, currentSizePreset = 'small',
         dimensions = {'small': [],
                        'medium': [],
                        'large': [],
@@ -19,17 +19,13 @@ modelSizing = (function(){
         changePresetSize = function(newPreset) {
             currentSizePreset = newPreset;
             updateDisplay();
-            // switch(this.currentSizePreset) {
-            //     case 'small':
-            //         
-            //         break;
-            //     case 'medium':
-            //         break;
-            //     case 'large':
-            //         break;
-            //     case 'custom':
-            //         break;
-            // }
+            var cbData = {
+                'preset': newPreset,
+                'x': xSize(),
+                'y': ySize(),
+                'z': zSize()
+            }
+            presetChangeCallback(cbData);
         },
         
         
@@ -46,7 +42,10 @@ modelSizing = (function(){
         largeButton, customButton;
         return {
     
-            initDisplay: function(x, y, z, presetS, presetM, presetL, presetC) {
+            init: function(presetChangeCb, 
+                            x, y, z, 
+                            presetS, presetM, presetL, presetC) {
+                presetChangeCallback = presetChangeCb;
                 xDisplay = $(x);
                 yDisplay = $(y);
                 zDisplay = $(z);
