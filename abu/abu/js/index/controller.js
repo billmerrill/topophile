@@ -3,6 +3,7 @@ var indexController = (function(){
     
     var map, model, geocoder,
         bamService = "http://127.0.0.1:8080/",
+        abuService = "http://127.0.0.1:8888/"
         firstBounds = true,
         firstTopo = true,
         nwlatDisplay,
@@ -109,7 +110,14 @@ var indexController = (function(){
                 previewTopo();} 
             ).prop('disabled', true);
             
-            $("#build-model").prop('disabled', true);
+            $("#build-model").prop('disabled', true).click(function() 
+                var url = abuService + "model.html?nwlat=" + nwlatDisplay.val() 
+                            "&nwlon=" + nwlonDisplay.val() +
+                            "&selat=" + selatDisplay.val() + 
+                            "&selon=" + selonDisplay.val() +
+                            "&zfactor=" + zFactorDisplay();
+                window.location(url);
+            });
             
             $("#model-building").hide();
         };

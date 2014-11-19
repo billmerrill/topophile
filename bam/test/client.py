@@ -19,7 +19,8 @@ def run_model_get():
           'nwlat':'46.9290278',
           'nwlon':'-121.8229167',
           'selat':'46.7762500',
-          'selon':'-121.6701389'
+          'selon':'-121.6701389',
+          'zfactor':'2.2'
           }      
     r = requests.get(url, params=kv)      
     print r.headers

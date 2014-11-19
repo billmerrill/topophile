@@ -1,7 +1,7 @@
 var modelController = (function() {
     "use strict";
     
-    var bamService = "http://127.0.0.1:8080/test",
+    var bamService = "http://127.0.0.1:8080",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
         resetViewButton,
@@ -47,7 +47,7 @@ var modelController = (function() {
                     'nwlon': nwlon,
                     'selat': selat,
                     'selon': selon,
-                    'size': 200, 
+                    'size': 100, //always 100
                     'rez': 400,
                     'zfactor': zfactor}
         })
@@ -97,11 +97,21 @@ var modelController = (function() {
     
     initPage = function() {
         getModelUrl();
+    },
+    
+    initInput = function() {
+        params = getParams();
+        nwlat = params['nwlat'];
+        nwlon = params['nwlon'];
+        selat = params['selat'];
+        selon = params['selon'];
+        zfactor = params['zfactor'];
     };
     
    
     return {
         init: function(modelModule, sizingModule, objectModule) {
+            initInput();
             modelCanvas = modelModule;
             sizeTools = sizingModule;
             referenceObjects = objectModule;
@@ -109,7 +119,7 @@ var modelController = (function() {
             initComponents();
             initUi();
             
-            fakeUpData();
+            // fakeUpData();
             // modelCanvas.showChit();
             initPage();
             

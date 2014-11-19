@@ -43,6 +43,7 @@ def get_elevation_url(nwlat, nwlon, selat, selon):
     print '### URL ', gburl
         
     response = requests.get(gburl)
+    print response
     reg = re.compile("Reference xlink:href=\"(\S+)\"")
     imgs = reg.findall(response.text)
     
