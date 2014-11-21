@@ -10,16 +10,16 @@ E9CE50A9-C44B-4362-BB5E-F437CCBC16A2.tif - Upper Left  (-121.7500000,  46.985900
 F8C9F218-6125-4410-AA8E-C94745869BBC.tif - Upper Left  (-123.3050000,  47.8095000) - Lower Right (-123.1683333,  47.3795000)
 '''
 
-samples = [ {'filename': '2166AC10-449E-48DF-99FE-751B7DA45F43.tif',
-             'nwlat': 46.8999000,
-             'nwlon': -121.8530000,
-             'selat': 46.8057333,
-             'selon': -121.6838333},
-            {'filename': '55F49F2A-4AE8-4CE3-BF71-A4F541DA3074.tif',
-            'nwlat': 36.9762000,
-            'nwlon': -6.6137700,
-            'selat': 35.2362000,
-            'selon': -4.5812700},
+samples = [ #{'filename': '2166AC10-449E-48DF-99FE-751B7DA45F43.tif',
+            # 'nwlat': 46.8999000,
+             #'nwlon': -121.8530000,
+             #'selat': 46.8057333,
+             #'selon': -121.6838333},
+        #    {'filename': '55F49F2A-4AE8-4CE3-BF71-A4F541DA3074.tif',
+         #   'nwlat': 36.9762000,
+          #  'nwlon': -6.6137700,
+           # 'selat': 35.2362000,
+            #'selon': -4.5812700},
             {'filename': 'AE992AD5-ED2F-491D-A2C9-550B34118779.tif',
             'nwlat': 47.5543000,
             'nwlon': 8.1340000,
@@ -43,11 +43,11 @@ samples = [ {'filename': '2166AC10-449E-48DF-99FE-751B7DA45F43.tif',
              ]
 
 def get_elevation(nwlat, nwlon, selat, selon):
-    random.shuffle(samples)
-    filename = os.path.join(os.getcwd(), 'sample-elevation', samples[0]['filename'])
+    # random.shuffle(samples)
+    filename = os.path.join(os.getcwd(), 'sample-elevation', samples[1]['filename'])
 
     return {'filename': filename ,
-            'nwlat': samples[0]['nwlat'],
-            'nwlon': samples[0]['nwlon'],
-            'selat': samples[0]['selat'],
-            'selon': samples[0]['selon']}
+            'nwlat': samples[1]['nwlat'],
+            'nwlon': samples[1]['nwlon'],
+            'selat': samples[1]['selat'],
+            'selon': samples[1]['selon']}

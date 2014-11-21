@@ -12,7 +12,7 @@ var indexModel = (function() {
             viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
-            viewer.setParameter('RenderMode',       'flat');
+            viewer.setParameter('RenderMode',       'texture');
             viewer.setParameter('Renderer',         'webgl');
             viewer.init();
             viewer.update();

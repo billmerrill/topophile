@@ -5,14 +5,14 @@ var modelModel = (function() {
         viewer, 
         references, 
         showSizeReference = false, 
-        comparisonMesh,
+        comparisonMeshParts,
         
         buildComparison = function(scale) {
             if (!scale) {
                 scale = [1,1,1]
             }
             var xform = {scale: scale, translate: [250,24.26,1]};
-            comparisonMesh = references.token(xform);
+            comparisonMeshParts = references.token(xform);
         }; 
      
     return {
@@ -25,7 +25,7 @@ var modelModel = (function() {
             viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
-            viewer.setParameter('RenderMode',       'flat');
+            viewer.setParameter('RenderMode',       'texture');
             viewer.setParameter('Renderer',         'webgl');
             // viewer.setParameter('InitRotationX',     '-70');
             // viewer.setParameter('InitRotationY' ,    '45');
@@ -37,12 +37,17 @@ var modelModel = (function() {
        
         toggleSizeReference: function() {
             showSizeReference = !showSizeReference; 
-            if (comparisonMesh) {
+            if (comparisonMeshParts) {
+                var i;
                 var currScene = viewer.getScene();
                 if (showSizeReference) {
-                    currScene.addChild(comparisonMesh);
+                    for (i in comparisonMeshParts) {
+                        currScene.addChild(comparisonMeshParts[i]);
+                    }
                 } else {
-                    currScene.removeChild(comparisonMesh);
+                    for (i in comparisonMeshParts) {
+                        currScene.removeChild(comparisonMeshParts[i]);
+                    }
                 }    
                 currScene.calcAABB();
                 viewer.update();
@@ -56,11 +61,16 @@ var modelModel = (function() {
         },
         
         scaleReferenceObject: function(scale) {
+            var i;
             var currScene = viewer.getScene();
-            currScene.removeChild(comparisonMesh);
+            for (i in comparisonMeshParts) {
+                currScene.removeChild(comparisonMeshParts[i]);
+            }
             buildComparison([scale,scale,scale]);
             if (showSizeReference) {
-                currScene.addChild(comparisonMesh);
+                for (i in comparisonMeshParts) {
+                    currScene.addChild(comparisonMeshParts[i]);
+                }
             }
             viewer.update();
         },
@@ -71,7 +81,10 @@ var modelModel = (function() {
             var loader = new JSC3D.StlLoader;
             loader.onload = function(scene) {
                 if (showSizeReference) {
-                    scene.addChild(comparisonMesh);
+                    var i;
+                    for (i in comparisonMeshParts) {
+                        currScene.addChild(comparisonMeshParts[i]);
+                    }
                 }
                     viewer.replaceScene(scene);
             };

@@ -1,6 +1,21 @@
 referenceObjects = (function() {
     var
     
+    transformVertices = function(vin, transform) {
+        var vout = [];
+        var i = j = 0;
+        while (i < vin.length) {
+            var nx = vin[i] * transform['scale'][0] + transform['translate'][0]
+            var ny = vin[i+1] * transform['scale'][1] + transform['translate'][1]
+            var nz = vin[i+2] * transform['scale'][2] + transform['translate'][2]
+            i += 3;
+            vout[j++] = nx;
+            vout[j++] = ny;
+            vout[j++] = nz;
+        }
+        return vout
+    }
+    
     USQuarter = function(transform) {
         var vertices = [
             -24.26, 0, 0         ,
@@ -251,6 +266,79 @@ referenceObjects = (function() {
         return mesh;
         
     },
+    
+    NewUSOneDollar = function(transform) {
+        var frontTexUrl = "assets/textures/sm-dollar-front.jpg";
+        var backTexUrl = "assets/textures/sm-dollar-back.jpg";
+        
+        var front = new JSC3D.Mesh('front');
+        front.isDoubleSided = false;
+        front.vertexBuffer = [ 0.0, 0.0, .11,
+                                66.3, 0.0, .11,
+                                66.3, 156, .11,
+                                0.0, 156, .11];
+        front.indexBuffer = [0, 1, 2, 3, -1];
+        front.texCoordBuffer = [ 0, 0, 
+                                1, 0, 
+                                1, 1, 
+                                0, 1 ];
+        front.texCoordIndexBuffer = [0, 3,2,1,-1];
+        if (transform) {
+            front.vertexBuffer = transformVertices(front.vertexBuffer, transform);
+        }
+        front.init();
+        var frontTex = new JSC3D.Texture;
+        frontTex.onready = function() {
+            front.setTexture(frontTex);
+        };
+        frontTex.createFromUrl(frontTexUrl);
+        
+        
+        var back = new JSC3D.Mesh('back');
+        back.isDoubleSided = false;
+        back.vertexBuffer = [ 0.0, 0.0, .0,
+                                66.3, 0.0, .0,
+                                66.3, 156, .0,
+                                0.0, 156, .0];
+        back.indexBuffer = [0, 3, 2, 1, -1];
+        back.texCoordBuffer = [ 0, 0, 
+                                1, 0, 
+                                1, 1, 
+                                0, 1 ];
+        back.texCoordIndexBuffer = [1, 0, 3,2,-1];
+        if (transform) {
+            back.vertexBuffer = transformVertices(back.vertexBuffer, transform);
+        }
+        back.init();
+        var backTex = new JSC3D.Texture;
+        backTex.onready = function() {
+            back.setTexture(backTex);
+        };
+        backTex.createFromUrl(backTexUrl);
+            
+        var sides = new JSC3D.Mesh('sides');
+        sides.isDoubleSided = false;
+        sides.vertexBuffer = [
+            0.0, 0.0, 0.0,
+            0.0, 0.0, .11,
+            66.3, 0.0, 0.0,
+            66.3, 0.0, .11,
+            0.0, 156 , 0.0,
+            0.0, 156, .11,
+            66.3, 156, 0.0,
+            66.3, 156, .11 ];
+        
+        sides.indexBuffer = [ 0, 2, 3, 1, -1,
+                             2, 6, 7, 3, -1,
+                             6, 4, 5, 7, -1,
+                             4, 0, 1, 5, -1 ];
+        if (transform) {
+            sides.vertexBuffer = transformVertices(sides.vertexBuffer, transform);
+        }
+        sides.init();
+                         
+        return [front,back,sides]
+    }; 
 
     USOneDollar = function(transform) {
         var vertices = [
@@ -290,6 +378,13 @@ referenceObjects = (function() {
 
         mesh.vertexBuffer = vertices;
         mesh.indexBuffer = indicies;
+        
+        // var dollarBackTexture = new JSC3D.Texture;
+        // dollarBackTexture.onready = function() {
+        //     mesh.setTexture(dollarBackText);
+        // };
+        // dollarBackTexture.createFromUrl('assets/textures/sm-dollar-back.jpg');
+        // 
         mesh.init();
         return mesh;
     }; 
@@ -342,7 +437,8 @@ referenceObjects = (function() {
     return {
         token: function(transform) {
             // return USQuarter(transform);
-            return USOneDollar(transform);
+// return USOneDollar(transform);
+return NewUSOneDollar(transform);
         }
     }
     
