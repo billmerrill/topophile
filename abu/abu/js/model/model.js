@@ -6,12 +6,13 @@ var modelModel = (function() {
         references, 
         showSizeReference = false, 
         comparisonMeshParts,
+        modelWidth = 100,
         
         buildComparison = function(scale) {
             if (!scale) {
                 scale = [1,1,1]
             }
-            var xform = {scale: scale, translate: [250,24.26,1]};
+            var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
             comparisonMeshParts = references.token(xform);
         }; 
      
@@ -77,7 +78,8 @@ var modelModel = (function() {
        
         showModel: function(modelUrl, width) {
             // viewer.replaceSceneFromUrl(modelUrl);
-            buildComparison();
+            modelWidth = width
+            buildComparison([1,1,1]);
             var loader = new JSC3D.StlLoader;
             loader.onload = function(scene) {
                 if (showSizeReference) {

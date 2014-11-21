@@ -52,7 +52,7 @@ var modelController = (function() {
                     'zfactor': zfactor}
         })
         .done(function(data, status, jqxhr) {
-            modelCanvas.showModel(data['url'], data['width']);
+            modelCanvas.showModel(data['url'], data['x-size']);
             sizeTools.setSize(data['x-size'], data['y-size'], data['z-size']);
             sizeTools.initPresets();
         })
@@ -80,6 +80,7 @@ var modelController = (function() {
         comparisonButton = $('#toggle-size-comparison');
         comparisonButton.click(function(e) {
             modelCanvas.toggleSizeReference();
+            modelCanvas.resetScene();
         })
         resetViewButton = ($('#reset-view'));
         resetViewButton.click(function(e) {

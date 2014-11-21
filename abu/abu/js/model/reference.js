@@ -286,7 +286,6 @@ referenceObjects = (function() {
         back.texCoordIndexBuffer = [1, 0, 3,2,-1];
         if (transform) {
             back.vertexBuffer = transformVertices(back.vertexBuffer, transform);
-    d
         }
         back.init();
         var backTex = new JSC3D.Texture;
