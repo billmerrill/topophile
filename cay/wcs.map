@@ -9,7 +9,6 @@ MAP
   EXTENT -180.000138 -56.0001389 179.9998611 83.9998611 
   UNITS METERS
   SHAPEPATH "data"
-  IMAGECOLOR 255 255 255
 
 
   #
@@ -43,18 +42,33 @@ MAP
       "wcs_enable_request"           "*"
     END
   END
+  
+  OUTPUTFORMAT
+    NAME GEOTIFF_16
+    DRIVER "GDAL/GTiff"
+    MIMETYPE "image/tiff"
+    IMAGEMODE INT16
+    EXTENSION "tif"   
+  END
 
   LAYER
+    DEBUG 5 
+  
     NAME "gmted"
     TYPE raster
     STATUS ON
     DUMP TRUE
     #TILEINDEX "wcs_index.shp"
     #TILEITEM "location"
+    #TILEINDEX "/Library/WebServer/Documents/cay/data/md75_grd"
+    #TILEITEM
     DATA "/Library/WebServer/Documents/cay/data/md75_grd"
   
+    #PROJECTION
+    #  "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs"
+    #END
     PROJECTION
-      "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs"
+      "init=epsg:4236"
     END
   
     METADATA
@@ -62,7 +76,8 @@ MAP
       "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
       "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
       "wcs_extent"          "-180.000138, 83.9998611, 179.9998611, -56.0001389"
-      "ows_srs"             "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs" 
+      "ows_srs"             "init=epsg:4236"
+      #"ows_srs"             "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs" 
     END
   END
 END # Map File
