@@ -19,6 +19,7 @@ gdalsrsinfo to get proj
 
 
 http://climb.local/cgi-bin/mapserv?map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&coverage=gmted&CRS=epsg:4236&BBOX=-121.9870000,46.6867333,-121.5270000,47.0084000&RESX=0.002083&RESY=0.002083&FORMAT=image/tiff
+http://climb.local/cgi-bin/mapserv?map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&coverage=gmted&CRS=epsg:4236&BBOX=-121.9870000,46.6867333,-121.5270000,47.0084000&RESX=0.002083&RESY=0.002083&FORMAT=image/tiff
 
 http://climb.local/cgi-bin/mapserv?map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.1.0&REQUEST=GetCoverage&IDENTIFIER=gmted&BOUNDINGBOX=-121.9870000,46.6867333,-121.5270000,47.0084000,urn:ogc:def:crs:EPSG::4326&FORMAT=image/tiff
 
