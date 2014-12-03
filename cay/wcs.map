@@ -3,12 +3,8 @@ MAP
   CONFIG "MS_ERRORFILE" "/tmp/ms_error.txt"
 
   STATUS ON
-  #SIZE 400 300
-  #extent form: minx, miny, maxx, maxy
-  #EXTENT -180.000138 83.9998611 179.9998611 -56.0001389
   EXTENT -180.000138 -56.0001389 179.9998611 83.9998611 
   UNITS METERS
-  SHAPEPATH "data"
 
 
   #
@@ -21,24 +17,6 @@ MAP
       "wcs_label"           "Topophile WCS" ### required
       "wcs_description"     "Makin Models"
       "wcs_onlineresource"  "http://127.0.0.1/cgi-bin/mapserv.exe?" ### recommended
-      "wcs_fees"            "none"
-      "wcs_accessconstraints"    "none"
-      "wcs_keywordlist"          "wcs,test"
-      "wcs_metadatalink_type"    "TC211"
-      "wcs_metadatalink_format"  "text/plain"
-      "wcs_metadatalink_href"    "http://someurl.com"
-      "wcs_address"              "124 Gilmour Street"
-      "wcs_city"                 "Ottawa"
-      "wcs_stateorprovince"      "ON"
-      "wcs_postcode"             "90210"
-      "wcs_country"              "Canada"
-      "wcs_contactelectronicmailaddress" "blah@blah"
-      "wcs_contactperson"            "me"
-      "wcs_contactorganization"      "unemployed"
-      "wcs_contactposition"          "manager"
-      "wcs_contactvoicetelephone"    "613-555-1234"
-      "wcs_contactfacimiletelephone" "613-555-1235"
-      "wcs_service_onlineresource"   "http://127.0.0.1/cgi-bin/mapserv.exe?"
       "wcs_enable_request"           "*"
     END
   END
@@ -57,16 +35,8 @@ MAP
     NAME "gmted"
     TYPE raster
     STATUS ON
-    DUMP TRUE
-    #TILEINDEX "wcs_index.shp"
-    #TILEITEM "location"
-    #TILEINDEX "/Library/WebServer/Documents/cay/data/md75_grd"
-    #TILEITEM
     DATA "/Library/WebServer/Documents/cay/data/md75_grd"
   
-    #PROJECTION
-    #  "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs"
-    #END
     PROJECTION
       "init=epsg:4236"
     END
@@ -75,9 +45,8 @@ MAP
       "wcs_label"           "Elevation"  ### required
       "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
       "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
-      "wcs_extent"          "-180.000138, 83.9998611, 179.9998611, -56.0001389"
-      "ows_srs"             "init=epsg:4236"
-      #"ows_srs"             "+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs" 
+      #"wcs_extent"          "-180.000138, 83.9998611, 179.9998611, -56.0001389"
+      #"ows_srs"             "init=epsg:4236"
     END
   END
 END # Map File
