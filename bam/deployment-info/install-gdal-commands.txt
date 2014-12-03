@@ -1,0 +1,13 @@
+source venv/bin/activate
+pip install --no-install GDAL
+cd venv/build/GDAL
+
+python setup.py build_ext \
+  --gdal-config=/usr/local/bin/gdal-config \
+  --library-dirs=/usr/local/Cellar/gdal/1.11.1_3/lib \
+  --include-dirs=/usr/local/Cellar/gdal/1.11.1_3/include
+
+pip install --no-download GDAL
+
+>>> from osgeo import gdal
+>>> gdal.__version__
