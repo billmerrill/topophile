@@ -13,7 +13,8 @@ def get_elevation_url_parts(nwlat, nwlon, selat, selon):
     
     server_base = "http://127.0.0.1/cgi-bin/mapserv?"
     bbox = "%s,%s,%s,%s"% (nwlon, selat, selon, nwlat) #-90,38,-89,39
-    params = {
+    
+    gmted_params = {
         'map':      '/Library/WebServer/Documents/cay/wcs.map',
         'SERVICE':  'WCS',
         'VERSION':  '1.0.0',
@@ -25,8 +26,20 @@ def get_elevation_url_parts(nwlat, nwlon, selat, selon):
         'RESY':     '0.002083',
         'FORMAT':   'image/tiff'
     }
+    srtm_params = {
+        'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
+        'SERVICE':  'WCS',
+        'VERSION':  '1.0.0',
+        'REQUEST':  'GetCoverage',
+        'coverage': 'srtmgl1',
+        'CRS':      'epsg:4236',
+        'BBOX':     bbox,
+        'RESX':     '0.000277777777778',
+        'RESY':     '0.000277777777778',
+        'FORMAT':   'image/tiff'
+    }
     
-    return server_base, params
+    return server_base, srtm_params
         
         
 def get_elevation(nwlat, nwlon, selat, selon, retry = 0):
