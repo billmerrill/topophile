@@ -18,7 +18,7 @@ def get_elevation_url_parts(nwlat, nwlon, selat, selon):
         'SERVICE':  'WCS',
         'VERSION':  '1.0.0',
         'REQUEST':  'GetCoverage',
-        'coverage': 'gmted',
+        'coverage': 'gmted_ds',
         'CRS':      'epsg:4236',
         'BBOX':     bbox,
         'RESX':     '0.002083',

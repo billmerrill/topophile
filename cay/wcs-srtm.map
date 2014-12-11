@@ -41,7 +41,7 @@ MAP
   END
   
   PROJECTION
-    "init=epsg:3857"
+    "init=epsg:4236"
   END
   
   OUTPUTFORMAT
@@ -55,10 +55,12 @@ MAP
   LAYER
     DEBUG 5 
   
-    NAME "gmted_md"
+    NAME "srtmgl1"
     TYPE raster
     STATUS ON
-    DATA "/Library/WebServer/Documents/cay/data/gmted2010_md75_grd/md75_grd"
+    TILEINDEX "data/srtm/srtmgl1.shp"
+    TILEITEM "LOCATION"
+    #DATA "/Library/WebServer/Documents/cay/data/srtm/srtmgl1"
   
     PROJECTION
       "init=epsg:4236"
@@ -68,29 +70,10 @@ MAP
       "wcs_label"           "Elevation"  ### required
       "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
       "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
-      #"wcs_extent"          "-180.000138, 83.9998611, 179.9998611, -56.0001389"
-      #"ows_srs"             "init=epsg:4236"
-    END
-  END
-  
-  LAYER
-    DEBUG 5 
-  
-    NAME "gmted_ds"
-    TYPE raster
-    STATUS ON
-    DATA "/Library/WebServer/Documents/cay/data/gmted2010_ds75_grd/ds75_grd"
-  
-    PROJECTION
-      "init=epsg:4236"
-    END
-  
-    METADATA
-      "wcs_label"           "Elevation"  ### required
-      "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
-      "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
-      #"wcs_extent"          "-180.000138, 83.9998611, 179.9998611, -56.0001389"
-      #"ows_srs"             "init=epsg:4236"
+      "wcs_extent"          "-180, -56, 180, 60"
+      "ows_srs"             "init=epsg:4236"
+      "wcs_resolution"      "0.000277777777778 -0.000277777777778"
+
     END
   END
   

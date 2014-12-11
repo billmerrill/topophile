@@ -96,9 +96,11 @@ class Elevation(object):
                 
     def get_meters_matrix(self):
         scaled_dataset = self.reproject_and_resample()
+        # scaled_dataset = self.dataset
         arr = scaled_dataset.ReadAsArray()
         geo_xform = scaled_dataset.GetGeoTransform()
         scaled_pixel_meters = (geo_xform[1], geo_xform[5])
+        print "Scaled pixel meters ", geo_xform
         
         elevation_matrix = []
         for i in range(0, scaled_dataset.RasterYSize):
