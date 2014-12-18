@@ -28,7 +28,8 @@ class SolidElevationModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        elevation_data = elevation.get_meters_matrix()
+        # elevation_data = elevation.get_meters_matrix()
+        elevation_data = elevation.get_meters_ndarray()
         
         top = Mesh()
         top.load_matrix(elevation_data) 

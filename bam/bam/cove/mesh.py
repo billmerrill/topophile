@@ -1,4 +1,5 @@
 from indicies import * 
+import numpy as np
 import copy
 
 class CanvasShape(object):
@@ -136,14 +137,11 @@ class Mesh(GridShape):
     def get(self, x, y):
         return self.mesh[y][x]
         
-    def transform(self, scalar, translate):
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                self.mesh[sy][sx] = [self.mesh[sy][sx][PX] * scalar[PX] + translate[PX],
-                                     self.mesh[sy][sx][PY] * scalar[PY] + translate[PY],
-                                     self.mesh[sy][sx][PZ] * scalar[PZ] + translate[PZ]]
 
-        return self
+    def transform(self, scalar, translate):
+        self.mesh = np.multiply(scalar, self.mesh)
+        self.mesh = np.add(translate, self.mesh)
+        return self 
     
     def load_matrix(self, src):
         '''
