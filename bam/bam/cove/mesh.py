@@ -116,22 +116,10 @@ class Mesh(GridShape):
         return self.mesh[self.y_max()][self.x_max()]
         
     def get_low_z(self):
-        low_z = 999999
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                if self.mesh[sy][sx][PZ] < low_z:
-                    low_z = self.mesh[sy][sx][PZ]
-                    
-        return low_z
+        return self.mesh[:,:,PZ].min()
 
     def get_high_z(self):
-        high_z = 0 
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                if self.mesh[sy][sx][PZ] > high_z:
-                    high_z = self.mesh[sy][sx][PZ]
-                    
-        return high_z
+        return self.mesh[:,:,PZ].max()
 
     
     def get(self, x, y):
