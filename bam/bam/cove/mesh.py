@@ -32,7 +32,6 @@ class MeshSandwich(GridShape):
         self.ysize = top.ysize
         self.top = top
         self.bottom = bottom
-    
         
     def triangulate(self):
         triangles = self.top.triangulate()

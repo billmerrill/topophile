@@ -12,17 +12,10 @@ class Model(object):
 
 class SolidElevationModel(Model):
    
-    def _raise_the_roof(self, top):
-        low_z = top.get_low_z()
-        min_thick = self.builder.get_min_thickness()
-        if low_z < min_thick[PZ]:
-            roof_xform_vector = (0, 0, min_thick[PZ] - low_z)
-            print ("Raising the roof %s" % roof_xform_vector[PZ])
-            top.transform((1,1,1), roof_xform_vector)
-            
     def _compute_model_z_size(self, sandwich):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
+    
             
     def build_stl(self):
         elevation = Elevation(self.builder)
@@ -35,8 +28,10 @@ class SolidElevationModel(Model):
         top.finalize_form(self.builder.get_physical_max(), 
                             self.builder.get_min_thickness()[PZ],
                             self.builder.get_z_factor())
-       
-        print("Top plate physical size: %s x %s " % (top.get_data_x_size(), top.get_data_y_size()))
+      
+        max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
+        print("Top plate physical size: %s x %s x %s" % max_cube)
+        print("Max cube area = %s" % (2*max_cube[0]*max_cube[1] + 2*max_cube[0]*max_cube[2] + 2*max_cube[1]*max_cube[2]))
 
         bottom = MeshBasePlate(top, 0)
         
@@ -44,6 +39,11 @@ class SolidElevationModel(Model):
         
         canvas = STLCanvas()
         canvas.add_shape(sandwich)
+        
+        
+        print "Starting Area"
+        print "Area =  %s mm^2" % canvas.compute_area()
+        
         canvas.write_stl(self.builder.get_output_file_name())
         
         desc = {'filename': self.builder.get_output_file_name(),
