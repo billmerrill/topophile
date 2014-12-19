@@ -116,10 +116,10 @@ class Mesh(GridShape):
         return self.mesh[self.y_max()][self.x_max()]
         
     def get_low_z(self):
-        return self.mesh[:,:,PZ].min()
+        return np.min(self.mesh[:,:,PZ])
 
     def get_high_z(self):
-        return self.mesh[:,:,PZ].max()
+        return np.max(self.mesh[:,:,PZ])
 
     
     def get(self, x, y):
@@ -143,9 +143,19 @@ class Mesh(GridShape):
         input_max_data_size = max(self.get_data_x_size(), self.get_data_y_size())
         output_ratio = max_output_size / input_max_data_size
         self.transform([output_ratio, output_ratio, output_ratio], [0,0,0])
+     
+    def finalize_form(self, max_output_size, min_elevation, z_factor):
+        largest_data_dim = max(self.get_data_x_size(), self.get_data_y_size())     
+        ratio = max_output_size / largest_data_dim
+        # self.transform([output_ratio, output_ratio, output_ratio])
+        self.mesh = np.multiply([ratio, ratio, ratio * z_factor], self.mesh)
         
-                
-
+        translate_v  = [0,0,0]
+        low_z = self.get_low_z()
+        if low_z < min_elevation:
+            self.mesh = self.mesh + [0,0, min_elevation - low_z]
+    
+        
 class HorizontalPointPlane(GridShape):
     
     def __init__(self, src_mesh, elevation):

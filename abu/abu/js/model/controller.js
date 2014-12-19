@@ -48,7 +48,7 @@ var modelController = (function() {
                     'selat': selat,
                     'selon': selon,
                     'size': 100, //always 100
-                    'rez': 400,
+                    'rez': 400, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor}
         })
         .done(function(data, status, jqxhr) {

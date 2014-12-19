@@ -28,20 +28,16 @@ class SolidElevationModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        # elevation_data = elevation.get_meters_matrix()
         elevation_data = elevation.get_meters_ndarray()
         
         top = Mesh()
         top.load_matrix(elevation_data) 
-        top.transform((1,1,self.builder.get_z_factor()), (0,0,0))
-        top.scale_to_output_size(self.builder.get_physical_max())
+        top.finalize_form(self.builder.get_physical_max(), 
+                            self.builder.get_min_thickness()[PZ],
+                            self.builder.get_z_factor())
        
-        # make sure the top layer of the model is taller than the min thickness
-        self._raise_the_roof(top)
-        
         print("Top plate physical size: %s x %s " % (top.get_data_x_size(), top.get_data_y_size()))
 
-        print ("starting bottom")
         bottom = MeshBasePlate(top, 0)
         
         sandwich = MeshSandwich(top, bottom)

@@ -4,7 +4,7 @@ from model import SolidElevationModel
 model_config = { 'src': 'c236gcce2jb0-c236r2812p84.tif',
                  'output_resolution': 50,
                  'output_physical_max': 100,
-                 'z_factor': 1.5
+                 'z_factor': 1.8
                  }
 
 def main():
