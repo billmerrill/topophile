@@ -64,6 +64,21 @@ class MeshSandwich(GridShape):
                              self.bottom.get(sx+1, self.bottom.y_max())]))
                              
         return triangles
+        
+    def compute_volume(self):
+        vol = 0.0
+        for sy in range(0, self.top.y_max()):
+            for sx in range(0, self.top.x_max()):
+                vol += compute_elevation_facet_volume([self.top.get(sx,sy),
+                                     self.top.get(sx, sy+1),
+                                     self.top.get(sx+1, sy+1)],
+                                     self.bottom.elevation)
+                vol += compute_elevation_facet_volume([self.top.get(sx,sy),
+                                  self.top.get(sx+1, sy),
+                                  self.top.get(sx+1, sy+1)],
+                                  self.bottom.elevation)
+        
+        return vol
        
 def compute_polyhedron_volume(t):
     a,b,c,d = t
@@ -73,7 +88,7 @@ def compute_polyhedron_volume(t):
                 np.subtract(b,d), 
                 np.subtract(c,d))))
         
-def compute_elevation_facet_volume(ele):
+def compute_elevation_facet_volume(ele, floor):
     '''
     compute the volume under the elevation triangle facet, down to zero.
     assumes elevation is positive.
@@ -105,14 +120,14 @@ def compute_elevation_facet_volume(ele):
     axis = (minarg, (minarg+1)%3, (minarg+2)%3)
 
     base = E.copy()
-    base[:,PZ] = 0
+    base[:,PZ] = floor 
     # print 'B', base
     
     base_area = .5 * norm(np.cross(
         np.subtract(base[TB], base[TA]), 
         np.subtract(base[TB], base[TC])))
     # print 'Base Area', base_area, base[axis[0]][PZ]
-    prism_volume = (1.0/3.0 * E[axis[0]][PZ])
+    prism_volume = (1.0/3.0) * (E[axis[0]][PZ] - floor)
  
     # pyramid triangle is the top of the prism, a side of the pyramid with E,
     # joined with E triangle at its lowest point, E[axis[0]]
@@ -148,21 +163,7 @@ class Mesh(GridShape):
                                  
         return triangles
     
-    def compute_volume(self):
-        vol = 0.0
-        for sy in range(0, self.y_max()):
-            for sx in range(0, self.x_max()):
-                vol += compute_elevation_facet_volume([self.get(sx,sy),
-                                     self.get(sx, sy+1),
-                                     self.get(sx+1, sy+1)])
-                vol += compute_elevation_facet_volume([self.get(sx,sy),
-                                  self.get(sx+1, sy),
-                                  self.get(sx+1, sy+1)])
-        
-        return vol
-                                     
-                                     
-        
+
     def add_row(self, row):
         self.mesh.append(row)
         

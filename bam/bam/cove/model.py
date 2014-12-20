@@ -47,7 +47,7 @@ class SolidElevationModel(Model):
         print "Area =  %s mm^2" % canvas.compute_area()
         
         print "Starting Volume"
-        print "Volume = %s mm^3" % top.compute_volume()
+        print "Volume = %s mm^3" % sandwich.compute_volume()
         
         canvas.write_stl(self.builder.get_output_file_name())
         
