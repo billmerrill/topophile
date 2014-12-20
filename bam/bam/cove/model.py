@@ -32,6 +32,8 @@ class SolidElevationModel(Model):
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
         print("Top plate physical size: %s x %s x %s" % max_cube)
         print("Max cube area = %s" % (2*max_cube[0]*max_cube[1] + 2*max_cube[0]*max_cube[2] + 2*max_cube[1]*max_cube[2]))
+        print("Max cube volume = %s" % (max_cube[0] * max_cube[1] * max_cube[2]))
+        print("Pyramid Max cube volume = %s" % ((1.0/3.0) * max_cube[0] * max_cube[1] * max_cube[2]))
 
         bottom = MeshBasePlate(top, 0)
         
@@ -43,6 +45,9 @@ class SolidElevationModel(Model):
         
         print "Starting Area"
         print "Area =  %s mm^2" % canvas.compute_area()
+        
+        print "Starting Volume"
+        print "Volume = %s mm^3" % top.compute_volume()
         
         canvas.write_stl(self.builder.get_output_file_name())
         

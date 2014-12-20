@@ -1,5 +1,6 @@
 from indicies import * 
 import numpy as np
+from numpy.linalg import norm
 import copy
 
 class CanvasShape(object):
@@ -63,7 +64,61 @@ class MeshSandwich(GridShape):
                              self.bottom.get(sx+1, self.bottom.y_max())]))
                              
         return triangles
+       
+def compute_polyhedron_volume(t):
+    a,b,c,d = t
+    return (1.0/6.0) * norm( np.dot(np.subtract(a,d), np.cross(np.subtract(b,d), np.subtract(c,d))))
         
+def compute_elevation_facet_volume(ele):
+    '''
+    compute the volume under the elevation triangle facet, down to zero.
+    assumes elevation is positive.
+    
+    The elevation triangle is described by the points Ea, Eb, Ec.
+    
+    break volume inot two parts.
+    1.
+    A base triange at Z=0, described by points Ba, Bb, Bc.
+    A triangular prism has triange B as a based, and rises to meet
+    the lowest z value in the E.
+    
+    A divider triangle is created, Ea, Pb, Pc, this is the top of the 
+    prism
+    
+    2.  The pyramid between EaPbPc and EaEbEc is divided into 2 
+        tetrahdron, and the volume is computed.
+    
+    '''
+    
+    # find the lowest point in the elevation triangle
+    # axis[0] is the lowest
+    E = np.array(ele)
+    # print 'E', E
+    minarg = np.argmin(E[:,PZ])
+    axis = (minarg, (minarg+1)%3, (minarg+2)%3)
+
+    base = E.copy()
+    base[:,PZ] = 0
+    # print 'B', base
+    
+    base_area = .5 * norm(np.cross(np.subtract(base[TB], base[TA]), np.subtract(base[TB], base[TC])))
+    # print 'Base Area', base_area, base[axis[0]][PZ]
+    prism_volume = (1.0/3.0 * E[axis[0]][PZ])
+ 
+    # pyramid triangle is the top of the prism, a side of the pyramid with E,
+    # joined with E triangle at its lowest point, E[axis[0]]
+    pyramid = E.copy()
+    pyramid[axis[1]][PZ] = pyramid[axis[0]][PZ]
+    pyramid[axis[2]][PZ] = pyramid[axis[0]][PZ]
+    
+    t1 = [E[axis[0]], E[axis[1]], E[axis[2]], pyramid[axis[1]]]
+    t2 = [E[axis[0]], E[axis[2]], pyramid[axis[1]], pyramid[axis[2]]]
+    
+    t1_vol = compute_polyhedron_volume(t1)
+    t2_vol = compute_polyhedron_volume(t2)
+   
+    # print "%s, %s, %s" % (prism_volume, t1_vol, t2_vol)
+    return prism_volume + t1_vol + t2_vol
 
 class Mesh(GridShape):
     
@@ -83,6 +138,21 @@ class Mesh(GridShape):
                                      invert_normal))        
                                  
         return triangles
+    
+    def compute_volume(self):
+        vol = 0.0
+        for sy in range(0, self.y_max()):
+            for sx in range(0, self.x_max()):
+                vol += compute_elevation_facet_volume([self.get(sx,sy),
+                                     self.get(sx, sy+1),
+                                     self.get(sx+1, sy+1)])
+                vol += compute_elevation_facet_volume([self.get(sx,sy),
+                                  self.get(sx+1, sy),
+                                  self.get(sx+1, sy+1)])
+        
+        return vol
+                                     
+                                     
         
     def add_row(self, row):
         self.mesh.append(row)
