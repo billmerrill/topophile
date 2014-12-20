@@ -67,7 +67,11 @@ class MeshSandwich(GridShape):
        
 def compute_polyhedron_volume(t):
     a,b,c,d = t
-    return (1.0/6.0) * norm( np.dot(np.subtract(a,d), np.cross(np.subtract(b,d), np.subtract(c,d))))
+    return (1.0/6.0) * norm( 
+        np.dot(np.subtract(a,d), 
+            np.cross(
+                np.subtract(b,d), 
+                np.subtract(c,d))))
         
 def compute_elevation_facet_volume(ele):
     '''
@@ -76,7 +80,7 @@ def compute_elevation_facet_volume(ele):
     
     The elevation triangle is described by the points Ea, Eb, Ec.
     
-    break volume inot two parts.
+    break volume into two parts.
     1.
     A base triange at Z=0, described by points Ba, Bb, Bc.
     A triangular prism has triange B as a based, and rises to meet
@@ -85,8 +89,11 @@ def compute_elevation_facet_volume(ele):
     A divider triangle is created, Ea, Pb, Pc, this is the top of the 
     prism
     
-    2.  The pyramid between EaPbPc and EaEbEc is divided into 2 
-        tetrahdron, and the volume is computed.
+    2.  
+    The remainder of the volume is a pyramid defined by 
+    EaEbEc and EaPbPc
+    
+    Divide that 5-sided poly into 2 tetrahedrons, compute their volume.
     
     '''
     
@@ -101,7 +108,9 @@ def compute_elevation_facet_volume(ele):
     base[:,PZ] = 0
     # print 'B', base
     
-    base_area = .5 * norm(np.cross(np.subtract(base[TB], base[TA]), np.subtract(base[TB], base[TC])))
+    base_area = .5 * norm(np.cross(
+        np.subtract(base[TB], base[TA]), 
+        np.subtract(base[TB], base[TC])))
     # print 'Base Area', base_area, base[axis[0]][PZ]
     prism_volume = (1.0/3.0 * E[axis[0]][PZ])
  
