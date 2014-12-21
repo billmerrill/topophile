@@ -1,4 +1,5 @@
 from model import SolidElevationModel
+from pprint import pprint
 
 
 model_config = { 'src': 'c236gcce2jb0-c236r2812p84.tif',
@@ -9,6 +10,6 @@ model_config = { 'src': 'c236gcce2jb0-c236r2812p84.tif',
 
 def main():
     model = SolidElevationModel(model_config)
-    model.build_stl()
+    pprint(model.build_stl())
     
 main()      
