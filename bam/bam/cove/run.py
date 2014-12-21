@@ -10,6 +10,8 @@ model_config = { 'src': 'c236gcce2jb0-c236r2812p84.tif',
 
 def main():
     model = SolidElevationModel(model_config)
-    pprint(model.build_stl())
+    model_data = model.build_stl()
+    pprint(model_data)
+    
     
 main()      

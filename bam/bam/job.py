@@ -40,7 +40,9 @@ class BoundingBoxJob(object):
                          'output_physical_max': self.size,
                          'z_factor': self.zfactor}
         model = cove.model.SolidElevationModel(model_config)
-        return model.build_stl()
+        model_data = model.build_stl()
+        return model_data
+        
             
 class GeoTiffJob(object):
     

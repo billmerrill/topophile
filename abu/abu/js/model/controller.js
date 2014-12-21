@@ -2,6 +2,7 @@ var modelController = (function() {
     "use strict";
     
     var bamService = "http://127.0.0.1:8080",
+        swPriceSerivce = "http://127.0.0.1:8080/price",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
         resetViewButton,
@@ -49,11 +50,13 @@ var modelController = (function() {
                     'selon': selon,
                     'size': 100, //always 100
                     'rez': 400, //400 dots per 100 mm ~= 100dpi
-                    'zfactor': zfactor}
+                    'zfactor': zfactor,
+                    'price': 'e'}
         })
         .done(function(data, status, jqxhr) {
-            modelCanvas.showModel(data['url'], data['x-size']);
-            sizeTools.setSize(data['x-size'], data['y-size'], data['z-size']);
+            window.console.log(data)
+            modelCanvas.showModel(data['url'], data['x-size-mm']);
+            sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
         })
         .fail(function(data, stats, error) {
