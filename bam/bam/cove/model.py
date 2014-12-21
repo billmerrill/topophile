@@ -43,11 +43,10 @@ class SolidElevationModel(Model):
         canvas.add_shape(sandwich)
         
         
-        print "Starting Area"
         print "Area =  %s mm^2" % canvas.compute_area()
         
-        print "Starting Volume"
         print "Volume = %s mm^3" % sandwich.compute_volume()
+        print "Avg Volume = %s" % sandwich.compute_approx_volume()
         
         canvas.write_stl(self.builder.get_output_file_name())
         

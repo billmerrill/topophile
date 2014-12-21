@@ -79,6 +79,52 @@ class MeshSandwich(GridShape):
                                   self.bottom.elevation)
         
         return vol
+        
+    def compute_approx_volume(self):
+        vol = {'min': 0.0,
+                'avg': 0.0,
+                'max': 0.0}
+        # vol = 0.0
+        corner0 = self.top.get(0,0)
+        corner1 = self.top.get(self.top.x_max(), self.top.y_max())
+        print (corner1[PX] - corner0[PY]), (corner1[PY] - corner0[PY])
+        
+        for sy in range(0, self.top.y_max()):
+            for sx in range(0, self.top.x_max()):
+                q = [self.top.get(sx, sy),
+                     self.top.get(sx+1, sy),
+                     self.top.get(sx, sy+1),
+                     self.top.get(sx+1, sy+1)]
+                vol['avg'] += compute_approx_square_vol(q)
+                vol['min'] += compute_approx_square_min_vol(q)
+                vol['max'] += compute_approx_square_max_vol(q)
+                                 
+        return vol
+
+def compute_approx_square_vol(q):
+    q = np.array(q)
+    avg_height = np.mean(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * avg_height
+    
+def compute_approx_square_min_vol(q):
+    q = np.array(q)
+    height = np.min(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * height
+    
+def compute_approx_square_max_vol(q):
+    q = np.array(q)
+    height = np.max(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * height
+    
        
 def compute_polyhedron_volume(t):
     a,b,c,d = t
@@ -127,7 +173,7 @@ def compute_elevation_facet_volume(ele, floor):
         np.subtract(base[TB], base[TA]), 
         np.subtract(base[TB], base[TC])))
     # print 'Base Area', base_area, base[axis[0]][PZ]
-    prism_volume = (1.0/3.0) * (E[axis[0]][PZ] - floor)
+    prism_volume = base_area * (E[axis[0]][PZ] - floor)
  
     # pyramid triangle is the top of the prism, a side of the pyramid with E,
     # joined with E triangle at its lowest point, E[axis[0]]
