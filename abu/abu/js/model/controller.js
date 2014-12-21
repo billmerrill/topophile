@@ -59,6 +59,8 @@ var modelController = (function() {
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
             $("#white_plastic_price").html(data['price'][6]['price'])
+            $("#color_sandstone_price").html(data['price'][26]['price'])
+            $("#color_plastic_price").html(data['price'][100]['price'])
         })
         .fail(function(data, stats, error) {
             alert("Sorry, I couldn't build a model.")

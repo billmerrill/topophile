@@ -12,9 +12,15 @@ def price_model(model_data):
     # mjf = open ("%s/%s.json" % (MODEL_DIR, name))
     # model_data = json.load(mjf)
     # mjf.close()
+    
+    # 6 - white strong and flexible
+    # 26 - full color sandstone
+    # 100 - full color plastic
 
 
-    p = {'materials': [6],
+
+
+    p = {'materials': [6, 26, 100],
        'volume': model_data['volume-mm3'] / 1000000000, 
        'area': model_data['area-mm2'] / 1000000,
        'xBoundMin': 0.0,
