@@ -1,6 +1,8 @@
 import struct
 import math
-import numpy
+import numpy as np
+from numpy.linalg import norm
+
 from indicies import *
 
 class STLCanvas:
@@ -9,8 +11,8 @@ class STLCanvas:
         self.triangles = []
         
     def compute_normal(self, triangle):
-        Nraw = numpy.cross( numpy.subtract(triangle[TA], triangle[TB]),
-                                   numpy.subtract(triangle[TA], triangle[TC]) )
+        Nraw = np.cross( np.subtract(triangle[TA], triangle[TB]),
+                                   np.subtract(triangle[TA], triangle[TC]) )
         hypo = math.sqrt(Nraw[PX]**2 + Nraw[PY]**2 + Nraw[PZ]**2)
         N = (Nraw[PX] / hypo,
              Nraw[PY] / hypo,
@@ -19,6 +21,13 @@ class STLCanvas:
 
     def add_shape(self, shape):
         self.triangles.extend(shape.triangulate())
+    
+    def compute_area(self):
+        area = 0.0
+        for tri in self.triangles:
+            area += .5 * norm( np.cross( np.subtract(tri[TB], tri[TA]), np.subtract(tri[TB], tri[TC])))
+        return area
+            
         
     def make_positive(self, base=[1,1,1]):
         thresh = [1,1,1]
@@ -29,12 +38,11 @@ class STLCanvas:
                 thresh[PZ] = min(thresh[PZ], tri[pt][PZ])
 
         if thresh != base:
-            inc = numpy.subtract(base, thresh)
+            inc = np.subtract(base, thresh)
             print("Moving model by %s" % inc)
             for tx, tri in enumerate(self.triangles):
                 for pt in [TA,TB,TC]:
-                    self.triangles[tx][pt] = numpy.add(tri[pt], inc)
-                    # mesh[tx][1][pt] = numpy.add(mesh[tx][1][pt], inc)    
+                    self.triangles[tx][pt] = np.add(tri[pt], inc)
         
     def write_stl(self, outfile):
         print ("Writing %s triangles" % len(self.triangles))

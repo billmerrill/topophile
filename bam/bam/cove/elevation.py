@@ -4,6 +4,7 @@ import gdal
 import gdalconst
 import osr
 import pprint
+import numpy as np
 from haversine import haversine
 from indicies import *
 
@@ -96,7 +97,6 @@ class Elevation(object):
                 
     def get_meters_matrix(self):
         scaled_dataset = self.reproject_and_resample()
-        # scaled_dataset = self.dataset
         arr = scaled_dataset.ReadAsArray()
         geo_xform = scaled_dataset.GetGeoTransform()
         scaled_pixel_meters = (geo_xform[1], geo_xform[5])
@@ -111,10 +111,21 @@ class Elevation(object):
                                  arr[i][j]])
             elevation_matrix.append(points)
         
-        dst = None
         return elevation_matrix
         
-    
+    def get_meters_ndarray(self):
+        scaled_dataset = self.reproject_and_resample()
+        arr = scaled_dataset.ReadAsArray()
+        geo_xform = scaled_dataset.GetGeoTransform()
+        scaled_pixel_meters = (geo_xform[1], geo_xform[5])
+        em = np.ndarray(shape = (arr.shape[0], arr.shape[1], 3), dtype=float)
+        for i in range(0, scaled_dataset.RasterYSize):
+            for j in range(0, scaled_dataset.RasterXSize):
+                em[i][j] = ( scaled_pixel_meters[PX] * j,
+                             scaled_pixel_meters[PY] * i,
+                             arr[i][j])
+        return em
+
     def display_summary(self):
         print 'Driver: ',self.dataset.GetDriver().ShortName,'/', \
              self.dataset.GetDriver().LongName

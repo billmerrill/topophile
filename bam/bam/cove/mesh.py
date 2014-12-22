@@ -1,4 +1,6 @@
 from indicies import * 
+import numpy as np
+from numpy.linalg import norm
 import copy
 
 class CanvasShape(object):
@@ -31,7 +33,6 @@ class MeshSandwich(GridShape):
         self.ysize = top.ysize
         self.top = top
         self.bottom = bottom
-    
         
     def triangulate(self):
         triangles = self.top.triangulate()
@@ -64,6 +65,130 @@ class MeshSandwich(GridShape):
                              
         return triangles
         
+    def compute_volume(self):
+        vol = 0.0
+        for sy in range(0, self.top.y_max()):
+            for sx in range(0, self.top.x_max()):
+                vol += compute_elevation_facet_volume([self.top.get(sx,sy),
+                                     self.top.get(sx, sy+1),
+                                     self.top.get(sx+1, sy+1)],
+                                     self.bottom.elevation)
+                vol += compute_elevation_facet_volume([self.top.get(sx,sy),
+                                  self.top.get(sx+1, sy),
+                                  self.top.get(sx+1, sy+1)],
+                                  self.bottom.elevation)
+        
+        return vol
+        
+    def compute_approx_volume(self):
+        vol = {'min': 0.0,
+                'avg': 0.0,
+                'max': 0.0}
+        # vol = 0.0
+        corner0 = self.top.get(0,0)
+        corner1 = self.top.get(self.top.x_max(), self.top.y_max())
+        print (corner1[PX] - corner0[PY]), (corner1[PY] - corner0[PY])
+        
+        for sy in range(0, self.top.y_max()):
+            for sx in range(0, self.top.x_max()):
+                q = [self.top.get(sx, sy),
+                     self.top.get(sx+1, sy),
+                     self.top.get(sx, sy+1),
+                     self.top.get(sx+1, sy+1)]
+                vol['avg'] += compute_approx_square_vol(q)
+                vol['min'] += compute_approx_square_min_vol(q)
+                vol['max'] += compute_approx_square_max_vol(q)
+                                 
+        return vol
+
+def compute_approx_square_vol(q):
+    q = np.array(q)
+    avg_height = np.mean(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * avg_height
+    
+def compute_approx_square_min_vol(q):
+    q = np.array(q)
+    height = np.min(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * height
+    
+def compute_approx_square_max_vol(q):
+    q = np.array(q)
+    height = np.max(q[:,PZ])
+    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
+    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
+    # print area, avg_height
+    return area * height
+    
+       
+def compute_polyhedron_volume(t):
+    a,b,c,d = t
+    return (1.0/6.0) * norm( 
+        np.dot(np.subtract(a,d), 
+            np.cross(
+                np.subtract(b,d), 
+                np.subtract(c,d))))
+        
+def compute_elevation_facet_volume(ele, floor):
+    '''
+    compute the volume under the elevation triangle facet, down to zero.
+    assumes elevation is positive.
+    
+    The elevation triangle is described by the points Ea, Eb, Ec.
+    
+    break volume into two parts.
+    1.
+    A base triange at Z=0, described by points Ba, Bb, Bc.
+    A triangular prism has triange B as a based, and rises to meet
+    the lowest z value in the E.
+    
+    A divider triangle is created, Ea, Pb, Pc, this is the top of the 
+    prism
+    
+    2.  
+    The remainder of the volume is a pyramid defined by 
+    EaEbEc and EaPbPc
+    
+    Divide that 5-sided poly into 2 tetrahedrons, compute their volume.
+    
+    '''
+    
+    # find the lowest point in the elevation triangle
+    # axis[0] is the lowest
+    E = np.array(ele)
+    # print 'E', E
+    minarg = np.argmin(E[:,PZ])
+    axis = (minarg, (minarg+1)%3, (minarg+2)%3)
+
+    base = E.copy()
+    base[:,PZ] = floor 
+    # print 'B', base
+    
+    base_area = .5 * norm(np.cross(
+        np.subtract(base[TB], base[TA]), 
+        np.subtract(base[TB], base[TC])))
+    # print 'Base Area', base_area, base[axis[0]][PZ]
+    prism_volume = base_area * (E[axis[0]][PZ] - floor)
+ 
+    # pyramid triangle is the top of the prism, a side of the pyramid with E,
+    # joined with E triangle at its lowest point, E[axis[0]]
+    pyramid = E.copy()
+    pyramid[axis[1]][PZ] = pyramid[axis[0]][PZ]
+    pyramid[axis[2]][PZ] = pyramid[axis[0]][PZ]
+    
+    t1 = [E[axis[0]], E[axis[1]], E[axis[2]], pyramid[axis[1]]]
+    t2 = [E[axis[0]], E[axis[2]], pyramid[axis[1]], pyramid[axis[2]]]
+    
+    t1_vol = compute_polyhedron_volume(t1)
+    t2_vol = compute_polyhedron_volume(t2)
+   
+    # print "%s, %s, %s" % (prism_volume, t1_vol, t2_vol)
+    return prism_volume + t1_vol + t2_vol
 
 class Mesh(GridShape):
     
@@ -83,7 +208,8 @@ class Mesh(GridShape):
                                      invert_normal))        
                                  
         return triangles
-        
+    
+
     def add_row(self, row):
         self.mesh.append(row)
         
@@ -115,35 +241,20 @@ class Mesh(GridShape):
         return self.mesh[self.y_max()][self.x_max()]
         
     def get_low_z(self):
-        low_z = 999999
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                if self.mesh[sy][sx][PZ] < low_z:
-                    low_z = self.mesh[sy][sx][PZ]
-                    
-        return low_z
+        return np.min(self.mesh[:,:,PZ])
 
     def get_high_z(self):
-        high_z = 0 
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                if self.mesh[sy][sx][PZ] > high_z:
-                    high_z = self.mesh[sy][sx][PZ]
-                    
-        return high_z
+        return np.max(self.mesh[:,:,PZ])
 
     
     def get(self, x, y):
         return self.mesh[y][x]
         
-    def transform(self, scalar, translate):
-        for sy in range(0, self.ysize):
-            for sx in range(0, self.xsize):
-                self.mesh[sy][sx] = [self.mesh[sy][sx][PX] * scalar[PX] + translate[PX],
-                                     self.mesh[sy][sx][PY] * scalar[PY] + translate[PY],
-                                     self.mesh[sy][sx][PZ] * scalar[PZ] + translate[PZ]]
 
-        return self
+    def transform(self, scalar, translate):
+        self.mesh = np.multiply(scalar, self.mesh)
+        self.mesh = np.add(translate, self.mesh)
+        return self 
     
     def load_matrix(self, src):
         '''
@@ -157,9 +268,19 @@ class Mesh(GridShape):
         input_max_data_size = max(self.get_data_x_size(), self.get_data_y_size())
         output_ratio = max_output_size / input_max_data_size
         self.transform([output_ratio, output_ratio, output_ratio], [0,0,0])
+     
+    def finalize_form(self, max_output_size, min_elevation, z_factor):
+        largest_data_dim = max(self.get_data_x_size(), self.get_data_y_size())     
+        ratio = max_output_size / largest_data_dim
+        # self.transform([output_ratio, output_ratio, output_ratio])
+        self.mesh = np.multiply([ratio, ratio, ratio * z_factor], self.mesh)
         
-                
-
+        translate_v  = [0,0,0]
+        low_z = self.get_low_z()
+        if low_z < min_elevation:
+            self.mesh = self.mesh + [0,0, min_elevation - low_z]
+    
+        
 class HorizontalPointPlane(GridShape):
     
     def __init__(self, src_mesh, elevation):

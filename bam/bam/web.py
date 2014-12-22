@@ -4,6 +4,10 @@ import json
 import cherrypy
 import cove.model
 import job
+import shapeways_printer as printer
+
+
+MODEL_DIR = os.path.join(os.getcwd(), "app/model_cache")
 
 class ModelStub(object):
     exposed = True
@@ -18,13 +22,28 @@ class ModelStub(object):
                  'y-size': 75.0,
                  'z-size': 90.0}
         return json.dumps(model)
+        
+class ModelPricing(object):
+    exposed = True
+    def GET(self, name):
+        # alphanumeric, _ only
+        if re.search("[\W]", name):
+            raise cherrypy.HTTPError("403 Forbidden", "You are not allowed to access this resource.")
+        
+        mjf = open ("%s/%s.json" % (MODEL_DIR, name))
+        model_data = json.load(mjf)
+        mjf.close()
+
+        return printer.price_model(model_data)
+    
 
 class STLModelService(object):
     exposed = True
     def __init__(self):
         self.test = ModelStub()
+        self.price = ModelPricing()
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, price=False):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
@@ -33,6 +52,9 @@ class STLModelService(object):
         model = gig.run()
         if model is None:
             return "GB Error"
+           
+        if price: 
+            model['price'] = printer.price_model(model)
         
         model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
         del(model['filename'])
