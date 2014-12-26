@@ -363,7 +363,7 @@ class Mesh(GridShape):
                 line_min = elevations.argmin()
                 # x+1 to skip the cornder
                 full_ceiling_mesh[0][x+1] = [ line[line_min][PX],
-                                              self.mesh[0][0][PY] + nz_mm[PY],
+                                              self.mesh[0][0][PY] - nz_mm[PY],
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
                 pprint(full_ceiling_mesh[0][x+1])
@@ -376,7 +376,7 @@ class Mesh(GridShape):
                 line_min = elevations.argmin()
                 # x+1 to skip the cornder
                 full_ceiling_mesh[-1][x+1] = [ line[line_min][PX],
-                                               self.mesh[-1][0][PY] - nz_mm[PY],
+                                               self.mesh[-1][0][PY] + nz_mm[PY],
                                                line[line_min][PZ] - nz_mm[PZ] ]
         
         
