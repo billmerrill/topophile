@@ -1,7 +1,9 @@
+import math
 from indicies import * 
 import numpy as np
 from numpy.linalg import norm
 import copy
+from pprint import pprint
 
 class CanvasShape(object):
     
@@ -279,6 +281,107 @@ class Mesh(GridShape):
         low_z = self.get_low_z()
         if low_z < min_elevation:
             self.mesh = self.mesh + [0,0, min_elevation - low_z]
+            
+    def create_ceiling(self, nz_mm, d_mesh_size):
+        '''
+        nz_mm: the size, in mm, of the walls of the hollowed model
+        ceil_size: the resolution of the ceiling mesh
+        '''
+        nz_mm = np.array(nz_mm)
+        
+        pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
+                   abs(self.mesh[0][0][PY] - self.mesh[1][0][PY])]     
+                   
+        print "pix_mm", pix_mm
+              
+        # number of pixels to skip on the borders     
+        nz_pix = np.floor(nz_mm[0:1] / pix_mm)
+        for a in [0,1]:
+            if nz_pix[a] == 0:
+                nx_pix[a] = 1
+        
+        print "nz_pix" , nz_pix
+       
+        # window on mesh data to be decimated
+        src = self.mesh[nz_pix[PY]:-nz_pix[PY], nz_pix[PX]:-nz_pix[PX] ]
+        print "self mesh", self.mesh.shape
+        print "decimation src", src.shape
+        # add one for the left-size, starting a cell
+        
+        #add 2 for the border values
+        # dst = np.ndarray((dmesh_size[PY]+2, dmesh_size[PX]+2, 3))
+        dst = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
+        print "dst mesh", dst.shape
+        dstshape = np.array(dst.shape)
+
+        #sample cell size in pixels
+        pix_per_cell = np.floor(np.divide(src.shape, dst.shape))
+        # the fractional remainder of the cell division
+        fstep = np.modf(np.divide(src.shape, dstshape.astype(float)))[0]
+        print "fstep", fstep
+        
+        print "pixels_per_cell", pix_per_cell
+       
+        #ul corner
+        # ceil[0][0] = src[0][0]
+        #ur corner
+        # ceil[0][-1] = src[0][-1]
+        
+
+        # smooth the remainders out over the width of the mesh
+        def acc(index, fstep):
+            return int(math.modf(index * fstep)[1])
+        
+        for y in range(0, dst.shape[0]):
+            for x in range(0, dst.shape[1]):
+                # define the sample area in which to find the min 
+                
+                pprint({'y': 
+                    ( y * pix_per_cell[0] + acc(y, fstep[0]) , 
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1)),
+                            'x': 
+                            (x * pix_per_cell[1] + acc(x, fstep[1] ), 
+                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1)})
+                
+                
+                cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) : 
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1),
+                            x * pix_per_cell[1] + acc(x, fstep[1] ): 
+                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1]
+                elevations = cell[:,:,2]
+                cell_min = elevations.argmin()
+                # get the x,y,z
+                dst[y][x] = cell.ravel()[3*cell_min:3*cell_min+3] - [0,0,nz_mm[PZ]]
+                            
+                
+                # print y,x
+                # cell = src[ y*cell_pix[0] : (y+1) * cell_pix[0], 
+                #              x*cell_pix[1] : (x+1) * cell_pix[1]]
+                #              
+                # cell_argmin = cell.argmin()
+                # print cell
+                # print cell_argmin, cell_argmin*3, cell_argmin*3+3
+                # print(cell.ravel()[cell_argmin*3: cell_argmin*3+3])
+                # ceil[y][x] = np.array(cell.ravel()[cell_argmin*3: cell_argmin*3+3])
+                # 
+                
+        c = Mesh()
+        print dst
+        c.load_matrix(dst)
+        return c
+        
+        # top border lows
+    
+        # per row
+            # left border low
+            # cell lows
+            # right border low
+            
+        # bottom border lows
+        
+        # extend borders to edge of neutral zone
+        # lower heights of the border a bit to make a moulding
+        
     
         
 class HorizontalPointPlane(GridShape):
