@@ -292,7 +292,6 @@ class Mesh(GridShape):
         pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
                    abs(self.mesh[0][0][PY] - self.mesh[1][0][PY])]     
                    
-        print "pix_mm", pix_mm
               
         # number of pixels to skip on the borders     
         nz_pix = np.floor(nz_mm[0:1] / pix_mm)
@@ -300,49 +299,135 @@ class Mesh(GridShape):
             if nz_pix[a] == 0:
                 nx_pix[a] = 1
         
-        print "nz_pix" , nz_pix
        
         # window on mesh data to be decimated
         src = self.mesh[nz_pix[PY]:-nz_pix[PY], nz_pix[PX]:-nz_pix[PX] ]
-        print "self mesh", self.mesh.shape
-        print "decimation src", src.shape
-        # add one for the left-size, starting a cell
         
         #add 2 for the border values
         # dst = np.ndarray((dmesh_size[PY]+2, dmesh_size[PX]+2, 3))
-        dst = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
-        print "dst mesh", dst.shape
-        dstshape = np.array(dst.shape)
+        
+        full_ceiling_mesh = np.ndarray((d_mesh_size[PY]+2, d_mesh_size[PX]+2, 3))
+
+        cell_mesh = full_ceiling_mesh[1:-1,1:-1]
+        
+ 
+        # dst = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
+        # cell_mesh = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
+        cell_mesh_shape = np.array(cell_mesh.shape)
 
         #sample cell size in pixels
-        pix_per_cell = np.floor(np.divide(src.shape, dst.shape))
+        pix_per_cell = np.floor(np.divide(src.shape, cell_mesh.shape))
         # the fractional remainder of the cell division
-        fstep = np.modf(np.divide(src.shape, dstshape.astype(float)))[0]
-        print "fstep", fstep
+        fstep = np.modf(np.divide(src.shape, cell_mesh_shape.astype(float)))[0]
         
-        print "pixels_per_cell", pix_per_cell
-       
-        #ul corner
-        # ceil[0][0] = src[0][0]
-        #ur corner
-        # ceil[0][-1] = src[0][-1]
         
-
         # smooth the remainders out over the width of the mesh
         def acc(index, fstep):
             return int(math.modf(index * fstep)[1])
+
+        #corners
+        full_ceiling_mesh[0][0] = [ self.mesh[0][0][PX] + nz_mm[PX], 
+                                    self.mesh[0][0][PY] + nz_mm[PY], 
+                                    src[0][0][PZ] - nz_mm[PZ] ]
         
-        for y in range(0, dst.shape[0]):
-            for x in range(0, dst.shape[1]):
+       
+        full_ceiling_mesh[0][-1] = [ self.mesh[0][-1][PX] - nz_mm[PX],
+                                     self.mesh[0][-1][PY] - nz_mm[PY],
+                                     src[0][-1][PZ] - nz_mm[PZ] ]
+        
+        
+    
+        full_ceiling_mesh[-1][0] = [ self.mesh[-1][0][PX] + nz_mm[PX],
+                                     self.mesh[-1][0][PY] - nz_mm[PY],
+                                     src[-1][0][PZ] - nz_mm[PZ] ]
+        
+        
+        
+        full_ceiling_mesh[-1][-1] = [ self.mesh[-1][-1][PX] - nz_mm[PX],
+                                      self.mesh[-1][-1][PY] - nz_mm[PY],
+                                      src[-1][-1][PZ] - nz_mm[PZ]]
+        
+        print(full_ceiling_mesh[0][0],
+                        full_ceiling_mesh[0][-1],
+                        full_ceiling_mesh[-1][-1],
+                        full_ceiling_mesh[-1][0]);
+        
+       
+        if (True):
+            for x in range(0, cell_mesh.shape[1]):
+                # ternayies to not include the corner data points
+                line = src[0, 
+                           x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
+                           (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[0][x+1] = [ line[line_min][PX],
+                                              self.mesh[0][0][PY] + nz_mm[PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]
+                                              
+                pprint(full_ceiling_mesh[0][x+1])
+            
+                # ternayies to not include the corner data points
+                line = src[-1, 
+                           x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
+                           (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[-1][x+1] = [ line[line_min][PX],
+                                               self.mesh[-1][0][PY] - nz_mm[PY],
+                                               line[line_min][PZ] - nz_mm[PZ] ]
+        
+        
+                pprint(full_ceiling_mesh[-1][x+1])
+    
+    
+        if (True):
+            for y in range(0, cell_mesh.shape[0]):
+                # ternayies to not include the corner data points
+                line = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) :
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == (cell_mesh_shape[0]-1) else 0),
+                            0]
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[y+1][0] = [ self.mesh[0][0][PX] + nz_mm[PX],
+                                              line[line_min][PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]
+                                              
+                pprint(full_ceiling_mesh[0][x+1])
+            
+    
+                # ternayies to not include the corner data points
+                line = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) :
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == (cell_mesh_shape[0]-1) else 0),
+                            -1]
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[y+1][-1] = [ self.mesh[0][-1][PX] - nz_mm[PX],
+                                              line[line_min][PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]    
+            
+            
+                pprint(full_ceiling_mesh[y+1][-1])
+        
+    
+        
+       
+        
+        for y in range(0, cell_mesh.shape[0]):
+            for x in range(0, cell_mesh.shape[1]):
                 # define the sample area in which to find the min 
                 
-                pprint({'y': 
-                    ( y * pix_per_cell[0] + acc(y, fstep[0]) , 
-                            (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1)),
-                            'x': 
-                            (x * pix_per_cell[1] + acc(x, fstep[1] ), 
-                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1)})
-                
+                # pprint({'y': 
+                #     ( y * pix_per_cell[0] + acc(y, fstep[0]) , 
+                #             (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1)),
+                #             'x': 
+                #             (x * pix_per_cell[1] + acc(x, fstep[1] ), 
+                #             (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1)})
+                # 
                 
                 cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) : 
                             (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1),
@@ -351,23 +436,12 @@ class Mesh(GridShape):
                 elevations = cell[:,:,2]
                 cell_min = elevations.argmin()
                 # get the x,y,z
-                dst[y][x] = cell.ravel()[3*cell_min:3*cell_min+3] - [0,0,nz_mm[PZ]]
+                cell_mesh[y][x] = cell.ravel()[3*cell_min:3*cell_min+3] - [0,0,nz_mm[PZ]]
                             
                 
-                # print y,x
-                # cell = src[ y*cell_pix[0] : (y+1) * cell_pix[0], 
-                #              x*cell_pix[1] : (x+1) * cell_pix[1]]
-                #              
-                # cell_argmin = cell.argmin()
-                # print cell
-                # print cell_argmin, cell_argmin*3, cell_argmin*3+3
-                # print(cell.ravel()[cell_argmin*3: cell_argmin*3+3])
-                # ceil[y][x] = np.array(cell.ravel()[cell_argmin*3: cell_argmin*3+3])
-                # 
-                
         c = Mesh()
-        print dst
-        c.load_matrix(dst)
+        print cell_mesh 
+        c.load_matrix(full_ceiling_mesh)
         return c
         
         # top border lows
