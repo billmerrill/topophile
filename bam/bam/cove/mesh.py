@@ -327,7 +327,7 @@ class Mesh(GridShape):
 
         #corners
         full_ceiling_mesh[0][0] = [ self.mesh[0][0][PX] + nz_mm[PX], 
-                                    self.mesh[0][0][PY] + nz_mm[PY], 
+                                    self.mesh[0][0][PY] - nz_mm[PY], 
                                     src[0][0][PZ] - nz_mm[PZ] ]
         
        
@@ -338,13 +338,13 @@ class Mesh(GridShape):
         
     
         full_ceiling_mesh[-1][0] = [ self.mesh[-1][0][PX] + nz_mm[PX],
-                                     self.mesh[-1][0][PY] - nz_mm[PY],
+                                     self.mesh[-1][0][PY] + nz_mm[PY],
                                      src[-1][0][PZ] - nz_mm[PZ] ]
         
         
         
         full_ceiling_mesh[-1][-1] = [ self.mesh[-1][-1][PX] - nz_mm[PX],
-                                      self.mesh[-1][-1][PY] - nz_mm[PY],
+                                      self.mesh[-1][-1][PY] + nz_mm[PY],
                                       src[-1][-1][PZ] - nz_mm[PZ]]
         
         print(full_ceiling_mesh[0][0],
