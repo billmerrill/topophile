@@ -294,7 +294,7 @@ class Mesh(GridShape):
                    
               
         # number of pixels to skip on the borders     
-        nz_pix = np.floor(nz_mm[0:1] / pix_mm)
+        nz_pix = np.ceil(nz_mm[0:1] / pix_mm)
         for a in [0,1]:
             if nz_pix[a] == 0:
                 nx_pix[a] = 1
@@ -347,10 +347,10 @@ class Mesh(GridShape):
                                       self.mesh[-1][-1][PY] + nz_mm[PY],
                                       src[-1][-1][PZ] - nz_mm[PZ]]
         
-        print(full_ceiling_mesh[0][0],
-                        full_ceiling_mesh[0][-1],
-                        full_ceiling_mesh[-1][-1],
-                        full_ceiling_mesh[-1][0]);
+        # print(full_ceiling_mesh[0][0],
+        #                 full_ceiling_mesh[0][-1],
+        #                 full_ceiling_mesh[-1][-1],
+        #                 full_ceiling_mesh[-1][0]);
         
        
         if (True):
@@ -366,7 +366,7 @@ class Mesh(GridShape):
                                               self.mesh[0][0][PY] - nz_mm[PY],
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
-                pprint(full_ceiling_mesh[0][x+1])
+                # pprint(full_ceiling_mesh[0][x+1])
             
                 # ternayies to not include the corner data points
                 line = src[-1, 
@@ -380,7 +380,7 @@ class Mesh(GridShape):
                                                line[line_min][PZ] - nz_mm[PZ] ]
         
         
-                pprint(full_ceiling_mesh[-1][x+1])
+                # pprint(full_ceiling_mesh[-1][x+1])
     
     
         if (True):
@@ -396,7 +396,7 @@ class Mesh(GridShape):
                                               line[line_min][PY],
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
-                pprint(full_ceiling_mesh[0][x+1])
+                # pprint(full_ceiling_mesh[0][x+1])
             
     
                 # ternayies to not include the corner data points
@@ -411,7 +411,7 @@ class Mesh(GridShape):
                                               line[line_min][PZ] - nz_mm[PZ] ]    
             
             
-                pprint(full_ceiling_mesh[y+1][-1])
+                # pprint(full_ceiling_mesh[y+1][-1])
         
     
         
@@ -429,10 +429,10 @@ class Mesh(GridShape):
                 #             (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1)})
                 # 
                 
-                cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) : 
-                            (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1),
-                            x * pix_per_cell[1] + acc(x, fstep[1] ): 
-                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1]
+                cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) : 
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[1]) - 1 - (1 if y == cell_mesh_shape[0]-1 else 0),
+                            x * pix_per_cell[1] + acc(x, fstep[1]) + (1 if x == 0 else 0): 
+                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == cell_mesh_shape[1]-1 else 0)]
                 elevations = cell[:,:,2]
                 cell_min = elevations.argmin()
                 # get the x,y,z
