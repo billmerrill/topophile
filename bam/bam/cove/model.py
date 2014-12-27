@@ -84,9 +84,13 @@ class HollowTestModel(Model):
         top.finalize_form(self.builder.get_physical_max(), 
                             self.builder.get_min_thickness()[PZ],
                             self.builder.get_z_factor())
+                            
+                            
+        hollow_ceiling = top.create_ceiling(self.builder.get_min_thickness(), (6,6))
       
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
         print("Physical Size: %s x %s x %s" % max_cube)
+        
         
         
 
@@ -94,7 +98,7 @@ class HollowTestModel(Model):
         # sandwich = MeshSandwich(top, bottom)
         canvas = STLCanvas()
         canvas.add_shape(top)
-        canvas.add_shape(top.create_ceiling( (1,1,1), (6,6) ) )
+        canvas.add_shape(hollow_ceiling)
         # canvas.add_shape(ceiling)
         
         # canvas.add_shape(sandwich)
