@@ -96,14 +96,16 @@ class HollowTestModel(Model):
         
         
 
-        bottom = MeshBasePlate(top, 0)
-        hollow_bottom = MeshBasePlate(hollow_ceiling, 1)
+        bottom = MeshBasePlate(top, 0, True)
+        diamond = bottom.get_relief_diamond()
+        hollow_bottom = MeshBasePlate(hollow_ceiling, self.builder.get_min_thickness()[PZ], True)
+        hollow_bottom.set_relief_diamond(diamond)
         # sandwich = MeshSandwich(top, bottom)
         canvas = STLCanvas()
-        canvas.add_shape(top)
-        canvas.add_shape(hollow_ceiling)
-        # canvas.add_shape(bottom)
-        # canvas.add_shape(hollow_bottom)
+        # canvas.add_shape(top)
+        # canvas.add_shape(hollow_ceiling)
+        canvas.add_shape(bottom)
+        canvas.add_shape(hollow_bottom)
         
         # canvas.add_shape(sandwich)
         # model_area = canvas.compute_area()
