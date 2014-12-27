@@ -287,6 +287,7 @@ class Mesh(GridShape):
         nz_mm: the size, in mm, of the walls of the hollowed model
         ceil_size: the resolution of the ceiling mesh
         '''
+        print self.mesh.shape
         nz_mm = np.array(nz_mm)
         
         pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
@@ -314,6 +315,8 @@ class Mesh(GridShape):
         # the fractional remainder of the cell division
         fstep = np.modf(np.divide(src.shape, cell_mesh_shape.astype(float)))[0]
         
+        print "pix per ell, fstep"
+        print (pix_per_cell, fstep)
         
         # smooth the remainders out over the width of the mesh
         def acc(index, fstep):
@@ -411,7 +414,7 @@ class Mesh(GridShape):
                 
                 
                 cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) : 
-                            (y+1) * pix_per_cell[0] + acc(y, fstep[1]) - 1 - (1 if y == cell_mesh_shape[0]-1 else 0),
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == cell_mesh_shape[0]-1 else 0),
                             x * pix_per_cell[1] + acc(x, fstep[1]) + (1 if x == 0 else 0): 
                             (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == cell_mesh_shape[1]-1 else 0)]
                 elevations = cell[:,:,2]
@@ -421,7 +424,7 @@ class Mesh(GridShape):
                             
                 
         c = Mesh()
-        print cell_mesh 
+        # print cell_mesh 
         c.load_matrix(full_ceiling_mesh)
         return c
         
