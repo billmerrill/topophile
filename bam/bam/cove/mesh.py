@@ -304,15 +304,9 @@ class Mesh(GridShape):
         src = self.mesh[nz_pix[PY]:-nz_pix[PY], nz_pix[PX]:-nz_pix[PX] ]
         
         #add 2 for the border values
-        # dst = np.ndarray((dmesh_size[PY]+2, dmesh_size[PX]+2, 3))
-        
         full_ceiling_mesh = np.ndarray((d_mesh_size[PY]+2, d_mesh_size[PX]+2, 3))
 
         cell_mesh = full_ceiling_mesh[1:-1,1:-1]
-        
- 
-        # dst = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
-        # cell_mesh = np.ndarray((d_mesh_size[PY], d_mesh_size[PX], 3))
         cell_mesh_shape = np.array(cell_mesh.shape)
 
         #sample cell size in pixels
@@ -347,11 +341,8 @@ class Mesh(GridShape):
                                       self.mesh[-1][-1][PY] + nz_mm[PY],
                                       src[-1][-1][PZ] - nz_mm[PZ]]
         
-        # print(full_ceiling_mesh[0][0],
-        #                 full_ceiling_mesh[0][-1],
-        #                 full_ceiling_mesh[-1][-1],
-        #                 full_ceiling_mesh[-1][0]);
-        
+
+        # top and bottom edges stretched ot exact dimensions
        
         if (True):
             for x in range(0, cell_mesh.shape[1]):
@@ -366,7 +357,6 @@ class Mesh(GridShape):
                                               self.mesh[0][0][PY] - nz_mm[PY],
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
-                # pprint(full_ceiling_mesh[0][x+1])
             
                 # ternayies to not include the corner data points
                 line = src[-1, 
@@ -380,8 +370,8 @@ class Mesh(GridShape):
                                                line[line_min][PZ] - nz_mm[PZ] ]
         
         
-                # pprint(full_ceiling_mesh[-1][x+1])
     
+        # left and right edges stretched ot exact dimensions
     
         if (True):
             for y in range(0, cell_mesh.shape[0]):
@@ -396,7 +386,6 @@ class Mesh(GridShape):
                                               line[line_min][PY],
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
-                # pprint(full_ceiling_mesh[0][x+1])
             
     
                 # ternayies to not include the corner data points
@@ -411,23 +400,15 @@ class Mesh(GridShape):
                                               line[line_min][PZ] - nz_mm[PZ] ]    
             
             
-                # pprint(full_ceiling_mesh[y+1][-1])
         
     
         
        
-        
+        # cell samples
         for y in range(0, cell_mesh.shape[0]):
             for x in range(0, cell_mesh.shape[1]):
                 # define the sample area in which to find the min 
                 
-                # pprint({'y': 
-                #     ( y * pix_per_cell[0] + acc(y, fstep[0]) , 
-                #             (y+1) * pix_per_cell[0] + acc(y, fstep[1] - 1)),
-                #             'x': 
-                #             (x * pix_per_cell[1] + acc(x, fstep[1] ), 
-                #             (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1)})
-                # 
                 
                 cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) : 
                             (y+1) * pix_per_cell[0] + acc(y, fstep[1]) - 1 - (1 if y == cell_mesh_shape[0]-1 else 0),
@@ -444,17 +425,8 @@ class Mesh(GridShape):
         c.load_matrix(full_ceiling_mesh)
         return c
         
-        # top border lows
-    
-        # per row
-            # left border low
-            # cell lows
-            # right border low
-            
-        # bottom border lows
         
-        # extend borders to edge of neutral zone
-        # lower heights of the border a bit to make a moulding
+# class HollowModelCeilingMesh(Mesh):
         
     
         
