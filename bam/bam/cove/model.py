@@ -1,5 +1,5 @@
 import json
-from mesh import Mesh, HorizontalPointPlane, MeshSandwich, MeshBasePlate
+from mesh import Mesh, HorizontalPointPlane, MeshSandwich, MeshBasePlate, HollowBottomDiamondWalls
 from stl_canvas import STLCanvas
 from builder import Builder
 from elevation import Elevation
@@ -100,14 +100,16 @@ class HollowTestModel(Model):
         diamond = bottom.get_relief_diamond()
         hollow_bottom = MeshBasePlate(hollow_ceiling, self.builder.get_min_thickness()[PZ], True)
         hollow_bottom.set_relief_diamond(diamond)
-        # sandwich = MeshSandwich(top, bottom)
-        canvas = STLCanvas()
-        # canvas.add_shape(top)
-        # canvas.add_shape(hollow_ceiling)
-        canvas.add_shape(bottom)
-        canvas.add_shape(hollow_bottom)
         
-        # canvas.add_shape(sandwich)
+        diamond_walls = HollowBottomDiamondWalls(hollow_bottom, bottom)
+       
+        sandwich = MeshSandwich(top, bottom)
+        inner_sandwich = MeshSandwich(hollow_ceiling, hollow_bottom)
+        canvas = STLCanvas()
+        canvas.add_shape(inner_sandwich)
+        canvas.add_shape(sandwich)
+        canvas.add_shape(diamond_walls)
+        
         # model_area = canvas.compute_area()
         # model_volume = sandwich.compute_volume()
         # 

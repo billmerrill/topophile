@@ -464,6 +464,30 @@ class HorizontalPointPlane(GridShape):
                                      self.get(sx+1, sy+1)], 
                                      invert_normal))   
         return triangles
+
+
+class HollowBottomDiamondWalls(GridShape):
+    
+    def __init__(self, inner_bottom, outer_bottom):
+        self.inner = inner_bottom
+        self.outer = outer_bottom
+        
+    def triangulate(self):
+        triangles = []
+        
+        top = self.inner.get_relief_diamond()
+        bot = self.outer.get_relief_diamond()
+        # negx posx negy posy 
+        squares = [ [ top[0], top[3], bot[0], bot[3]],
+                    [ top[1], top[2], bot[1], bot[2]],
+                    [ top[2], top[0], bot[2], bot[0]],
+                    [ top[3], top[1], bot[3], bot[1]]]
+        for x in squares:
+            triangles.extend(self.triangulate_square(x))
+            
+        return triangles
+        
+        
         
 class MeshBasePlate(object):
     '''
@@ -519,6 +543,7 @@ class MeshBasePlate(object):
         return [self.negx, self.posx, self.negy, self.posy]
         
     def triangulate(self):
+        # XXXX for the hollow model, need to find a way to invert the triangles
         triangles = []
         
             
