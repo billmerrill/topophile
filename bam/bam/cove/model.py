@@ -86,7 +86,9 @@ class HollowTestModel(Model):
                             self.builder.get_z_factor())
                             
                             
-        hollow_ceiling = top.create_ceiling(self.builder.get_min_thickness(), (8,8))
+        hollow_ceiling = top.create_ceiling(
+            self.builder.get_min_thickness(), 
+            self.builder.get_ceiling_decimation_factor())
       
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
         print("Physical Size: %s x %s x %s" % max_cube)

@@ -282,12 +282,15 @@ class Mesh(GridShape):
         if low_z < min_elevation:
             self.mesh = self.mesh + [0,0, min_elevation - low_z]
             
-    def create_ceiling(self, nz_mm, d_mesh_size):
+    def create_ceiling(self, nz_mm, dezfactor):
         '''
         nz_mm: the size, in mm, of the walls of the hollowed model
         ceil_size: the resolution of the ceiling mesh
         '''
         print self.mesh.shape
+        eleshape = np.array(self.mesh.shape[0:1])
+        dezfactor = np.array(dezfactor)
+        d_mesh_size = np.divide(eleshape, dezfactor) 
         nz_mm = np.array(nz_mm)
         
         pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
