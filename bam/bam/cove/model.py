@@ -72,9 +72,9 @@ class HollowElevationModel(Model):
         json.dump(m,jf)
         jf.close()
 
-    def _compute_volume(outer, inner):
+    def _compute_volume(iself, outer, inner):
         ''' this ignores the volume lost to the relief diamond '''
-        return outer.compute_volume - inner.compute_volume
+        return outer.compute_volume() - inner.compute_volume()
             
     def build_stl(self):
         elevation = Elevation(self.builder)
