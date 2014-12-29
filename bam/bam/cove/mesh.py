@@ -499,7 +499,7 @@ class MeshBasePlate(object):
         self.xsize = top.xsize
         self.ysize = top.ysize
         self.elevation = elevation
-        self.hollow = hollow = True
+        self.hollow = hollow 
         self.config_geometry()
         self.set_relief_diamond()
         

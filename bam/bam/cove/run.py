@@ -1,4 +1,4 @@
-from model import SolidElevationModel, HollowTestModel
+from model import SolidElevationModel, HollowTestModel, HollowElevationModel
 from pprint import pprint
 
 
@@ -15,6 +15,11 @@ def solid():
     model_data = model.build_stl()
     pprint(model_data)
     
+def hollow():
+    model = HollowElevationModel(model_config)
+    model_data = model.build_stl()
+    pprint(model_data)
+    
 def test_hollow():
     model = HollowTestModel(model_config)
     model_data = model.build_stl()
@@ -22,4 +27,6 @@ def test_hollow():
     
     
 # main()      
-test_hollow()
+# test_hollow()
+# solid()
+hollow()
