@@ -1,7 +1,9 @@
+import math
 from indicies import * 
 import numpy as np
 from numpy.linalg import norm
 import copy
+from pprint import pprint
 
 class CanvasShape(object):
     
@@ -279,6 +281,159 @@ class Mesh(GridShape):
         low_z = self.get_low_z()
         if low_z < min_elevation:
             self.mesh = self.mesh + [0,0, min_elevation - low_z]
+            
+    def create_ceiling(self, nz_mm, dezfactor):
+        '''
+        nz_mm: the size, in mm, of the walls of the hollowed model
+        ceil_size: the resolution of the ceiling mesh
+        '''
+        print self.mesh.shape
+        eleshape = np.array(self.mesh.shape[0:1])
+        dezfactor = np.array(dezfactor)
+        d_mesh_size = np.divide(eleshape, dezfactor) 
+        nz_mm = np.array(nz_mm)
+        
+        pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
+                   abs(self.mesh[0][0][PY] - self.mesh[1][0][PY])]     
+                   
+              
+        # number of pixels to skip on the borders     
+        nz_pix = np.ceil(nz_mm[0:1] / pix_mm)
+        for a in [0,1]:
+            if nz_pix[a] == 0:
+                nx_pix[a] = 1
+        
+       
+        # window on mesh data to be decimated
+        src = self.mesh[nz_pix[PY]:-nz_pix[PY], nz_pix[PX]:-nz_pix[PX] ]
+        
+        #add 2 for the border values
+        full_ceiling_mesh = np.ndarray((d_mesh_size[PY]+2, d_mesh_size[PX]+2, 3))
+
+        cell_mesh = full_ceiling_mesh[1:-1,1:-1]
+        cell_mesh_shape = np.array(cell_mesh.shape)
+
+        #sample cell size in pixels
+        pix_per_cell = np.floor(np.divide(src.shape, cell_mesh.shape))
+        # the fractional remainder of the cell division
+        fstep = np.modf(np.divide(src.shape, cell_mesh_shape.astype(float)))[0]
+        
+        print "pix per ell, fstep"
+        print (pix_per_cell, fstep)
+        
+        # smooth the remainders out over the width of the mesh
+        def acc(index, fstep):
+            return int(math.modf(index * fstep)[1])
+
+        #corners
+        full_ceiling_mesh[0][0] = [ self.mesh[0][0][PX] + nz_mm[PX], 
+                                    self.mesh[0][0][PY] - nz_mm[PY], 
+                                    src[0][0][PZ] - nz_mm[PZ] ]
+        
+       
+        full_ceiling_mesh[0][-1] = [ self.mesh[0][-1][PX] - nz_mm[PX],
+                                     self.mesh[0][-1][PY] - nz_mm[PY],
+                                     src[0][-1][PZ] - nz_mm[PZ] ]
+        
+        
+    
+        full_ceiling_mesh[-1][0] = [ self.mesh[-1][0][PX] + nz_mm[PX],
+                                     self.mesh[-1][0][PY] + nz_mm[PY],
+                                     src[-1][0][PZ] - nz_mm[PZ] ]
+        
+        
+        
+        full_ceiling_mesh[-1][-1] = [ self.mesh[-1][-1][PX] - nz_mm[PX],
+                                      self.mesh[-1][-1][PY] + nz_mm[PY],
+                                      src[-1][-1][PZ] - nz_mm[PZ]]
+        
+
+        # top and bottom edges stretched ot exact dimensions
+       
+        if (True):
+            for x in range(0, cell_mesh.shape[1]):
+                # ternayies to not include the corner data points
+                line = src[0, 
+                           x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
+                           (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[0][x+1] = [ line[line_min][PX],
+                                              self.mesh[0][0][PY] - nz_mm[PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]
+                                              
+            
+                # ternayies to not include the corner data points
+                line = src[-1, 
+                           x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
+                           (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[-1][x+1] = [ line[line_min][PX],
+                                               self.mesh[-1][0][PY] + nz_mm[PY],
+                                               line[line_min][PZ] - nz_mm[PZ] ]
+        
+        
+    
+        # left and right edges stretched ot exact dimensions
+    
+        if (True):
+            for y in range(0, cell_mesh.shape[0]):
+                # ternayies to not include the corner data points
+                line = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) :
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == (cell_mesh_shape[0]-1) else 0),
+                            0]
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[y+1][0] = [ self.mesh[0][0][PX] + nz_mm[PX],
+                                              line[line_min][PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]
+                                              
+            
+    
+                # ternayies to not include the corner data points
+                line = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) :
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == (cell_mesh_shape[0]-1) else 0),
+                            -1]
+                elevations = line[:,2]
+                line_min = elevations.argmin()
+                # x+1 to skip the cornder
+                full_ceiling_mesh[y+1][-1] = [ self.mesh[0][-1][PX] - nz_mm[PX],
+                                              line[line_min][PY],
+                                              line[line_min][PZ] - nz_mm[PZ] ]    
+            
+            
+        
+    
+        
+       
+        # cell samples
+        for y in range(0, cell_mesh.shape[0]):
+            for x in range(0, cell_mesh.shape[1]):
+                # define the sample area in which to find the min 
+                
+                
+                cell = src[ y * pix_per_cell[0] + acc(y, fstep[0]) + (1 if y == 0 else 0) : 
+                            (y+1) * pix_per_cell[0] + acc(y, fstep[0]) - 1 - (1 if y == cell_mesh_shape[0]-1 else 0),
+                            x * pix_per_cell[1] + acc(x, fstep[1]) + (1 if x == 0 else 0): 
+                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == cell_mesh_shape[1]-1 else 0)]
+                elevations = cell[:,:,2]
+                cell_min = elevations.argmin()
+                # get the x,y,z
+                cell_mesh[y][x] = cell.ravel()[3*cell_min:3*cell_min+3] - [0,0,nz_mm[PZ]]
+                            
+                
+        c = Mesh()
+        # print cell_mesh 
+        c.load_matrix(full_ceiling_mesh)
+        return c
+        
+        
+# class HollowModelCeilingMesh(Mesh):
+        
     
         
 class HorizontalPointPlane(GridShape):
@@ -309,17 +464,45 @@ class HorizontalPointPlane(GridShape):
                                      self.get(sx+1, sy+1)], 
                                      invert_normal))   
         return triangles
+
+
+class HollowBottomDiamondWalls(GridShape):
+    
+    def __init__(self, inner_bottom, outer_bottom):
+        self.inner = inner_bottom
+        self.outer = outer_bottom
+        
+    def triangulate(self):
+        triangles = []
+        
+        top = self.inner.get_relief_diamond()
+        bot = self.outer.get_relief_diamond()
+        # negx posx negy posy 
+        squares = [ [ top[0], top[3], bot[0], bot[3]],
+                    [ top[1], top[2], bot[1], bot[2]],
+                    [ top[2], top[0], bot[2], bot[0]],
+                    [ top[3], top[1], bot[3], bot[1]]]
+        for x in squares:
+            triangles.extend(self.triangulate_square(x))
+            
+        return triangles
+        
+        
         
 class MeshBasePlate(object):
     '''
     A custom set of triangles to draw a bottom plate
     '''
     
-    def __init__(self, top, elevation=0):
+    def __init__(self, top, elevation=0, hollow=False):
         self.top = top
         self.xsize = top.xsize
         self.ysize = top.ysize
         self.elevation = elevation
+        self.hollow = hollow 
+        self.config_geometry()
+        self.set_relief_diamond()
+        
     
     def get(self, x, y):
         orig = self.top.get(x,y)
@@ -330,78 +513,98 @@ class MeshBasePlate(object):
         
     def y_max(self):
         return self.ysize-1        
-    
+        
+    def make_pt(self, x, y, z):
+        orig = self.top.get(x,y)
+        return (orig[PX],orig[PY],self.elevation)
+        
+    def config_geometry(self):
+        self.plate_y = self.top.y_max()+1
+        self.plate_x = self.top.x_max()+1
+        
+    def set_relief_diamond(self, override_diamond=[]):
+        if override_diamond:
+            od = []
+            for pt in override_diamond:
+                od.append((pt[PX], pt[PY], self.elevation))
+            self.negx, self.posx, self.negy, self.posy = od
+        else :
+            yhalf = self.plate_y / 2
+            xhalf = self.plate_x / 2
+            yquarter = self.plate_y / 4
+            xquarter = self.plate_x / 4
+
+            self.negx = self.make_pt(xquarter, yhalf, 0)
+            self.posx = self.make_pt(xquarter + xhalf, yhalf, 0)
+            self.negy = self.make_pt(xhalf, yquarter, 0)
+            self.posy = self.make_pt(xhalf, yquarter + yhalf, 0)
+            
+    def get_relief_diamond(self):
+        return [self.negx, self.posx, self.negy, self.posy]
+        
     def triangulate(self):
+        # XXXX for the hollow model, need to find a way to invert the triangles
         triangles = []
         
-        def make_pt(x, y, z):
-            orig = self.top.get(x,y)
-            return (orig[PX],orig[PY],self.elevation)
             
-        sample_height = self.top.y_max()+1
-        sample_width = self.top.x_max()+1
+        sample_height = self.plate_y
+        sample_width = self.plate_x
         
-        yhalf = sample_height / 2
-        xhalf = sample_width / 2
-        yquarter = sample_height / 4
-        xquarter = sample_width / 4
-
-        negx = make_pt(xquarter, yhalf, 0)
-        posx = make_pt(xquarter + xhalf, yhalf, 0)
-        negy = make_pt(xhalf, yquarter, 0)
-        posy = make_pt(xhalf, yquarter + yhalf, 0)
+        negx, posx, negy, posy = self.get_relief_diamond()
 
         # star inset base
         for sy in range(0, sample_height-1):
-            a_triangle = { TA: make_pt(0, sy, 0),
+            a_triangle = { TA: self.make_pt(0, sy, 0),
                            TB: negx,
-                           TC: make_pt(0, sy+1, 0)}
-            z_triangle = { TA: make_pt(sample_width-1, sy, 0),
-                          TB: make_pt(sample_width-1, sy+1, 0),
+                           TC: self.make_pt(0, sy+1, 0)}
+            z_triangle = { TA: self.make_pt(sample_width-1, sy, 0),
+                          TB: self.make_pt(sample_width-1, sy+1, 0),
                           TC: posx }
 
             triangles.append(a_triangle)
             triangles.append(z_triangle)
 
         for sx in range(0, sample_width-1):
-            a_triangle = { TA: make_pt(sx, 0, 0),
-                           TB: make_pt(sx+1, 0, 0),
+            a_triangle = { TA: self.make_pt(sx, 0, 0),
+                           TB: self.make_pt(sx+1, 0, 0),
                            TC: negy }
-            z_triangle = { TA: make_pt(sx, sample_height-1, 0),
+            z_triangle = { TA: self.make_pt(sx, sample_height-1, 0),
                            TB: posy,
-                           TC: make_pt(sx+1, sample_height-1, 0) }
+                           TC: self.make_pt(sx+1, sample_height-1, 0) }
 
             triangles.append(a_triangle)
             triangles.append(z_triangle)
 
 
-        a_triangle = { TA: make_pt(0,0,0),
+        a_triangle = { TA: self.make_pt(0,0,0),
                        TB: negy,
                        TC: negx }
         b_triangle = { TA: negy,
-                       TB: make_pt(sample_width-1, 0, 0),
+                       TB: self.make_pt(sample_width-1, 0, 0),
                        TC: posx }
         c_triangle = { TA: posx,
-                       TB: make_pt(sample_width-1, sample_height-1, 0),
+                       TB: self.make_pt(sample_width-1, sample_height-1, 0),
                        TC: posy }
         d_triangle = { TA: negx,
                        TB: posy,
-                       TC: make_pt(0, sample_height-1, 0) }
-
-        e_triangle = { TA: negy,
-                       TB: posx,
-                       TC: negx }
-
-        f_triangle = { TA: posx,
-                       TB: posy,
-                       TC: negx }
+                       TC: self.make_pt(0, sample_height-1, 0) }
 
         triangles.append(a_triangle)
         triangles.append(b_triangle)
         triangles.append(c_triangle)
         triangles.append(d_triangle)
-        triangles.append(e_triangle)
-        triangles.append(f_triangle)
+        
+        if not self.hollow:
+            e_triangle = { TA: negy,
+                           TB: posx,
+                           TC: negx }
+
+            f_triangle = { TA: posx,
+                           TB: posy,
+                           TC: negx }
+
+            triangles.append(e_triangle)
+            triangles.append(f_triangle)
 
         return triangles
     

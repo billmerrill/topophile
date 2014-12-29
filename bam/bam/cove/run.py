@@ -1,17 +1,32 @@
-from model import SolidElevationModel
+from model import SolidElevationModel, HollowTestModel, HollowElevationModel
 from pprint import pprint
 
 
 model_config = { 'src': 'c236gcce2jb0-c236r2812p84.tif',
-                 'output_resolution': 50,
+                 'output_resolution': 200,
                  'output_physical_max': 100,
-                 'z_factor': 1.8
+                 'z_factor': 1.8,
+                 'min_model_thickness': [2,2,2]
                  }
 
-def main():
+
+def solid():
     model = SolidElevationModel(model_config)
     model_data = model.build_stl()
     pprint(model_data)
     
+def hollow():
+    model = HollowElevationModel(model_config)
+    model_data = model.build_stl()
+    pprint(model_data)
     
-main()      
+def test_hollow():
+    model = HollowTestModel(model_config)
+    model_data = model.build_stl()
+    pprint(model_data)
+    
+    
+# main()      
+# test_hollow()
+solid()
+# hollow()
