@@ -3,9 +3,11 @@ import cay_src as el_src
 import cove
 import os
 
+
+
 class BoundingBoxJob(object):
     
-    def __init__(self, nwlat, nwlon, selat, selon, size, rez, zfactor):
+    def __init__(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow):
         '''
         nwlat - string - northwest corner latitude
         nwlon - string - northwest corner longitude
@@ -14,6 +16,7 @@ class BoundingBoxJob(object):
         size - number - model physical size, mm
         rez - number - data resolution of model's long side
         zfactor - elevation multiplier
+        hollow - boolean
         '''
         self.nwlat = nwlat
         self.nwlon = nwlon
@@ -22,6 +25,7 @@ class BoundingBoxJob(object):
         self.rez = int(rez)
         self.size = int(size)
         self.zfactor = float(zfactor)
+        self.hollow = hollow is not False
         
     def run(self):
         elevation_data = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)
@@ -38,8 +42,13 @@ class BoundingBoxJob(object):
                          'dst': dst_filename,
                          'output_resolution': self.rez,
                          'output_physical_max': self.size,
-                         'z_factor': self.zfactor}
-        model = cove.model.SolidElevationModel(model_config)
+                         'z_factor': self.zfactor,
+                         'hollow': self.hollow}
+                         
+        if self.hollow:
+            model = cove.model.HollowElevationModel(model_config)
+        else:
+            model = cove.model.SolidElevationModel(model_config)
         model_data = model.build_stl()
         return model_data
         

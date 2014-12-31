@@ -12,13 +12,13 @@ class CanvasShape(object):
 
 class GridShape(object):
     
-    def triangulate_square(self, square, invert_normal = False):
+    def triangulate_square(self, square, invert_normals = False):
         ''' assume points like this for right hand rule
             0  1
             2  3
         '''
         tri = []
-        if invert_normal:
+        if invert_normals:
             return [[square[0], square[1], square[3]],
                    [square[0], square[3], square[2]]]
         else:
@@ -27,7 +27,7 @@ class GridShape(object):
                    
                    
 class MeshSandwich(GridShape):
-    def __init__(self, top, bottom):
+    def __init__(self, top, bottom, invert_normals=False):
         if not (top.xsize == bottom.xsize and top.ysize == bottom.ysize):
             print ("CANT MAKE SAMMICHES")
             return
@@ -35,10 +35,11 @@ class MeshSandwich(GridShape):
         self.ysize = top.ysize
         self.top = top
         self.bottom = bottom
+        self.invert_normals = invert_normals
         
     def triangulate(self):
-        triangles = self.top.triangulate()
-        triangles.extend(self.bottom.triangulate())
+        triangles = self.top.triangulate(invert_normals = self.invert_normals)
+        triangles.extend(self.bottom.triangulate(invert_normals = self.invert_normals))
         triangles.extend(self.triangulate_sides())    
         return triangles
     
@@ -48,22 +49,26 @@ class MeshSandwich(GridShape):
             triangles.extend(self.triangulate_square([self.top.get(0,sy),
                              self.top.get(0,sy+1),
                              self.bottom.get(0,sy),
-                             self.bottom.get(0,sy+1)]))
+                             self.bottom.get(0,sy+1)],
+                             self.invert_normals))
             triangles.extend(self.triangulate_square([self.top.get(self.top.x_max(), sy+1),
                              self.top.get(self.top.x_max(), sy),
                              self.bottom.get(self.bottom.x_max(), sy+1),
-                             self.bottom.get(self.bottom.x_max(), sy)]))
+                             self.bottom.get(self.bottom.x_max(), sy)],
+                             self.invert_normals))
             
                             
         for sx in range(0, self.top.x_max()):
             triangles.extend(self.triangulate_square([self.top.get(sx+1,0),
                              self.top.get(sx,0),
                              self.bottom.get(sx+1,0),
-                             self.bottom.get(sx,0)]))
+                             self.bottom.get(sx,0)],
+                             self.invert_normals))
             triangles.extend(self.triangulate_square([self.top.get(sx, self.top.y_max()),
                              self.top.get(sx+1, self.top.y_max()),
                              self.bottom.get(sx, self.bottom.y_max()),
-                             self.bottom.get(sx+1, self.bottom.y_max())]))
+                             self.bottom.get(sx+1, self.bottom.y_max())],
+                             self.invert_normals))
                              
         return triangles
         
@@ -194,20 +199,22 @@ def compute_elevation_facet_volume(ele, floor):
 
 class Mesh(GridShape):
     
-    def __init__(self, xsize=0, ysize=0):
+    def __init__(self, xsize=0, ysize=0, invert=False):
         self.xsize = xsize 
         self.ysize = ysize
         self.mesh = []
+        self.invert_normals = invert
             
-    def triangulate(self, invert_normal = False):
+    def triangulate(self, invert_normals = False):
         triangles = []
+        invert = invert_normals or self.invert_normals
         for sy in range(0, self.y_max()):
             for sx in range(0, self.x_max()):
                 triangles.extend(self.triangulate_square([self.get(sx,sy),
                                      self.get(sx+1, sy),
                                      self.get(sx, sy+1),
                                      self.get(sx+1, sy+1)], 
-                                     invert_normal))        
+                                     invert_normals=invert))        
                                  
         return triangles
     
@@ -475,13 +482,12 @@ class HollowBottomDiamondWalls(GridShape):
     def triangulate(self):
         triangles = []
         
-        top = self.inner.get_relief_diamond()
-        bot = self.outer.get_relief_diamond()
-        # negx posx negy posy 
-        squares = [ [ top[0], top[3], bot[0], bot[3]],
-                    [ top[1], top[2], bot[1], bot[2]],
-                    [ top[2], top[0], bot[2], bot[0]],
-                    [ top[3], top[1], bot[3], bot[1]]]
+        inn = self.inner.get_relief_diamond()
+        out = self.outer.get_relief_diamond()
+        squares = [ [out[0], out[3], inn[0], inn[3] ],
+                    [out[1], out[2], inn[1], inn[2] ],
+                    [out[2], out[0], inn[2], inn[0] ],
+                    [out[3], out[1], inn[3], inn[1] ]]
         for x in squares:
             triangles.extend(self.triangulate_square(x))
             
@@ -494,7 +500,7 @@ class MeshBasePlate(object):
     A custom set of triangles to draw a bottom plate
     '''
     
-    def __init__(self, top, elevation=0, hollow=False):
+    def __init__(self, top, elevation=0, hollow=False, invert_normals=False):
         self.top = top
         self.xsize = top.xsize
         self.ysize = top.ysize
@@ -502,6 +508,7 @@ class MeshBasePlate(object):
         self.hollow = hollow 
         self.config_geometry()
         self.set_relief_diamond()
+        self.invert_normals = invert_normals
         
     
     def get(self, x, y):
@@ -542,8 +549,7 @@ class MeshBasePlate(object):
     def get_relief_diamond(self):
         return [self.negx, self.posx, self.negy, self.posy]
         
-    def triangulate(self):
-        # XXXX for the hollow model, need to find a way to invert the triangles
+    def triangulate(self, invert_normals=False):
         triangles = []
         
             
@@ -605,7 +611,13 @@ class MeshBasePlate(object):
 
             triangles.append(e_triangle)
             triangles.append(f_triangle)
-
+            
+        if self.invert_normals or invert_normals:
+            new_tris = []
+            for t in triangles:
+                new_tris.append( {TA:t[TA], TB:t[TC], TC:t[TB]})
+            triangles = new_tris
+            
         return triangles
     
         

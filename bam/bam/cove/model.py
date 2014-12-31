@@ -77,6 +77,7 @@ class HollowElevationModel(Model):
         return outer.compute_volume() - inner.compute_volume()
             
     def build_stl(self):
+        print "STARTING HOLLOW MODEL", self.builder
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
@@ -92,22 +93,20 @@ class HollowElevationModel(Model):
         hollow_ceiling = top.create_ceiling(
             self.builder.get_min_thickness(), 
             self.builder.get_ceiling_decimation_factor())
+        hollow_ceiling.invert_normals = True
       
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
         print("Physical Size: %s x %s x %s" % max_cube)
         
-        
-        
-
-        bottom = MeshBasePlate(top, 0, True)
+        bottom = MeshBasePlate(top, 0, hollow=True)
         diamond = bottom.get_relief_diamond()
-        hollow_bottom = MeshBasePlate(hollow_ceiling, self.builder.get_min_thickness()[PZ], True)
+        hollow_bottom = MeshBasePlate(hollow_ceiling, self.builder.get_min_thickness()[PZ], hollow=True, invert_normals=True)
         hollow_bottom.set_relief_diamond(diamond)
         
         diamond_walls = HollowBottomDiamondWalls(hollow_bottom, bottom)
        
         sandwich = MeshSandwich(top, bottom)
-        inner_sandwich = MeshSandwich(hollow_ceiling, hollow_bottom)
+        inner_sandwich = MeshSandwich(hollow_ceiling, hollow_bottom, invert_normals=True)
         
         canvas = STLCanvas()
         canvas.add_shape(inner_sandwich)
@@ -116,7 +115,8 @@ class HollowElevationModel(Model):
         
         model_area = canvas.compute_area()
         model_volume = self._compute_volume(sandwich,inner_sandwich)
-        # 
+        
+        print("Starting tapeout")
         canvas.write_stl(self.builder.get_output_file_name())
         # 
         desc = {'filename': self.builder.get_output_file_name(),

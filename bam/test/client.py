@@ -21,7 +21,8 @@ def run_model_get():
           'selat':'46.7762500',
           'selon':'-121.6701389',
           'zfactor':'2.2',
-          'price': 'e'
+          'price': 'e',
+	  'hollow': 1
           }      
     r = requests.get(url, params=kv)      
     print r.headers

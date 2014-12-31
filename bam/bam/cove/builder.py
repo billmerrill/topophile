@@ -13,8 +13,9 @@ class Builder(object):
         self.resize_ratio = kwargs.get('resize_ratio', (1,1))
         self.output_projection_epsg = 3857
         self.z_factor = kwargs.get('z_factor', 1.0)
-        self.min_model_thickness = kwargs.get('min_model_thickness', [1,1,1]) #mm - right this is enforced on z only
+        self.min_model_thickness = kwargs.get('min_model_thickness', [3,3,3]) #mm 
         self.ceiling_decimation_factor = kwargs.get('ceiling_decimation_factor', [6,6])
+        self.hollow = kwargs.get('hollow', False)
         
     def _default_dst_name(self):
         return self.src_filename.replace(".tif", ".stl")
@@ -55,3 +56,6 @@ class Builder(object):
         
     def get_ceiling_decimation_factor(self):
         return self.ceiling_decimation_factor
+        
+    def is_hollow(self):
+        return self.hollow
