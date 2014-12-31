@@ -325,8 +325,6 @@ class Mesh(GridShape):
         # the fractional remainder of the cell division
         fstep = np.modf(np.divide(src.shape, cell_mesh_shape.astype(float)))[0]
         
-        print "pix per ell, fstep"
-        print (pix_per_cell, fstep)
         
         # smooth the remainders out over the width of the mesh
         def acc(index, fstep):

@@ -28,5 +28,5 @@ def test_hollow():
     
 # main()      
 # test_hollow()
-solid()
+# solid()
 # hollow()
