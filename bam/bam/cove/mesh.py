@@ -436,9 +436,33 @@ class Mesh(GridShape):
         c.load_matrix(full_ceiling_mesh)
         return c
         
+    def transform_border_points(self, scale, translate):
+        print self.mesh.shape, self.mesh[0,:].shape, self.mesh[1:-1, 0].shape
+        #x    
+        self.mesh[0,:] = np.multiply(self.mesh[0,:], np.array(scale))
+        self.mesh[0,:] = np.add(self.mesh[0,:], np.array(translate))
+        self.mesh[-1,:] = np.multiply(self.mesh[-1,:], np.array(scale))
+        self.mesh[-1,:] = np.add(self.mesh[-1,:], np.array(translate))
         
-# class HollowModelCeilingMesh(Mesh):
+        #y
+        self.mesh[1:-1,0] = np.multiply(self.mesh[1:-1,0], np.array(scale))
+        self.mesh[1:-1,0] = np.add(self.mesh[1:-1,0], np.array(translate))
+        self.mesh[1:-1,-1] = np.multiply(self.mesh[1:-1,-1], np.array(scale))
+        self.mesh[1:-1,-1] = np.add(self.mesh[1:-1,-1], np.array(translate))
         
+    def transform_border(self, scale, translate, depth=1):
+        print self.mesh.shape, self.mesh[0,:].shape, self.mesh[1:-1, 0].shape
+        #x    
+        self.mesh[0:depth,:] = np.multiply(self.mesh[0:depth,:], np.array(scale))
+        self.mesh[0:depth,:] = np.add(self.mesh[0:depth,:], np.array(translate))
+        self.mesh[-depth:,:] = np.multiply(self.mesh[-depth:,:], np.array(scale))
+        self.mesh[-depth:,:] = np.add(self.mesh[-depth:,:], np.array(translate))
+        
+        #y
+        self.mesh[depth:-depth,0:depth] = np.multiply(self.mesh[depth:-depth,0:depth], np.array(scale))
+        self.mesh[depth:-depth,0:depth] = np.add(self.mesh[depth:-depth,0:depth], np.array(translate))
+        self.mesh[depth:-depth,-depth:] = np.multiply(self.mesh[depth:-depth,-depth:], np.array(scale))
+        self.mesh[depth:-depth,-depth:] = np.add(self.mesh[depth:-depth,-depth:],np.array(translate))
     
         
 class HorizontalPointPlane(GridShape):
