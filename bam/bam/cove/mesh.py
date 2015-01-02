@@ -468,32 +468,21 @@ class Mesh(GridShape):
         translate_start = np.array(translate_start)
         translate_step = np.array(translate_step)
         #x    
-        for d in range(depth):
-        
+
+        def transform_edge(ystart, ystop, xstart, xstop):
+            yslice = slice(ystart, ystop if ystop != 0 else None)
+            xslice = slice(xstart, xstop if xstop != 0 else None)
+            self.mesh[yslice,xslice] = np.multiply(self.mesh[yslice, xslice], np.add(scale_start, d*scale_step))
+            self.mesh[yslice,xslice] = np.add(self.mesh[yslice,xslice], np.add(translate_start, d*translate_step))
             
-            if d == 0:
-                self.mesh[d:d+1,d:] = np.multiply(self.mesh[d:d+1,:], np.add(scale_start, d*scale_step))
-                self.mesh[d:d+1,d:] = np.add(self.mesh[d:d+1,:], np.add(translate_start, d*translate_step))
-                self.mesh[-d-1:,d:] = np.multiply(self.mesh[-d-1:,:], np.add(scale_start, d*scale_step))
-                self.mesh[-d-1:,d:] = np.add(self.mesh[-d-1:,:], np.add(translate_start, d*translate_step))
-            else:    
-                self.mesh[d:d+1,d:-d] = np.multiply(self.mesh[d:d+1,d:-d], np.add(scale_start, d*scale_step))
-                self.mesh[d:d+1,d:-d] = np.add(self.mesh[d:d+1,d:-d], np.add(translate_start, d*translate_step))
-                self.mesh[-d-1:-d,d:-d] = np.multiply(self.mesh[-d-1:-d,d:-d], np.add(scale_start, d*scale_step))
-                self.mesh[-d-1:-d,d:-d] = np.add(self.mesh[-d-1:-d,d:-d], np.add(translate_start, d*translate_step))
-                
-            # #y
-            if d == 0:
-                self.mesh[d+1:-d-1,d:d+1] = np.multiply(self.mesh[d+1:-d-1,d:d+1], np.add(scale_start, d*scale_step))
-                self.mesh[d+1:-d-1,d:d+1] = np.add(self.mesh[d+1:-d-1,d:d+1], np.add(translate_start, d*translate_step))
-                self.mesh[d+1:-d-1,-d-1:] = np.multiply(self.mesh[d+1:-d-1,-d-1:], np.add(scale_start, d*scale_step))
-                self.mesh[d+1:-d-1,-d-1:] = np.add(self.mesh[d+1:-d-1,-d-1:],np.add(translate_start, d*translate_step))
-            else:
-                self.mesh[d+1:-d-1,d:d+1] = np.multiply(self.mesh[d+1:-d-1,d:d+1], np.add(scale_start, d*scale_step))
-                self.mesh[d+1:-d-1,d:d+1] = np.add(self.mesh[d+1:-d-1,d:d+1], np.add(translate_start, d*translate_step))
-                self.mesh[d+1:-d-1,-d-1:-d] = np.multiply(self.mesh[d+1:-d-1,-d-1:-d], np.add(scale_start, d*scale_step))
-                self.mesh[d+1:-d-1,-d-1:-d] = np.add(self.mesh[d+1:-d-1,-d-1:-d],np.add(translate_start, d*translate_step))
-    
+        for d in range(depth):
+            #x
+            transform_edge(d,     d+1, d, -d)
+            transform_edge(-d-1, -d,   d, -d)
+            #y
+            transform_edge(d+1, -d-1,  d,    d+1)
+            transform_edge(d+1, -d-1, -d-1, -d)
+        
         
 class HorizontalPointPlane(GridShape):
     

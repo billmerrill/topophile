@@ -94,8 +94,7 @@ class HollowElevationModel(Model):
         hollow_ceiling = top.create_ceiling(
             self.builder.get_min_thickness(), 
             self.builder.get_ceiling_decimation_factor())
-        # hollow_ceiling.transform_border_points((1,1,.8), (0,0,0)) # bevel the crown 
-        hollow_ceiling.transform_border((1,1,0.8), (0,0,0), 2) # bevel the crown 
+        hollow_ceiling.transform_border_stepwise((1,1,0.7), (0,0,0.1), (0,0,0), (0,0,0), 3) # bevel the crown 
         hollow_ceiling.invert_normals = True
       
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
