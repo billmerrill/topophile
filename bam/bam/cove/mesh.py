@@ -661,4 +661,20 @@ class MeshBasePlate(object):
             
         return triangles
     
+class TopoBasePlate(object):
+    
+    def __init__(self, top, levation, hollow=False, invert_normals=False):
+        self.top = top
+        self.el = elevation
+        self.invert_normals = invert_normals
+        self.hollow = hollow
+        # a T, described from the upper left point, counter clockwise
+        self.tee = [ [0.,  0., self.el],
+                     [0., -2., self.el],
+                     [3., -2., self.el],
+                     [3., -7., self.el],
+                     [5., -7., self.el],
+                     [5., -2., self.el],
+                     [11., -2., self.el],
+                     [11., 0., self.el]]
         
