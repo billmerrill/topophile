@@ -1,0 +1,661 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>shapeways.client &mdash; Shapeways 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Shapeways 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Shapeways 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for shapeways.client</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlencode</span>
+<span class="kn">from</span> <span class="nn">urlparse</span> <span class="kn">import</span> <span class="n">parse_qs</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">requests_oauthlib</span> <span class="kn">import</span> <span class="n">OAuth1</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../client.html#shapeways.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Api client for the Shapeways API http://developers.shapeways.com</span>
+
+<span class="sd">    The API uses OAuth v1 to authenticate clients, so the following steps</span>
+<span class="sd">    must be used.</span>
+
+<span class="sd">    1. Create a client</span>
+<span class="sd">    2. Connect to API and get request token and authentication url</span>
+<span class="sd">    3. Send user to authentication url</span>
+<span class="sd">    4. Verify callback from authentication url</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        client = Client(&quot;key&quot;, &quot;secret&quot;)</span>
+<span class="sd">        url = client.connect()</span>
+<span class="sd">        # redirect user to `url`</span>
+<span class="sd">        # capture response url from authentication callback</span>
+<span class="sd">        client.verify_url(response_url)</span>
+<span class="sd">        # make api requests</span>
+<span class="sd">        info = client.get_api_info()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">&quot;base_url&quot;</span><span class="p">,</span> <span class="s">&quot;api_version&quot;</span><span class="p">,</span> <span class="s">&quot;consumer_key&quot;</span><span class="p">,</span> <span class="s">&quot;consumer_secret&quot;</span><span class="p">,</span>
+        <span class="s">&quot;oauth_token&quot;</span><span class="p">,</span> <span class="s">&quot;oauth_secret&quot;</span><span class="p">,</span> <span class="s">&quot;oauth&quot;</span><span class="p">,</span> <span class="s">&quot;callback_url&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">consumer_key</span><span class="p">,</span> <span class="n">consumer_secret</span><span class="p">,</span> <span class="n">callback_url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">oauth_token</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">oauth_secret</span><span class="o">=</span><span class="bp">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor for a new :class:`shapeways.client.Client`</span>
+
+<span class="sd">        :param consumer_key: The API key for your app</span>
+<span class="sd">        :type consumer_key: str</span>
+<span class="sd">        :param consumer_secret: The API secret key for your app</span>
+<span class="sd">        :type consumer_secret: str</span>
+<span class="sd">        :param callback_url: The url that should be redirected to after</span>
+<span class="sd">            successful authentication with Shapeways OAuth</span>
+<span class="sd">        :type callback_url: str</span>
+<span class="sd">        :param oauth_token: The OAuth token obtained from calls</span>
+<span class="sd">            to connect/verify</span>
+<span class="sd">        :type oauth_token: str</span>
+<span class="sd">        :param oauth_secret: The OAuth secret obtained from calls</span>
+<span class="sd">            to connect/verify</span>
+<span class="sd">        :type oauth_secret: str</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span> <span class="o">=</span> <span class="n">consumer_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span> <span class="o">=</span> <span class="n">consumer_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback_url</span> <span class="o">=</span> <span class="n">callback_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="s">&quot;https://api.shapeways.com&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_version</span> <span class="o">=</span> <span class="s">&quot;v1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span> <span class="o">=</span> <span class="n">oauth_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span> <span class="o">=</span> <span class="n">oauth_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth</span> <span class="o">=</span> <span class="n">OAuth1</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="n">consumer_secret</span><span class="p">,</span>
+            <span class="n">callback_uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callback_url</span><span class="p">,</span>
+            <span class="n">resource_owner_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">,</span>
+            <span class="n">resource_owner_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Client.url"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.url">[docs]</a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate the full url for an API path</span>
+
+<span class="sd">        .. code:: python</span>
+
+<span class="sd">            client = Client(&quot;key&quot;, &quot;secret&quot;)</span>
+<span class="sd">            url = client.url(&quot;/api/&quot;)</span>
+<span class="sd">            # &quot;https://api.shapeways.com/api/v1&quot;</span>
+
+<span class="sd">        :param path: The API path to get the url for</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :returns: the full url to ``path``</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">+=</span> <span class="s">&quot;/&quot;</span>
+
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s%s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_version</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.connect"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get an OAuth request token and authentication url</span>
+
+<span class="sd">        :returns: the authentication url that the user must visit or None</span>
+<span class="sd">            on error</span>
+<span class="sd">        :rtype: str or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="s">&quot;/oauth1/request_token/&quot;</span><span class="p">),</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_qs</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;oauth_token_secret&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;authentication_url&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Client.verify_url"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.verify_url">[docs]</a>    <span class="k">def</span> <span class="nf">verify_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse parameters and properly call :meth:`shapeways.client.Client.verify`</span>
+
+<span class="sd">        If you already have the ``oauth_token`` and ``oauth_verifier`` parameters</span>
+<span class="sd">        parsed, use :meth:`shapeways.client.Client.verify` directly instead.</span>
+
+<span class="sd">        :param url: The response url or query string from the</span>
+<span class="sd">            authentication callback</span>
+<span class="sd">        :type url: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s">&quot;?&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_qs</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;oauth_token&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;oauth_verifier&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.verify"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oauth_token</span><span class="p">,</span> <span class="n">oauth_verifier</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get an access token and setup OAuth credentials for further use</span>
+
+<span class="sd">        If you have the full url or query string from the authentication</span>
+<span class="sd">        callback then you can use :meth:`shapeways.client.Client.verify_url`</span>
+<span class="sd">        which will parse the correct parameters from the query string and</span>
+<span class="sd">        call :meth:`shapeways.client.Client.verify`</span>
+
+<span class="sd">        :param oauth_token: the ``oauth_token`` parameter from the</span>
+<span class="sd">            authentication callback</span>
+<span class="sd">        :type oauth_token: str</span>
+<span class="sd">        :param oauth_verifier: the ``oauth_verifier`` parameter from the</span>
+<span class="sd">            authentication callback</span>
+<span class="sd">        :type oauth_verifier: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">access_oauth</span> <span class="o">=</span> <span class="n">OAuth1</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span><span class="p">,</span>
+            <span class="n">resource_owner_key</span><span class="o">=</span><span class="n">oauth_token</span><span class="p">,</span>
+            <span class="n">resource_owner_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span><span class="p">,</span>
+            <span class="n">verifier</span><span class="o">=</span><span class="n">oauth_verifier</span>
+        <span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="s">&quot;/oauth1/access_token/&quot;</span><span class="p">),</span>
+            <span class="n">auth</span><span class="o">=</span><span class="n">access_oauth</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_qs</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;oauth_token&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;oauth_token_secret&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth</span> <span class="o">=</span> <span class="n">OAuth1</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span><span class="p">,</span>
+            <span class="n">resource_owner_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">,</span>
+            <span class="n">resource_owner_secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth_secret</span><span class="p">,</span>
+        <span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the results from an API GET call to ``path``</span>
+
+<span class="sd">        :param path: the api path to fetch e.g. ``/api/``</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param params: dict of query string parameters to use</span>
+<span class="sd">        :type params: dict or None</span>
+<span class="sd">        :returns: the results from the api call</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">url</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the results from an API DELETE call to ``path``</span>
+
+<span class="sd">        :param path: the api path to fetch e.g. ``/api/``</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param params: dict of query string parameters to use</span>
+<span class="sd">        :type params: dict or None</span>
+<span class="sd">        :returns: the results from the api call</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the results from an API POST call to ``path``</span>
+
+<span class="sd">        :param path: the api path to fetch e.g. ``/api/``</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param body: the POST body to use</span>
+<span class="sd">        :type body: str or None</span>
+<span class="sd">        :param params: dict of query string parameters to use</span>
+<span class="sd">        :type params: dict or None</span>
+<span class="sd">        :returns: the results from the api call</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the results from an API PUT call to ``path``</span>
+
+<span class="sd">        :param path: the api path to fetch e.g. ``/api/``</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param body: the PUT body to use</span>
+<span class="sd">        :type body: str or None</span>
+<span class="sd">        :param params: dict of query string parameters to use</span>
+<span class="sd">        :type params: dict or None</span>
+<span class="sd">        :returns: the results from the api call</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">oauth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Client.get_api_info"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_api_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_api_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /api/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-api-v1-1&gt;`_</span>
+
+<span class="sd">        :returns: api info</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/api/&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_cart"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_cart">[docs]</a>    <span class="k">def</span> <span class="nf">get_cart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /orders/cart/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-orders-cart-v1&gt;`_</span>
+
+<span class="sd">        :returns: items currently in the cart</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/orders/cart/&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_material"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_material">[docs]</a>    <span class="k">def</span> <span class="nf">get_material</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">material_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /materials/{material_id}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-materials-materialId-v1&gt;`_</span>
+
+<span class="sd">        :param material_id: the id of the material to fetch</span>
+<span class="sd">        :type material_id: int</span>
+<span class="sd">        :returns: specific materials info</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/materials/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">material_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_materials"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_materials">[docs]</a>    <span class="k">def</span> <span class="nf">get_materials</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /materials/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-materials-v1&gt;`_</span>
+
+<span class="sd">        :returns: information about all materials</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/materials/&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_models"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_models">[docs]</a>    <span class="k">def</span> <span class="nf">get_models</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /models/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-models-v1&gt;`_</span>
+
+<span class="sd">        :returns: information about all user&#39;s models</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">page</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;page&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/models/&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_model"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /models/{model_id}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-v1&gt;`_</span>
+
+<span class="sd">        :param model_id: the id of the model to fetch</span>
+<span class="sd">        :type mode_id: int</span>
+<span class="sd">        :returns: data for a specific model</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_model_info"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_model_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /models/{model_id}/info/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-info-v1&gt;`_</span>
+
+<span class="sd">        :param model_id: the id of the model to fetch</span>
+<span class="sd">        :type mode_id: int</span>
+<span class="sd">        :returns: information for a specific model</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/info/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.delete_model"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.delete_model">[docs]</a>    <span class="k">def</span> <span class="nf">delete_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `DELETE /models/{model_id}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#DELETE_-models-modelId-v1&gt;`_</span>
+
+<span class="sd">        :param model_id: the id of the model to delete</span>
+<span class="sd">        :type mode_id: int</span>
+<span class="sd">        :returns: information whether or not it was successful</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_printers"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_printers">[docs]</a>    <span class="k">def</span> <span class="nf">get_printers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /printers/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-printers-v1&gt;`_</span>
+
+<span class="sd">        :returns: information about all printers</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/printers/&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_printer"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_printer">[docs]</a>    <span class="k">def</span> <span class="nf">get_printer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">printer_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /printers/{printer_id}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-printers-printerId-v1&gt;`_</span>
+
+<span class="sd">        :param printer_id: the printer to fetch information for</span>
+<span class="sd">        :type printer_id: int</span>
+<span class="sd">        :returns: information about a specific printer</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/printers/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">printer_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_categories"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_categories">[docs]</a>    <span class="k">def</span> <span class="nf">get_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /categories/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-categories-v1&gt;`_</span>
+
+<span class="sd">        :returns: information about all categories</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/categories/&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_category"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_category">[docs]</a>    <span class="k">def</span> <span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /categories/{category_id}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-categories-categoryId-v1&gt;`_</span>
+
+<span class="sd">        :param category_id: the category to fetch information for</span>
+<span class="sd">        :type category_id: int</span>
+<span class="sd">        :returns: information about a specific category</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&quot;/categories/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">category_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_price"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_price">[docs]</a>    <span class="k">def</span> <span class="nf">get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `POST /price/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#POST_-price-v1&gt;`_</span>
+
+<span class="sd">        Required Parameters:</span>
+
+<span class="sd">        1. ``volume`` - float</span>
+<span class="sd">        2. ``area`` - float</span>
+<span class="sd">        3. ``xBoundMin`` - float</span>
+<span class="sd">        4. ``xBoundMax`` - float</span>
+<span class="sd">        5. ``yBoundMin`` - float</span>
+<span class="sd">        6. ``yBoundMax`` - float</span>
+<span class="sd">        7. ``zBoundMin`` - float</span>
+<span class="sd">        8. ``zBoundMax`` - float</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``materials`` - list</span>
+
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: pricing information for the ``params`` given</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :raises: :class:`Exception` when any of the required parameters</span>
+<span class="sd">            are missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;volume&quot;</span><span class="p">,</span> <span class="s">&quot;area&quot;</span><span class="p">,</span> <span class="s">&quot;xBoundMin&quot;</span><span class="p">,</span> <span class="s">&quot;xBoundMax&quot;</span><span class="p">,</span>
+            <span class="s">&quot;yBoundMin&quot;</span><span class="p">,</span> <span class="s">&quot;yBoundMax&quot;</span><span class="p">,</span> <span class="s">&quot;zBoundMin&quot;</span><span class="p">,</span> <span class="s">&quot;zBoundMax&quot;</span>
+        <span class="p">]</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;get_price missing required parameters: </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">missing</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s">&quot;/price/&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Client.add_to_cart"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.add_to_cart">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_cart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `POST /orders/cart/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#POST_-orders-cart-v1&gt;`_</span>
+
+<span class="sd">        Required Parameters:</span>
+
+<span class="sd">        1. ``modelId`` - int</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``materialId`` - int</span>
+<span class="sd">        2. ``quantity`` - int</span>
+
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: whether or not the call was successful</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :raises: :class:`Exception` when the required parameter is missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s">&quot;modelId&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;add_to_cart missing required parameter [&#39;modelId&#39;]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s">&quot;/orders/cart/&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Client.add_model_file"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.add_model_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_model_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `POST /models/{model_id}/files/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#POST_-models-modelId-files-v1&gt;`_</span>
+
+<span class="sd">        Required Parameters:</span>
+
+<span class="sd">        1. ``file`` - str (the file data)</span>
+<span class="sd">        2. ``fileName`` - str</span>
+<span class="sd">        3. ``hasRightsToModel`` - bool</span>
+<span class="sd">        4. ``acceptTermsAndConditions`` - bool</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``uploadScale`` - float</span>
+
+<span class="sd">        :param model_id: the id of the model to upload the file for</span>
+<span class="sd">        :type model_id: int</span>
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: file upload information</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :raises: :class:`Exception` when any of the required parameters</span>
+<span class="sd">            are missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;file&quot;</span><span class="p">,</span> <span class="s">&quot;fileName&quot;</span><span class="p">,</span> <span class="s">&quot;hasRightsToModel&quot;</span><span class="p">,</span> <span class="s">&quot;acceptTermsAndConditions&quot;</span>
+        <span class="p">]</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;add_model_file missing required parameters </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">missing</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span>
+            <span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/files/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.add_model_photo"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.add_model_photo">[docs]</a>    <span class="k">def</span> <span class="nf">add_model_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `POST /models/{model_id}/photos/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#POST_-models-modelId-photos-v1&gt;`_</span>
+
+<span class="sd">        Required Parameters:</span>
+
+<span class="sd">        1. ``file`` - str (the file data)</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``title`` - str</span>
+<span class="sd">        2. ``description`` - str</span>
+<span class="sd">        3. ``materialId`` - int</span>
+<span class="sd">        4. ``isDefault`` - bool</span>
+
+<span class="sd">        :param model_id: the id of the model to upload the photo for</span>
+<span class="sd">        :type model_id: int</span>
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: photo upload information</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :raises: :class:`Exception` when the required parameter is missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s">&quot;file&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;add_model_photo missing required parameter [&#39;file&#39;]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span>
+            <span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/photos/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.get_model_file"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.get_model_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">file_version</span><span class="p">,</span> <span class="n">include_file</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `GET /models/{model_id}/files/{file_version}/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-files-fileVersion-v1&gt;`_</span>
+
+<span class="sd">        :param model_id: the id of the model to get the file from</span>
+<span class="sd">        :type model_id: int</span>
+<span class="sd">        :param file_version: the file version of the file to fetch</span>
+<span class="sd">        :type file_version: int</span>
+<span class="sd">        :param include_file: whether or not to include the raw file data</span>
+<span class="sd">            in the response</span>
+<span class="sd">        :type include_file: bool</span>
+<span class="sd">        :returns: the file information</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;file&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">include_file</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/files/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">file_version</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Client.update_model_info"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.update_model_info">[docs]</a>    <span class="k">def</span> <span class="nf">update_model_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `PUT /models/{model_id}/info/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#PUT_-models-modelId-info-v1&gt;`_</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``uploadScale`` - float</span>
+<span class="sd">        2. ``title`` - str</span>
+<span class="sd">        3. ``description`` - str</span>
+<span class="sd">        4. ``isPublic`` - bool</span>
+<span class="sd">        5. ``isForSale`` - bool</span>
+<span class="sd">        6. ``isDownloadable`` - bool</span>
+<span class="sd">        7. ``tags`` - list</span>
+<span class="sd">        8. ``materials`` - dict</span>
+<span class="sd">        9. ``defaultMaterialId`` - int</span>
+<span class="sd">        10. ``categories`` - list</span>
+
+<span class="sd">        :param model_id: the id of the model to get the file from</span>
+<span class="sd">        :type model_id: int</span>
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: the model information</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put</span><span class="p">(</span>
+            <span class="s">&quot;/models/</span><span class="si">%s</span><span class="s">/info/&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.add_model"><a class="viewcode-back" href="../../client.html#shapeways.client.Client.add_model">[docs]</a>    <span class="k">def</span> <span class="nf">add_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an API call `POST /models/v1</span>
+<span class="sd">        &lt;https://developers.shapeways.com/docs?li=dh_docs#POST_-models-v1&gt;`_</span>
+
+<span class="sd">        Required Parameters:</span>
+
+<span class="sd">        1. ``file`` - str (the file data)</span>
+<span class="sd">        2. ``fileName`` - str</span>
+<span class="sd">        3. ``hasRightsToModel`` - bool</span>
+<span class="sd">        4. ``acceptTermsAndConditions`` - bool</span>
+
+<span class="sd">        Optional Parameters:</span>
+
+<span class="sd">        1. ``uploadScale`` - float</span>
+<span class="sd">        2. ``title`` - str</span>
+<span class="sd">        3. ``description`` - str</span>
+<span class="sd">        4. ``isPublic`` - bool</span>
+<span class="sd">        5. ``isForSale`` - bool</span>
+<span class="sd">        6. ``isDownloadable`` - bool</span>
+<span class="sd">        7. ``tags`` - list</span>
+<span class="sd">        8. ``materials`` - dict</span>
+<span class="sd">        9. ``defaultMaterialId`` - int</span>
+<span class="sd">        10. ``categories`` - list</span>
+
+<span class="sd">        :param params: dict of necessary parameters to make the api call</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        :returns: model upload information</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        :raises: :class:`Exception` when any of the required parameters</span>
+<span class="sd">            are missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;file&quot;</span><span class="p">,</span> <span class="s">&quot;fileName&quot;</span><span class="p">,</span> <span class="s">&quot;hasRightsToModel&quot;</span><span class="p">,</span> <span class="s">&quot;acceptTermsAndConditions&quot;</span><span class="p">]</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;add_model missing required parameters: </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">missing</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s">&quot;/models/&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">params</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">shapeways.client</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Shapeways 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Shapeways.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

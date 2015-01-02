@@ -1,0 +1,685 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>shapeways.client &mdash; Shapeways 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Shapeways 1.0.0 documentation" href="index.html" />
+    <link rel="prev" title="Python Shapeways Documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python Shapeways Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Shapeways 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-shapeways.client">
+<span id="shapeways-client"></span><h1>shapeways.client<a class="headerlink" href="#module-shapeways.client" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="shapeways.client.Client">
+<em class="property">class </em><tt class="descclassname">shapeways.client.</tt><tt class="descname">Client</tt><big>(</big><em>consumer_key</em>, <em>consumer_secret</em>, <em>callback_url=None</em>, <em>oauth_token=None</em>, <em>oauth_secret=None</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Api client for the Shapeways API <a class="reference external" href="http://developers.shapeways.com">http://developers.shapeways.com</a></p>
+<p>The API uses OAuth v1 to authenticate clients, so the following steps
+must be used.</p>
+<ol class="arabic simple">
+<li>Create a client</li>
+<li>Connect to API and get request token and authentication url</li>
+<li>Send user to authentication url</li>
+<li>Verify callback from authentication url</li>
+</ol>
+<p>Example:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span> <span class="s">&quot;secret&quot;</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="c"># redirect user to `url`</span>
+<span class="c"># capture response url from authentication callback</span>
+<span class="n">client</span><span class="o">.</span><span class="n">verify_url</span><span class="p">(</span><span class="n">response_url</span><span class="p">)</span>
+<span class="c"># make api requests</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_api_info</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Constructor for a new <a class="reference internal" href="#shapeways.client.Client" title="shapeways.client.Client"><tt class="xref py py-class docutils literal"><span class="pre">shapeways.client.Client</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>consumer_key</strong> (<em>str</em>) &#8211; The API key for your app</li>
+<li><strong>consumer_secret</strong> (<em>str</em>) &#8211; The API secret key for your app</li>
+<li><strong>callback_url</strong> (<em>str</em>) &#8211; The url that should be redirected to after
+successful authentication with Shapeways OAuth</li>
+<li><strong>oauth_token</strong> (<em>str</em>) &#8211; The OAuth token obtained from calls
+to connect/verify</li>
+<li><strong>oauth_secret</strong> (<em>str</em>) &#8211; The OAuth secret obtained from calls
+to connect/verify</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="shapeways.client.Client.add_model">
+<tt class="descname">add_model</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.add_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.add_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#POST_-models-v1">POST /models/v1</a></p>
+<p>Required Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">file</span></tt> - str (the file data)</li>
+<li><tt class="docutils literal"><span class="pre">fileName</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">hasRightsToModel</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">acceptTermsAndConditions</span></tt> - bool</li>
+</ol>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">uploadScale</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">title</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">description</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">isPublic</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">isForSale</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">isDownloadable</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">tags</span></tt> - list</li>
+<li><tt class="docutils literal"><span class="pre">materials</span></tt> - dict</li>
+<li><tt class="docutils literal"><span class="pre">defaultMaterialId</span></tt> - int</li>
+<li><tt class="docutils literal"><span class="pre">categories</span></tt> - list</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">model upload information</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">Exception</span></tt> when any of the required parameters
+are missing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.add_model_file">
+<tt class="descname">add_model_file</tt><big>(</big><em>model_id</em>, <em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.add_model_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.add_model_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#POST_-models-modelId-files-v1">POST /models/{model_id}/files/v1</a></p>
+<p>Required Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">file</span></tt> - str (the file data)</li>
+<li><tt class="docutils literal"><span class="pre">fileName</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">hasRightsToModel</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">acceptTermsAndConditions</span></tt> - bool</li>
+</ol>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">uploadScale</span></tt> - float</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_id</strong> (<em>int</em>) &#8211; the id of the model to upload the file for</li>
+<li><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">file upload information</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">dict</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">Exception</span></tt> when any of the required parameters
+are missing</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.add_model_photo">
+<tt class="descname">add_model_photo</tt><big>(</big><em>model_id</em>, <em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.add_model_photo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.add_model_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#POST_-models-modelId-photos-v1">POST /models/{model_id}/photos/v1</a></p>
+<p>Required Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">file</span></tt> - str (the file data)</li>
+</ol>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">title</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">description</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">materialId</span></tt> - int</li>
+<li><tt class="docutils literal"><span class="pre">isDefault</span></tt> - bool</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_id</strong> (<em>int</em>) &#8211; the id of the model to upload the photo for</li>
+<li><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">photo upload information</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">dict</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">Exception</span></tt> when the required parameter is missing</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.add_to_cart">
+<tt class="descname">add_to_cart</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.add_to_cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.add_to_cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#POST_-orders-cart-v1">POST /orders/cart/v1</a></p>
+<p>Required Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">modelId</span></tt> - int</li>
+</ol>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">materialId</span></tt> - int</li>
+<li><tt class="docutils literal"><span class="pre">quantity</span></tt> - int</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">whether or not the call was successful</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">Exception</span></tt> when the required parameter is missing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.connect">
+<tt class="descname">connect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an OAuth request token and authentication url</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the authentication url that the user must visit or None
+on error</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.delete_model">
+<tt class="descname">delete_model</tt><big>(</big><em>model_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.delete_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.delete_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#DELETE_-models-modelId-v1">DELETE /models/{model_id}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model_id</strong> &#8211; the id of the model to delete</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">information whether or not it was successful</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_api_info">
+<tt class="descname">get_api_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_api_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_api_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-api-v1-1">GET /api/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">api info</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_cart">
+<tt class="descname">get_cart</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-orders-cart-v1">GET /orders/cart/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">items currently in the cart</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_categories">
+<tt class="descname">get_categories</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_categories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-categories-v1">GET /categories/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">information about all categories</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_category">
+<tt class="descname">get_category</tt><big>(</big><em>category_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-categories-categoryId-v1">GET /categories/{category_id}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>category_id</strong> (<em>int</em>) &#8211; the category to fetch information for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">information about a specific category</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_material">
+<tt class="descname">get_material</tt><big>(</big><em>material_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_material"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_material" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-materials-materialId-v1">GET /materials/{material_id}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>material_id</strong> (<em>int</em>) &#8211; the id of the material to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">specific materials info</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_materials">
+<tt class="descname">get_materials</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_materials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_materials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-materials-v1">GET /materials/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">information about all materials</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_model">
+<tt class="descname">get_model</tt><big>(</big><em>model_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-v1">GET /models/{model_id}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model_id</strong> &#8211; the id of the model to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">data for a specific model</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_model_file">
+<tt class="descname">get_model_file</tt><big>(</big><em>model_id</em>, <em>file_version</em>, <em>include_file=False</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_model_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_model_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-files-fileVersion-v1">GET /models/{model_id}/files/{file_version}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_id</strong> (<em>int</em>) &#8211; the id of the model to get the file from</li>
+<li><strong>file_version</strong> (<em>int</em>) &#8211; the file version of the file to fetch</li>
+<li><strong>include_file</strong> (<em>bool</em>) &#8211; whether or not to include the raw file data
+in the response</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the file information</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_model_info">
+<tt class="descname">get_model_info</tt><big>(</big><em>model_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_model_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_model_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-models-modelId-info-v1">GET /models/{model_id}/info/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model_id</strong> &#8211; the id of the model to fetch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">information for a specific model</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_models">
+<tt class="descname">get_models</tt><big>(</big><em>page=None</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-models-v1">GET /models/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">information about all user&#8217;s models</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_price">
+<tt class="descname">get_price</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_price"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#POST_-price-v1">POST /price/v1</a></p>
+<p>Required Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">volume</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">area</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">xBoundMin</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">xBoundMax</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">yBoundMin</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">yBoundMax</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">zBoundMin</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">zBoundMax</span></tt> - float</li>
+</ol>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">materials</span></tt> - list</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pricing information for the <tt class="docutils literal"><span class="pre">params</span></tt> given</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">Exception</span></tt> when any of the required parameters
+are missing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_printer">
+<tt class="descname">get_printer</tt><big>(</big><em>printer_id</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-printers-printerId-v1">GET /printers/{printer_id}/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>printer_id</strong> (<em>int</em>) &#8211; the printer to fetch information for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">information about a specific printer</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.get_printers">
+<tt class="descname">get_printers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.get_printers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.get_printers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#GET_-printers-v1">GET /printers/v1</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">information about all printers</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.update_model_info">
+<tt class="descname">update_model_info</tt><big>(</big><em>model_id</em>, <em>params</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.update_model_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.update_model_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an API call <a class="reference external" href="https://developers.shapeways.com/docs?li=dh_docs#PUT_-models-modelId-info-v1">PUT /models/{model_id}/info/v1</a></p>
+<p>Optional Parameters:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">uploadScale</span></tt> - float</li>
+<li><tt class="docutils literal"><span class="pre">title</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">description</span></tt> - str</li>
+<li><tt class="docutils literal"><span class="pre">isPublic</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">isForSale</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">isDownloadable</span></tt> - bool</li>
+<li><tt class="docutils literal"><span class="pre">tags</span></tt> - list</li>
+<li><tt class="docutils literal"><span class="pre">materials</span></tt> - dict</li>
+<li><tt class="docutils literal"><span class="pre">defaultMaterialId</span></tt> - int</li>
+<li><tt class="docutils literal"><span class="pre">categories</span></tt> - list</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_id</strong> (<em>int</em>) &#8211; the id of the model to get the file from</li>
+<li><strong>params</strong> (<em>dict</em>) &#8211; dict of necessary parameters to make the api call</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the model information</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.url">
+<tt class="descname">url</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the full url for an API path</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span> <span class="s">&quot;secret&quot;</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="s">&quot;/api/&quot;</span><span class="p">)</span>
+<span class="c"># &quot;https://api.shapeways.com/api/v1&quot;</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211; The API path to get the url for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the full url to <tt class="docutils literal"><span class="pre">path</span></tt></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.verify">
+<tt class="descname">verify</tt><big>(</big><em>oauth_token</em>, <em>oauth_verifier</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an access token and setup OAuth credentials for further use</p>
+<p>If you have the full url or query string from the authentication
+callback then you can use <a class="reference internal" href="#shapeways.client.Client.verify_url" title="shapeways.client.Client.verify_url"><tt class="xref py py-meth docutils literal"><span class="pre">shapeways.client.Client.verify_url()</span></tt></a>
+which will parse the correct parameters from the query string and
+call <a class="reference internal" href="#shapeways.client.Client.verify" title="shapeways.client.Client.verify"><tt class="xref py py-meth docutils literal"><span class="pre">shapeways.client.Client.verify()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>oauth_token</strong> (<em>str</em>) &#8211; the <tt class="docutils literal"><span class="pre">oauth_token</span></tt> parameter from the
+authentication callback</li>
+<li><strong>oauth_verifier</strong> (<em>str</em>) &#8211; the <tt class="docutils literal"><span class="pre">oauth_verifier</span></tt> parameter from the
+authentication callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="shapeways.client.Client.verify_url">
+<tt class="descname">verify_url</tt><big>(</big><em>url</em><big>)</big><a class="reference internal" href="_modules/shapeways/client.html#Client.verify_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#shapeways.client.Client.verify_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse parameters and properly call <a class="reference internal" href="#shapeways.client.Client.verify" title="shapeways.client.Client.verify"><tt class="xref py py-meth docutils literal"><span class="pre">shapeways.client.Client.verify()</span></tt></a></p>
+<p>If you already have the <tt class="docutils literal"><span class="pre">oauth_token</span></tt> and <tt class="docutils literal"><span class="pre">oauth_verifier</span></tt> parameters
+parsed, use <a class="reference internal" href="#shapeways.client.Client.verify" title="shapeways.client.Client.verify"><tt class="xref py py-meth docutils literal"><span class="pre">shapeways.client.Client.verify()</span></tt></a> directly instead.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) &#8211; The response url or query string from the
+authentication callback</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">shapeways.client</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Python Shapeways Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/client.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python Shapeways Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">Shapeways 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Shapeways.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
