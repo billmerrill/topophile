@@ -437,7 +437,6 @@ class Mesh(GridShape):
         return c
         
     def transform_border_points(self, scale, translate):
-        print self.mesh.shape, self.mesh[0,:].shape, self.mesh[1:-1, 0].shape
         #x    
         self.mesh[0,:] = np.multiply(self.mesh[0,:], np.array(scale))
         self.mesh[0,:] = np.add(self.mesh[0,:], np.array(translate))
@@ -451,7 +450,6 @@ class Mesh(GridShape):
         self.mesh[1:-1,-1] = np.add(self.mesh[1:-1,-1], np.array(translate))
         
     def transform_border(self, scale, translate, depth=1):
-        print self.mesh.shape, self.mesh[0,:].shape, self.mesh[1:-1, 0].shape
         #x    
         self.mesh[0:depth,:] = np.multiply(self.mesh[0:depth,:], np.array(scale))
         self.mesh[0:depth,:] = np.add(self.mesh[0:depth,:], np.array(translate))
@@ -463,6 +461,38 @@ class Mesh(GridShape):
         self.mesh[depth:-depth,0:depth] = np.add(self.mesh[depth:-depth,0:depth], np.array(translate))
         self.mesh[depth:-depth,-depth:] = np.multiply(self.mesh[depth:-depth,-depth:], np.array(scale))
         self.mesh[depth:-depth,-depth:] = np.add(self.mesh[depth:-depth,-depth:],np.array(translate))
+        
+    def transform_border_stepwise(self, scale_start, scale_step, translate_start, translate_step, depth=1):
+        scale_start = np.array(scale_start)
+        scale_step = np.array(scale_step)
+        translate_start = np.array(translate_start)
+        translate_step = np.array(translate_step)
+        #x    
+        for d in range(depth):
+        
+            
+            if d == 0:
+                self.mesh[d:d+1,d:] = np.multiply(self.mesh[d:d+1,:], np.add(scale_start, d*scale_step))
+                self.mesh[d:d+1,d:] = np.add(self.mesh[d:d+1,:], np.add(translate_start, d*translate_step))
+                self.mesh[-d-1:,d:] = np.multiply(self.mesh[-d-1:,:], np.add(scale_start, d*scale_step))
+                self.mesh[-d-1:,d:] = np.add(self.mesh[-d-1:,:], np.add(translate_start, d*translate_step))
+            else:    
+                self.mesh[d:d+1,d:-d] = np.multiply(self.mesh[d:d+1,d:-d], np.add(scale_start, d*scale_step))
+                self.mesh[d:d+1,d:-d] = np.add(self.mesh[d:d+1,d:-d], np.add(translate_start, d*translate_step))
+                self.mesh[-d-1:-d,d:-d] = np.multiply(self.mesh[-d-1:-d,d:-d], np.add(scale_start, d*scale_step))
+                self.mesh[-d-1:-d,d:-d] = np.add(self.mesh[-d-1:-d,d:-d], np.add(translate_start, d*translate_step))
+                
+            # #y
+            if d == 0:
+                self.mesh[d+1:-d-1,d:d+1] = np.multiply(self.mesh[d+1:-d-1,d:d+1], np.add(scale_start, d*scale_step))
+                self.mesh[d+1:-d-1,d:d+1] = np.add(self.mesh[d+1:-d-1,d:d+1], np.add(translate_start, d*translate_step))
+                self.mesh[d+1:-d-1,-d-1:] = np.multiply(self.mesh[d+1:-d-1,-d-1:], np.add(scale_start, d*scale_step))
+                self.mesh[d+1:-d-1,-d-1:] = np.add(self.mesh[d+1:-d-1,-d-1:],np.add(translate_start, d*translate_step))
+            else:
+                self.mesh[d+1:-d-1,d:d+1] = np.multiply(self.mesh[d+1:-d-1,d:d+1], np.add(scale_start, d*scale_step))
+                self.mesh[d+1:-d-1,d:d+1] = np.add(self.mesh[d+1:-d-1,d:d+1], np.add(translate_start, d*translate_step))
+                self.mesh[d+1:-d-1,-d-1:-d] = np.multiply(self.mesh[d+1:-d-1,-d-1:-d], np.add(scale_start, d*scale_step))
+                self.mesh[d+1:-d-1,-d-1:-d] = np.add(self.mesh[d+1:-d-1,-d-1:-d],np.add(translate_start, d*translate_step))
     
         
 class HorizontalPointPlane(GridShape):
