@@ -57,6 +57,22 @@ z = (p['zBoundMax'] - p['zBoundMin'])
 p['volume'] = x*y*z
 p['area'] = 2*x*y + 2*x*z + 2*y*z
 
+
+pricetest = { 'xBoundMin': 0.0,
+              'xBoundMax': .3000, 
+              'yBoundMin': 0.0,
+              'yBoundMax': .19245108570111924,
+              'zBoundMin': 0.0,
+              'zBoundMax': .045144946952235827,
+              'volume': 1040075.0398049863 / 1000000000,
+              'area': 141600.1233810283 / 1000000,
+              'materials': [6] }  
+pprint.pprint (client.get_price(pricetest))
+exit()
+              
+              
+            #   '', "filename": "/Users/bill/qrl/topophile/topophile/bam/bam/app/model_cache/c29mcwxp20bp-c29t1g8181bn.stl", "area-mm2": 141600.1233810283, "z-size-mm": 45.144946952235827, "volume-mm3": 1040075.0398049863}
+
 # 6 - white strong and flexible
 # 26 - full color sandstone
 # 100 - full color plastic
