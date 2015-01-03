@@ -2,6 +2,7 @@ import cay_src as el_src
 #import sample_src as el_src
 import cove
 import os
+import time
 
 
 
@@ -28,11 +29,18 @@ class BoundingBoxJob(object):
         self.hollow = hollow is not False
         
     def run(self):
+        t1 = time.time()
         elevation_data = el_src.get_elevation(self.nwlat, self.nwlon, self.selat, self.selon)
         if elevation_data is None:
             return None
+        t2 = time.time()
             
         model_filename = self.build_model(elevation_data['filename'])
+        
+        t3 = time.time()
+        print "-----Job Times------"
+        print "-Elevation Data:\t", t2-t1
+        print "-Model Build:\t", t3-t2
         return model_filename 
         
     def build_model(self, elevation_filename):
