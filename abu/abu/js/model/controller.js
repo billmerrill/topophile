@@ -48,8 +48,8 @@ var modelController = (function() {
                     'nwlon': nwlon,
                     'selat': selat,
                     'selon': selon,
-                    'size': 300, //always 100
-                    'rez': 800, //400 dots per 100 mm ~= 100dpi
+                    'size': 100, //always 100
+                    'rez': 100, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor,
                     'price': 'e'}
                     //  'hollow': 1}
