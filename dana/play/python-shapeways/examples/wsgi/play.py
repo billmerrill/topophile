@@ -14,6 +14,14 @@ client = Client(
     callback_url="http://localhost:3000/callback"
 )
 
+'''
+client = Client(
+    consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
+    consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
+    callback_url="http://localhost:3000/callback"
+)
+'''
+
 p =  {
         'xBoundMin':  0.0,
         'xBoundMax':  0.05932,

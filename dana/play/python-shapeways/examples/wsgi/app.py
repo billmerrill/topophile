@@ -20,11 +20,18 @@ def application(environ, start_response):
         ])
         return [""]
     elif url.startswith("/callback"):
+        print 'query string', environ["QUERY_STRING"]
         client.verify_url(environ["QUERY_STRING"])
         start_response("302 Found", [
             ("Location", "http://localhost:3000/"),
         ])
         return [""]
+    elif url.startswith("/models"):
+        r = client.get_models()
+        start_response("200 Ok", [
+            ("Content-Type", "application/json"),
+        ])
+        return [json.dumps(r)   ]
     else:
         response = client.get_api_info()
         response['oauth_token'] = client.oauth_token
