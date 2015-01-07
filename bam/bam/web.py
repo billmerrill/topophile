@@ -57,7 +57,7 @@ class STLModelService(object):
             model['price'] = printer.price_model(model)
         
         model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
-        del(model['filename'])
+        model['filename'] = os.path.split(model['filename'])[1]
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):

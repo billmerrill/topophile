@@ -59,6 +59,7 @@ var modelController = (function() {
             modelCanvas.showModel(data['url'], data['x-size-mm']);
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
+            setSendButton(data['filename']);
             $("#white_plastic_price").html(data['price'][6]['price'])
             $("#color_sandstone_price").html(data['price'][26]['price'])
             $("#color_plastic_price").html(data['price'][100]['price'])
@@ -93,6 +94,11 @@ var modelController = (function() {
         resetViewButton.click(function(e) {
             modelCanvas.resetScene();
         })
+    },
+    
+    setSendButton = function(model) {
+        var url = "http://127.0.0.1:9090/upload_to_store?model=" + model
+        $('#send-to-printer').click(function() {window.open(url, "_self")});
     },
     
     fakeUpData = function() {
