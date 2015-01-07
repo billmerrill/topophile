@@ -49,7 +49,7 @@ var modelController = (function() {
                     'selat': selat,
                     'selon': selon,
                     'size': 100, //always 100
-                    'rez': 100, //400 dots per 100 mm ~= 100dpi
+                    'rez': 200, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor,
                     'price': 'e'}
                     //  'hollow': 1}
