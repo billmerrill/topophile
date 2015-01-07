@@ -41,7 +41,16 @@ class ClientStore(object):
     
     def delete(id):
         del(self.clients[id])
-            
+
+def new_shapeways_client():
+    return Client(
+        consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
+        consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
+        oauth_token = "ee87280a80066e0e1920b7030c855a715c7d70f2",
+        oauth_secret = "c4904cf2dbf2f34958a828f06208637175114a57",
+    )
+        
+                
     
 class ShapewaysService(object):
     def __init__(self):
@@ -70,51 +79,46 @@ class ShapewaysService(object):
         
     @cherrypy.expose    
     def index(self):
-        return self.render("index.html")
+        return self.render("noop.html")
       
-    @cherrypy.expose
-    def start(self,  model):
-        id, client = self.clients.new_uploader(model=model)
-        params = {'auth_url' : client.connect()}
-        return self.render("start.html", params)
-        
-    #http://localhost:9090:/upload?id=107model=xn69kk97zuxg-xn69jb1jbn2h.stl?&oauth_token=e246c8a38b100a5e07ec91d7a4f7eb22b0a737be&oauth_verifier=ad4e54
-    @cherrypy.expose
-    def upload(self, id, model,**kwargs):
-        # shapeways throwin in a ?
-        if model[-1] == '?':
-            model = model[:-1]
-        id, client = self.clients.get(id)
-        client.verify(kwargs['oauth_token'], kwargs['oauth_verifier'])
-        response = client.add_model(self.build_model_message(model))
-        cherrypy.response.headers['Content-Type']= 'application/json'
-        return json.dumps(response)
-        
-        
-            
     @cherrypy.expose    
-    def connect(self, model):
-        auth_url = client.connect
-        return lookup.get_template("connect.html").render()
+    def test(self):
+        return self.render("index.html")
         
     @cherrypy.expose    
     def upload_to_store(self, model):
-        client = Client(
-            consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
-            consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
-            oauth_token = "ee87280a80066e0e1920b7030c855a715c7d70f2",
-            oauth_secret = "c4904cf2dbf2f34958a828f06208637175114a57",
-            callback_url="http://localhost:3000/callback"
-        )
-        
+        client = new_shapeways_client()
         response = client.add_model(self.build_model_message(model))
         return self.render("buy.html", {'url': response['urls']['privateProductUrl']['address']})
+       
+    @cherrypy.expose    
+    def is_printable(self, id):
+        client = new_shapeways_client()
+        model = client.get_model_info(id)
+        printable = model.materials['6']['isPrintable'] == 1
+        active = model.materials['6']['isActive'] == 1
+        response = {'url': model['urls']['privateProductUrl']['address']}
+        response['ready'] = printable and active
+        
+    @cherrypy.expose    
+    def fake_buy(self ):
+        return self.render("buy.html", {'url': 'http://foo.bar/model.com'})
+    
+    @cherrypy.expose    
+    def fake_ready(self ):
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        return json.dumps({'url': 'http://fakecom/model/dot/click/click',
+                            'ready': False})
        
 
 if __name__ == '__main__':
     conf = {
         '/': {
          'tools.sessions.on': True,
+         },
+         '/static': {
+         'tools.staticdir.on' : True,
+         'tools.staticdir.dir' : "/Users/bill/topo/dana/dana/static"
         }
     }
     cherrypy.config.update("server.conf")
