@@ -54,20 +54,7 @@ class ShapewaysService(object):
             'acceptTermsAndConditions': 1,
             'isPrivate': 1,
             'isForSale': 1,
-            'materials': {
-                    "6": 
-                        { "id": 6,
-                			'type': 'object',
-                			'description': 'material object',
-                			'properties': {
-                				'markup': {
-            					'type': 'float',
-            					'description': 123.45},
-            				'isActive': {
-            					'type': 'boolean',
-            					'description': 1 }
-                			}
-                        }}}
+            'materials': {'6': {'isActive': 1, 'markup': 900.09, 'materialId': '6'}}}
                         
         model_file = os.path.join(MODEL_DIR, model)
         with open(model_file, 'rb') as f:
@@ -109,6 +96,20 @@ class ShapewaysService(object):
     def connect(self, model):
         auth_url = client.connect
         return lookup.get_template("connect.html").render()
+        
+    @cherrypy.expose    
+    def upload_to_store(self, model):
+        client = Client(
+            consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
+            consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
+            oauth_token = "ee87280a80066e0e1920b7030c855a715c7d70f2",
+            oauth_secret = "c4904cf2dbf2f34958a828f06208637175114a57",
+            callback_url="http://localhost:3000/callback"
+        )
+        
+        response = client.add_model(self.build_model_message(model))
+        return self.render("buy.html", {'url': response['urls']['privateProductUrl']['address']})
+       
 
 if __name__ == '__main__':
     conf = {

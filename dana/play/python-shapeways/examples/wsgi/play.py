@@ -3,6 +3,7 @@ import time
 import base64
 import pprint
 from os import system
+import datetime
 
 from shapeways.client import Client
 
@@ -75,8 +76,8 @@ pricetest = { 'xBoundMin': 0.0,
               'volume': 1040075.0398049863 / 1000000000,
               'area': 141600.1233810283 / 1000000,
               'materials': [6] }  
-pprint.pprint (client.get_price(pricetest))
-exit()
+# pprint.pprint (client.get_price(pricetest))
+# exit()
               
               
             #   '', "filename": "/Users/bill/qrl/topophile/topophile/bam/bam/app/model_cache/c29mcwxp20bp-c29t1g8181bn.stl", "area-mm2": 141600.1233810283, "z-size-mm": 45.144946952235827, "volume-mm3": 1040075.0398049863}
@@ -128,31 +129,34 @@ def make_mat_dict():
       }
     }
     '''
-
+    # 
+    # mats = {
+    #         "6": 
+    #             { "id": 6,
+	# 		'type': 'object',
+	# 		'description': 'material object',
+	# 		'properties': {
+	# 			'markup': {
+	# 				'type': 'float',
+	# 				'description': 123.45},
+	# 			'isActive': {
+	# 				'type': 'boolean',
+	# 				'description': 1 }
+	# 		}
+    #       }
+	# 	}
     mats = {
-            "6": 
-                { "id": 6,
-			'type': 'object',
-			'description': 'material object',
-			'properties': {
-				'markup': {
-					'type': 'float',
-					'description': 123.45},
-				'isActive': {
-					'type': 'boolean',
-					'description': 1 }
-			}
-          }
-		}
+            '6': {'isActive': 1, 'markup': 900.09, 'materialId': '6'},
+            }
 
 			
     return mats
 
-
-p = {'fileName': 'topo-%s.stl' % int(time.time()),
+# "%Y-%m-%d %H:%s"
+p = {'fileName': 'topo-%s.stl' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
 	'hasRightsToModel': 1,
 	'acceptTermsAndConditions': 1,
-    'isClaimable': 1,
+    # 'isClaimable': 1,
 	# 'uploadScale': .001,
 	# 'title': 'api testing model =]',
 	# 'description': '[Mon Dec 22 12:41:39 2014].525589 msDrawRasterLayerGDAL(): src=706,489,524,122, dst=0,0,524,122 [Mon Dec 22 12:41:39 2014].525593 msDrawRasterLayerGDAL(): source raster PL (705.932,488.601) for dst PL (0,0).',
@@ -174,34 +178,36 @@ def make_claimable(p):
     
     
     
+# pprint.pprint(p)
 with open('test.stl', 'rb') as f:
 	p['file'] = base64.b64encode(f.read())
     
-make_public(p)
+# make_public(p)
 # make_claimable(p)
 p['isForSale'] = 1
+p['isPublic'] = 0
 
-pprint.pprint(p)
 print('\n\n-----------\n\n')
 add_result = client.add_model(p)
 
 pprint.pprint(add_result)
 
 print
-print
 print(add_result['modelId'])
 
 
-print("Claim URL http://www.shapeways.com/model/%s/?key=%s " % (add_result['modelId'], add_result['claimKey']))
+# print("Claim URL http://www.shapeways.com/model/%s/?key=%s " % (add_result['modelId'], add_result['claimKey']))
+
+print ("Buy Now: %s" % add_result['urls']['privateProductUrl']['address'])
 
 time.sleep(5)
 
 
 # go_url = "http://www.shapeways.com/model/%s/?key=%s" % (add_result['modelId'], add_result['claimKey'])
-go_url = add_result['urls']['publicProductUrl']
-print go_url
-cmd ='open -a "google chrome" "%s"' % str(go_url)
-system(cmd)
+# go_url = add_result['urls']['publicProductUrl']
+# print go_url
+# cmd ='open -a "google chrome" "%s"' % str(go_url)
+# system(cmd)
 
 # pprint.pprint (client.get_materials())
 #pprint.pprint(p)
@@ -209,4 +215,4 @@ system(cmd)
 #p['volume'] = p['volume']/100.0
 #pprint.pprint (client.get_price(p))
 
-print("client.delete_model(%s)" % add_result['modelId'])
+# print("client.delete_model(%s)" % add_result['modelId'])
