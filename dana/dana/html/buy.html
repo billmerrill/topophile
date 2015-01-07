@@ -16,10 +16,12 @@
     <script src="http://127.0.0.1:8888/vendor/jsc3d/jsc3d.js"></script>
     <script src="http://127.0.0.1:8888/vendor/jsc3d/jsc3d.webgl.js"></script>
     
+    <script src="static/js/controller.js"></script>
+    
     
     <script type="text/javascript">
     $(document).ready( function() { 
-        // indexController.init(indexMap, indexModel, indexGeocoder); 
+        buyController.init(${modelId}, "${modelUrl}"); 
     });
     </script>
 </head>
@@ -43,10 +45,23 @@
 
 
     <div class="container-fluid">
+        <h3>Uploaded Model ${modelId}.</h3>
         
-        buy your model here
+        <h3 id="status">Shapeways is processing your model, one moment please.</h3>
+        
+        Your model can be found here <a href="${modelUrl}">${modelUrl}</a>.
         <p>
-        <a href="${url}">${url}</a>
+        <div id="buy-container">
+            <div id="model-building">
+                <span class="building-status">reticulating splines</span>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        <span class="sr-only">working</span>
+                    </div>
+                </div>
+            </div>
+            <button id="buyit" class="btn-lg btn-success">GO!</button>
+        </div>
     </div>
 </body>
 </html>

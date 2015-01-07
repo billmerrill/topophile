@@ -25,10 +25,10 @@ span.map-section {
     z-index: 1000;
 }
 
-#model-building {
+#buy-container {
     /*position: absolute;*/
     /*height: 400px;*/
-    padding-top: 180px;
+    padding-top: 30px;
     /*z-index: 100;*/
 }
 
@@ -39,3 +39,4 @@ span.map-section {
 .building-status {
     font-variant: small-caps;
 }
+
