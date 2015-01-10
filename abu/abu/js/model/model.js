@@ -26,10 +26,11 @@ var modelModel = (function() {
             viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
-            viewer.setParameter('RenderMode',       'texture');
+            // viewer.setParameter('RenderMode',       'texture');
+            viewer.setParameter('RenderMode',       'texturesmooth');
             viewer.setParameter('Renderer',         'webgl');
-            // viewer.setParameter('InitRotationX',     '-70');
-            // viewer.setParameter('InitRotationY' ,    '45');
+            viewer.setParameter('InitRotationX',     '-80');
+            viewer.setParameter('InitRotationY' ,    '30');
             viewer.init();
             viewer.update();
         },
