@@ -23,7 +23,8 @@ var indexController = (function(){
                         'selon': selonDisplay.val(),
                         'size': 100, 
                         'rez': 75,
-                        'zfactor': zFactorDisplay.val()}
+                        'zfactor': zFactorDisplay.val(),
+                        'model_style': 'preview'}
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data['url']);

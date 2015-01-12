@@ -44,9 +44,15 @@ class STLCanvas:
                 for pt in [TA,TB,TC]:
                     self.triangles[tx][pt] = np.add(tri[pt], inc)
         
-    def write_stl(self, outfile):
+    def write_stl(self, outfile, make_positive=True):
+        '''
+        outfile: string - filename for stl output
+        make_positive: bool - STL requires positive values, zero values 
+                              are useful for previews
+        '''
         print ("Writing %s triangles" % len(self.triangles))
-        self.make_positive()
+        if make_positive:
+            self.make_positive()
         with open(outfile, 'wb') as dest_file:
             dest_file.write(struct.pack("80sI", b'Quick Release Lever', len(self.triangles)))
             for tri in self.triangles:

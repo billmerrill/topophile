@@ -8,7 +8,7 @@ import time
 
 class BoundingBoxJob(object):
     
-    def __init__(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow):
+    def __init__(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style):
         '''
         nwlat - string - northwest corner latitude
         nwlon - string - northwest corner longitude
@@ -27,6 +27,7 @@ class BoundingBoxJob(object):
         self.size = int(size)
         self.zfactor = float(zfactor)
         self.hollow = hollow is not False
+        self.model_style = model_style
         
     def run(self):
         t1 = time.time()
@@ -52,15 +53,19 @@ class BoundingBoxJob(object):
                          'output_physical_max': self.size,
                          'z_factor': self.zfactor,
                          'hollow': self.hollow}
-                         
-        if self.hollow:
-            model = cove.model.HollowElevationModel(model_config)
+                        
+        if self.model_style == "preview":
+            model = cove.model.PreviewTerrainModel(model_config)
         else:
-            model = cove.model.SolidElevationModel(model_config)
+            if self.hollow:
+                model = cove.model.HollowElevationModel(model_config)
+            else:
+                model = cove.model.SolidElevationModel(model_config)
+                
         model_data = model.build_stl()
         return model_data
         
-            
+        
 class GeoTiffJob(object):
     
     def __init__(self, geo_src, size, rez):
