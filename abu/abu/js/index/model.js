@@ -24,8 +24,13 @@ var indexModel = (function() {
        
        showModel: function(modelUrl) {
            viewer.replaceSceneFromUrl(modelUrl);
+           viewer.onloadingcomplete = function() {
+               var makeDoubleSided = function(child) {
+                   child.isDoubleSided = true;
+               };
+               this.getScene().forEachChild(makeDoubleSided);
+           }
        }
-       
     } 
     
 }());
