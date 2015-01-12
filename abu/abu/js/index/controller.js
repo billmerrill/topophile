@@ -45,7 +45,8 @@ var indexController = (function(){
                 $("#preview-topo").prop('disabled', false);
                 firstBounds = false;
             }
-            updateBoundsDisplay(newBounds)
+            updateBoundsDisplay(newBounds);
+            previewTopo();
         },
         
         clearedBoundsHandler = function() {
