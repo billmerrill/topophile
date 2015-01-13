@@ -99,9 +99,18 @@ var indexController = (function(){
             zFactorDisplay = $("#zfactor");
             
             zFactorDisplay.val("1.5");
-            zFactorDisplay.change(
-                function() {model.updateZFactor(zFactorDisplay.val())}
-            );
+            // zFactorDisplay.change(
+            //     function() {model.updateZFactor(zFactorDisplay.val())}
+            // );
+            $('#height-factor').slider().on('slide',
+                function(e) {
+                    var new_factor = e.value;
+                    zFactorDisplay.val(new_factor);
+                    model.updateZFactor(new_factor);
+                }
+            );    
+            
+            
             
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
