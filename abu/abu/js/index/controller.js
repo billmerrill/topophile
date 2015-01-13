@@ -23,7 +23,7 @@ var indexController = (function(){
                         'selon': selonDisplay.val(),
                         'size': 100, 
                         'rez': 75,
-                        'zfactor': zFactorDisplay.val(),
+                        'zfactor': 1,
                         'model_style': 'preview'}
             })
             .done(function(data, status, jqxhr) {
@@ -87,7 +87,7 @@ var indexController = (function(){
             var mt_rainier = [ 46.852947, -121.760424 ];
             
             map.init("map", mt_rainier, newBoundsHandler, clearedBoundsHandler);
-            model.init("model-canvas");
+            model.init("model-canvas", 1.5);
             geocoder.init(geocoderResultHandler);
         },
         
@@ -99,6 +99,9 @@ var indexController = (function(){
             zFactorDisplay = $("#zfactor");
             
             zFactorDisplay.val("1.5");
+            zFactorDisplay.change(
+                function() {model.updateZFactor(zFactorDisplay.val())}
+            );
             
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
