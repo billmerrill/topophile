@@ -28,7 +28,9 @@ var indexController = (function(){
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data['url']);
-                $("#build-model").prop('disabled', false);
+                $("#build-model")
+                    .prop('disabled', false)
+                    .addClass('btn-success');
 
             })
             .fail(function(data, stats, error) {
@@ -42,7 +44,6 @@ var indexController = (function(){
         
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
-                $("#preview-topo").prop('disabled', false);
                 firstBounds = false;
             }
             updateBoundsDisplay(newBounds);

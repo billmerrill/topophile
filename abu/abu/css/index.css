@@ -26,16 +26,9 @@ span.map-section {
 }
 
 #model-building {
-    /*position: absolute;*/
-    /*height: 400px;*/
     padding-top: 180px;
-    /*z-index: 100;*/
 }
 
-#model-canvas {
-    /*position: absolute;*/
-    /*z-index: 10;*/
-}
 .building-status {
     font-variant: small-caps;
 }
@@ -49,14 +42,9 @@ span.map-section {
     margin-bottom: 20px;
 }
 
-.control-row {
-    background-color: #869AAC;
-}
-
 .control-row .col-header {
     font-variant: small-caps;
-    font-size: 16px;
-    color: white;
+    font-size: 20px;
 }
 
 .val-suffix {
