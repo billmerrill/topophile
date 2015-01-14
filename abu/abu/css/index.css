@@ -39,3 +39,28 @@ span.map-section {
 .building-status {
     font-variant: small-caps;
 }
+
+#zfactor {
+    margin-left: 1em;
+    width: 5em;
+}
+
+.action-row {
+    margin-bottom: 20px;
+}
+
+.control-row {
+    background-color: #869AAC;
+}
+
+.control-row .col-header {
+    font-variant: small-caps;
+    font-size: 16px;
+    color: white;
+}
+
+.val-suffix {
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+}
