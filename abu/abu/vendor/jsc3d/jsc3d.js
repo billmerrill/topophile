@@ -1465,6 +1465,13 @@ JSC3D.Viewer.prototype.render = function() {
 		return;
 
 	var aabb = this.scene.aabb;
+	// WLM TOPOPHILE 15-01-12
+	// This allows for efficient distortion of the Z axis
+	// Adjust the aabb to keep the model in view
+	if (this.TOPOzScale && this.baseAABBmaxZ) {
+		aabb.maxZ = this.TOPOzScale * this.baseAABBmaxZ;
+		aabb.minZ = this.TOPOzScale * this.baseAABBminZ;
+	}
 
 	// calculate transformation matrix
 	if(this.webglBackend) {
@@ -1472,7 +1479,12 @@ JSC3D.Viewer.prototype.render = function() {
 		var h = this.frameHeight;
 		var d = aabb.lengthOfDiagonal();
 
+		// WLM TOPOPHILE 15-01-12
+		// This allows for efficient distortion of the Z axis
 		this.transformMatrix.identity();
+		if (this.TOPOzScale) {
+			this.transformMatrix.scale(1,1,this.TOPOzScale);
+		}
 		this.transformMatrix.translate(-0.5*(aabb.minX+aabb.maxX), -0.5*(aabb.minY+aabb.maxY), -0.5*(aabb.minZ+aabb.maxZ));
 		this.transformMatrix.multiply(this.rotMatrix);
 		this.transformMatrix.scale(2*this.zoomFactor/w, 2*this.zoomFactor/h, -2/d);
@@ -1480,6 +1492,11 @@ JSC3D.Viewer.prototype.render = function() {
 	}
 	else {
 		this.transformMatrix.identity();
+		// WLM TOPOPHILE 15-01-12
+		// This allows for efficient distortion of the Z axis
+		if (this.TOPOzScale) {
+			this.transformMatrix.scale(1,1,this.TOPOzScale);
+		}
 		this.transformMatrix.translate(-0.5*(aabb.minX+aabb.maxX), -0.5*(aabb.minY+aabb.maxY), -0.5*(aabb.minZ+aabb.maxZ));
 		this.transformMatrix.multiply(this.rotMatrix);
 		this.transformMatrix.scale(this.zoomFactor, -this.zoomFactor, this.zoomFactor);

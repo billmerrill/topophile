@@ -23,11 +23,14 @@ var indexController = (function(){
                         'selon': selonDisplay.val(),
                         'size': 100, 
                         'rez': 75,
-                        'zfactor': zFactorDisplay.val()}
+                        'zfactor': 1,
+                        'model_style': 'preview'}
             })
             .done(function(data, status, jqxhr) {
                 model.showModel(data['url']);
-                $("#build-model").prop('disabled', false);
+                $("#build-model")
+                    .prop('disabled', false)
+                    .addClass('btn-success');
 
             })
             .fail(function(data, stats, error) {
@@ -41,10 +44,10 @@ var indexController = (function(){
         
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
-                $("#preview-topo").prop('disabled', false);
                 firstBounds = false;
             }
-            updateBoundsDisplay(newBounds)
+            updateBoundsDisplay(newBounds);
+            previewTopo();
         },
         
         clearedBoundsHandler = function() {
@@ -85,7 +88,7 @@ var indexController = (function(){
             var mt_rainier = [ 46.852947, -121.760424 ];
             
             map.init("map", mt_rainier, newBoundsHandler, clearedBoundsHandler);
-            model.init("model-canvas");
+            model.init("model-canvas", 1.5);
             geocoder.init(geocoderResultHandler);
         },
         
@@ -97,6 +100,26 @@ var indexController = (function(){
             zFactorDisplay = $("#zfactor");
             
             zFactorDisplay.val("1.5");
+            
+            $('#exag').on('change', function(e) {
+                console.log('exag change', e);
+                if (e.target.id == 'height-factor-slider') {
+                    console.log('**********************FU');
+                }
+                if (e.target.id == 'zfactor') {
+                    var val = parseFloat(e.target.value);
+                    model.updateZFactor(val);
+                    if ((val >= .1) && (val <= 10)) {
+                        $('#height-factor').slider('setValue', val);
+                    }
+                } else {
+                    var val = e.value.newValue;
+                    model.updateZFactor(val);
+                    zFactorDisplay.val(val)
+                }
+            });
+                
+            $('#height-factor').slider();
             
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}

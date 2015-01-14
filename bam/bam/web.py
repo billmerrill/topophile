@@ -43,12 +43,12 @@ class STLModelService(object):
         self.test = ModelStub()
         self.price = ModelPricing()
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, price=False, hollow=False):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, price=False, hollow=False, model_style="cube"):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
         '''
-        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor, hollow)
+        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style)
         model = gig.run()
         if model is None:
             return "GB Error"

@@ -5,11 +5,56 @@ from builder import Builder
 from elevation import Elevation
 from indicies import *
 
-
+#TODO Organize model more, pull meta work into base class
 class Model(object):
     
     def __init__(self, config):
         self.builder = Builder(config)
+
+class PreviewTerrainModel(Model):
+    def _write_model_metadata(self, m):
+        data_filename = m['filename'].replace('stl', 'json')
+        jf = open(data_filename, 'wb')
+        json.dump(m,jf)
+        jf.close()
+            
+    def build_stl(self):
+        elevation = Elevation(self.builder)
+        elevation.load_dataset()
+        # elevation.display_summary()
+        elevation_data = elevation.get_meters_ndarray()
+        
+        top = Mesh()
+        top.load_matrix(elevation_data) 
+        top.finalize_form(self.builder.get_physical_max(), 
+                            self.builder.get_min_thickness()[PZ],
+                            self.builder.get_z_factor())
+        top.rest_z_at_zero()
+      
+        max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
+        print("Physical Size: %s x %s x %s" % max_cube)
+
+        canvas = STLCanvas()
+        canvas.add_shape(top)
+        canvas.write_stl(self.builder.get_output_file_name(), make_positive=False)
+        
+        model_area = canvas.compute_area()
+        model_volume = 0
+       
+        desc = {'filename': self.builder.get_output_file_name(),
+                'x-size-mm': top.get_data_x_size(),
+                'y-size-mm': top.get_data_y_size(),
+                'z-size-mm': top.get_high_z() - top.get_low_z(),
+                'area-mm2':  model_area,
+                'volume-mm3': model_volume}
+        
+        self._write_model_metadata(desc)
+                
+        elevation.close_dataset()
+        
+        return desc
+
+
 
 class SolidElevationModel(Model):
    

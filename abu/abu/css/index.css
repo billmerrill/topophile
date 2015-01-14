@@ -26,16 +26,29 @@ span.map-section {
 }
 
 #model-building {
-    /*position: absolute;*/
-    /*height: 400px;*/
     padding-top: 180px;
-    /*z-index: 100;*/
 }
 
-#model-canvas {
-    /*position: absolute;*/
-    /*z-index: 10;*/
-}
 .building-status {
     font-variant: small-caps;
+}
+
+#zfactor {
+    margin-left: 1em;
+    width: 5em;
+}
+
+.action-row {
+    margin-bottom: 20px;
+}
+
+.control-row .col-header {
+    font-variant: small-caps;
+    font-size: 20px;
+}
+
+.val-suffix {
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
 }
