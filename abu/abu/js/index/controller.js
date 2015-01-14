@@ -102,13 +102,20 @@ var indexController = (function(){
             // zFactorDisplay.change(
             //     function() {model.updateZFactor(zFactorDisplay.val())}
             // );
+            
+            var updateZFactor = function(val) {
+                    zFactorDisplay.val(val);
+                    model.updateZFactor(val);
+                };
             $('#height-factor').slider().on('slide',
                 function(e) {
-                    var new_factor = e.value;
-                    zFactorDisplay.val(new_factor);
-                    model.updateZFactor(new_factor);
+                    updateZFactor(e.value);
                 }
-            );    
+            ).change(function(e) { 
+                if (e.value.oldValue != e.value.newValue) {
+                    updateZFactor(e.value.newValue);
+                }   
+            });
             
             
             
