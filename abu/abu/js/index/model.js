@@ -50,6 +50,10 @@ var indexModel = (function() {
                 zFactor = newZFactor;
             }
             viewer.update();
+        },
+        
+        getZFactor: function() {
+            return zFactor;
         }
     } 
     

@@ -99,25 +99,26 @@ var indexController = (function(){
             zFactorDisplay = $("#zfactor");
             
             zFactorDisplay.val("1.5");
-            // zFactorDisplay.change(
-            //     function() {model.updateZFactor(zFactorDisplay.val())}
-            // );
             
-            var updateZFactor = function(val) {
-                    zFactorDisplay.val(val);
-                    model.updateZFactor(val);
-                };
-            $('#height-factor').slider().on('slide',
-                function(e) {
-                    updateZFactor(e.value);
+            $('#exag').on('change', function(e) {
+                console.log('exag change', e);
+                if (e.target.id == 'height-factor-slider') {
+                    console.log('**********************FU');
                 }
-            ).change(function(e) { 
-                if (e.value.oldValue != e.value.newValue) {
-                    updateZFactor(e.value.newValue);
-                }   
+                if (e.target.id == 'zfactor') {
+                    var val = parseFloat(e.target.value);
+                    model.updateZFactor(val);
+                    if ((val >= .1) && (val <= 10)) {
+                        $('#height-factor').slider('setValue', val);
+                    }
+                } else {
+                    var val = e.value.newValue;
+                    model.updateZFactor(val);
+                    zFactorDisplay.val(val)
+                }
             });
-            
-            
+                
+            $('#height-factor').slider();
             
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
