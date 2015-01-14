@@ -19,7 +19,7 @@ var indexModel = (function() {
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
             viewer.setParameter('RenderMode',       'texture');
             viewer.setParameter('Renderer',         'webgl');
-            viewer.setParameter('InitRotationX',     '-80');
+            viewer.setParameter('InitRotationX',     '-60');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('FaceCulling' ,    'off');
             
