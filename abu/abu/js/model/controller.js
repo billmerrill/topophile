@@ -2,7 +2,7 @@ var modelController = (function() {
     "use strict";
     
     var bamService = "http://127.0.0.1:8080",
-        swPriceSerivce = "http://127.0.0.1:8080/price",
+        swPriceService = "http://127.0.0.1:8080/price",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
         resetViewButton,
@@ -59,11 +59,8 @@ var modelController = (function() {
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
             setSendButton(data['model_id'] + ".stl");
-            if ('price' in data && '6' in data['price']) {
-                $("#white_plastic_price").html(data['price'][6]['price'])
-                $("#color_sandstone_price").html(data['price'][26]['price'])
-                $("#color_plastic_price").html(data['price'][100]['price'])
-            }
+            setPricing(data['model_id'])
+
         })
         .fail(function(data, stats, error) {
             alert("Sorry, I couldn't build a model.")
@@ -72,6 +69,31 @@ var modelController = (function() {
             $("#model-building").hide();
             $("#model-canvas").show()
         });
+    },
+    
+    setPricing = function(model_id) {
+            displayPrices("Estimating...", "Estimating...", "Estimating...")
+            $.ajax({
+                type: "GET",
+                url: swPriceService,
+                data: {'model_id': model_id}
+            })
+            .done(function(data, status, jqxhr) {
+                if ('6' in data) {
+                    displayPrices(data['6'], data['26'], data['100']);
+                } else {
+                    displayPrices("No", "Prices", "Today");
+                }
+            })
+            .fail(function(data) {
+                displayPrices("Network", "Error", "Oh well");
+            });
+    },
+    
+    displayPrices = function(six, twosix, hundred) {
+        $("#white_plastic_price").html(six);
+        $("#color_sandstone_price").html(twosix);
+        $("#color_plastic_price").html(hundred);
     },
     
     initComponents = function() {
