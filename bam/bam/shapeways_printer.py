@@ -9,16 +9,9 @@ def price_model(model_data):
         callback_url="http://localhost:3000/callback"
     )        
 
-    # mjf = open ("%s/%s.json" % (MODEL_DIR, name))
-    # model_data = json.load(mjf)
-    # mjf.close()
-    
     # 6 - white strong and flexible
     # 26 - full color sandstone
     # 100 - full color plastic
-
-
-
 
     p = {'materials': [6, 26, 100],
        'volume': model_data['volume-mm3'] / 1000000000, 
@@ -29,5 +22,14 @@ def price_model(model_data):
        'yBoundMax': model_data['y-size-mm'] / 1000,
        'zBoundMin': 0.0,
        'zBoundMax':model_data['z-size-mm'] / 1000 }
-       
-    return client.get_price(p)['prices']
+      
+    rez = {}
+    try:
+        r = client.get_price(p)
+        for m in r['prices']:
+            rez[m] = r['prices'][m]['price']
+    except Exception as e:
+        print "Pricing failure"
+        print type(e)
+        
+    return rez 

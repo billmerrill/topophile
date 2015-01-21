@@ -2,26 +2,31 @@ var modelController = (function() {
     "use strict";
     
     var bamService = "http://127.0.0.1:8080",
-        swPriceSerivce = "http://127.0.0.1:8080/price",
+        swPriceService = "http://127.0.0.1:8080/price",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
         resetViewButton,
         modelCanvas, 
+        currentModelId,
         nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
     presetChangeHandler = function(data) {
         switch (data['preset']) {
             case 'small':
                 modelCanvas.scaleReferenceObject(1);
+                scalePricing(1.0);
                 break;
             case 'medium': 
                 modelCanvas.scaleReferenceObject(.5);
+                scalePricing(2.0);
                 break;
             case 'large': 
                 modelCanvas.scaleReferenceObject(1.0/3.0);
+                scalePricing(3.0);
                 break;
             case 'custom': 
                 modelCanvas.scaleReferenceObject(.2);
+                scalePricing(5.0);
                 break;
         }
     },
@@ -51,7 +56,6 @@ var modelController = (function() {
                     'size': 100, //always 100
                     'rez': 200, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor,
-                    'price': 'e',
                     'hollow': 1}
         })
         .done(function(data, status, jqxhr) {
@@ -59,12 +63,10 @@ var modelController = (function() {
             modelCanvas.showModel(data['url'], data['x-size-mm']);
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
-            setSendButton(data['filename']);
-            if ('price' in data && '6' in data['price']) {
-                $("#white_plastic_price").html(data['price'][6]['price'])
-                $("#color_sandstone_price").html(data['price'][26]['price'])
-                $("#color_plastic_price").html(data['price'][100]['price'])
-            }
+            currentModelId = data['model_id'];
+            setSendButton(data['model_id'] + ".stl");
+            setPricing(data['model_id'])
+
         })
         .fail(function(data, stats, error) {
             alert("Sorry, I couldn't build a model.")
@@ -73,6 +75,39 @@ var modelController = (function() {
             $("#model-building").hide();
             $("#model-canvas").show()
         });
+    },
+    
+    setPricing = function(model_id,scale) {
+        displayPrices("Estimating...", "Estimating...", "Estimating...")
+        if (!scale) {
+            scale = 1.0
+        }
+        $.ajax({
+            type: "GET",
+            url: swPriceService,
+            data: {'model_id': model_id,
+                    'mult': scale}
+        })
+        .done(function(data, status, jqxhr) {
+            if ('6' in data) {
+                displayPrices(data['6'], data['26'], data['100']);
+            } else {
+                displayPrices("No", "Prices", "Today");
+            }
+        })
+        .fail(function(data) {
+            displayPrices("Network", "Error", "Oh well");
+        });
+    },
+    
+    scalePricing = function(scale) {
+            setPricing(currentModelId, scale);
+    },
+    
+    displayPrices = function(six, twosix, hundred) {
+        $("#white_plastic_price").html(six);
+        $("#color_sandstone_price").html(twosix);
+        $("#color_plastic_price").html(hundred);
     },
     
     initComponents = function() {

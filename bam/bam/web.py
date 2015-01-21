@@ -1,11 +1,11 @@
 import os
 import tempfile
 import json
+import re
 import cherrypy
 import cove.model
 import job
 import shapeways_printer as printer
-
 
 MODEL_DIR = os.path.join(os.getcwd(), "app/model_cache")
 
@@ -25,16 +25,31 @@ class ModelStub(object):
         
 class ModelPricing(object):
     exposed = True
-    def GET(self, name):
-        # alphanumeric, _ only
-        if re.search("[\W]", name):
-            raise cherrypy.HTTPError("403 Forbidden", "You are not allowed to access this resource.")
+    def GET(self, model_id, mult=1.0):
+        def exagerate_model(model, mult):
+            res = model
+            res['x-size-mm'] = model['x-size-mm'] * mult
+            res['y-size-mm'] = model['y-size-mm'] * mult
+            res['z-size-mm'] = model['z-size-mm'] * mult
+            res['area-mm2'] = model['area-mm2'] * mult * mult
+            res['volume-mm3'] = model['volume-mm3'] * mult * mult * mult
+            return res
         
-        mjf = open ("%s/%s.json" % (MODEL_DIR, name))
-        model_data = json.load(mjf)
-        mjf.close()
+        # alphanumeric, _ only
+        if re.search("[^\w\-]",model_id):
+            raise cherrypy.HTTPError("403 Forbidden", "You are not allowed to access this resource.")
+       
+        model_data = {}
+            
+        with open("%s/%s.json" % (MODEL_DIR, model_id)) as mjf:
+            model_data = json.load(mjf)
 
-        return printer.price_model(model_data)
+        if type(mult) is not float:
+            mult = float(mult)
+        if mult != 1.0:
+            model_data = exagerate_model(model_data, mult)
+
+        return json.dumps(printer.price_model(model_data))
     
 
 class STLModelService(object):
@@ -43,7 +58,7 @@ class STLModelService(object):
         self.test = ModelStub()
         self.price = ModelPricing()
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, price=False, hollow=False, model_style="cube"):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube"):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
@@ -53,11 +68,9 @@ class STLModelService(object):
         if model is None:
             return "GB Error"
            
-        if price: 
-            model['price'] = printer.price_model(model)
-        
         model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
-        model['filename'] = os.path.split(model['filename'])[1]
+        model['model_id'] = os.path.splitext(os.path.split(model['filename'])[1])[0]
+        del(model['filename'])
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):
