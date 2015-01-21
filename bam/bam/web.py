@@ -1,6 +1,7 @@
 import os
 import tempfile
 import json
+import re
 import cherrypy
 import cove.model
 import job
@@ -25,16 +26,17 @@ class ModelStub(object):
         
 class ModelPricing(object):
     exposed = True
-    def GET(self, name):
+    def GET(self, model_id):
         # alphanumeric, _ only
-        if re.search("[\W]", name):
+        if re.search("[^\w\-]",model_id):
             raise cherrypy.HTTPError("403 Forbidden", "You are not allowed to access this resource.")
         
-        mjf = open ("%s/%s.json" % (MODEL_DIR, name))
+        mjf = open ("%s/%s.json" % (MODEL_DIR, model_id))
         model_data = json.load(mjf)
         mjf.close()
+        
 
-        return printer.price_model(model_data)
+        return json.dumps(printer.price_model(model_data))
     
 
 class STLModelService(object):
@@ -43,7 +45,7 @@ class STLModelService(object):
         self.test = ModelStub()
         self.price = ModelPricing()
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, price=False, hollow=False, model_style="cube"):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube"):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
@@ -53,11 +55,9 @@ class STLModelService(object):
         if model is None:
             return "GB Error"
            
-        if price: 
-            model['price'] = printer.price_model(model)
-        
         model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
-        model['filename'] = os.path.split(model['filename'])[1]
+        model['model_id'] = os.path.splitext(os.path.split(model['filename'])[1])[0]
+        del(model['filename'])
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):

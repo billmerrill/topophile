@@ -51,7 +51,6 @@ var modelController = (function() {
                     'size': 100, //always 100
                     'rez': 200, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor,
-                    'price': 'e',
                     'hollow': 1}
         })
         .done(function(data, status, jqxhr) {
@@ -59,7 +58,7 @@ var modelController = (function() {
             modelCanvas.showModel(data['url'], data['x-size-mm']);
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
-            setSendButton(data['filename']);
+            setSendButton(data['model_id'] + ".stl");
             if ('price' in data && '6' in data['price']) {
                 $("#white_plastic_price").html(data['price'][6]['price'])
                 $("#color_sandstone_price").html(data['price'][26]['price'])
