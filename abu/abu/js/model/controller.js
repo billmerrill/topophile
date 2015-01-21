@@ -51,8 +51,8 @@ var modelController = (function() {
                     'size': 100, //always 100
                     'rez': 200, //400 dots per 100 mm ~= 100dpi
                     'zfactor': zfactor,
-                    'price': 'e'}
-                    //  'hollow': 1}
+                    'price': 'e',
+                    'hollow': 1}
         })
         .done(function(data, status, jqxhr) {
             window.console.log(data)

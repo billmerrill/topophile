@@ -117,9 +117,12 @@ class HollowElevationModel(Model):
         json.dump(m,jf)
         jf.close()
 
-    def _compute_volume(iself, outer, inner):
+    def _compute_volume(iself, outer, inner=None):
         ''' this ignores the volume lost to the relief diamond '''
-        return outer.compute_volume() - inner.compute_volume()
+        if inner:
+            return outer.compute_volume() - inner.compute_volume()
+        else:
+            return outer.compute_volume()
             
     def build_stl(self):
         print "STARTING HOLLOW MODEL", self.builder
@@ -133,35 +136,45 @@ class HollowElevationModel(Model):
         top.finalize_form(self.builder.get_physical_max(), 
                             self.builder.get_min_thickness()[PZ],
                             self.builder.get_z_factor())
+        make_hollow = True                    
+        print "Low Z", top.get_low_z()
+        # 3mm gap for material flow, + the floor thickness required for hollow model
+        if top.get_low_z() < (3 + self.builder.get_min_thickness()[PZ]):
+            make_hollow = False
                             
-                            
-                            
-        hollow_ceiling = top.create_ceiling(
-            self.builder.get_min_thickness(), 
-            self.builder.get_ceiling_decimation_factor())
-        hollow_ceiling.transform_border_stepwise((1,1,0.7), (0,0,0.1), (0,0,0), (0,0,0), 3) # bevel the crown 
-        hollow_ceiling.invert_normals = True
-      
+        bottom = MeshBasePlate(top, 0, make_hollow)
+        sandwich = MeshSandwich(top, bottom)
+        
+        if make_hollow:
+            interior_ceiling = top.create_ceiling(
+                self.builder.get_min_thickness(), 
+                self.builder.get_ceiling_decimation_factor())
+            interior_ceiling.transform_border_stepwise((1,1,0.7), (0,0,0.1), (0,0,0), (0,0,0), 3) # bevel the crown 
+            interior_ceiling.invert_normals = True  # interior faces point inward
+            
+            diamond = bottom.get_relief_diamond()
+            interior_floor = MeshBasePlate(interior_ceiling, self.builder.get_min_thickness()[PZ], hollow=True, invert_normals=True)
+            interior_floor.set_relief_diamond(diamond)
+            diamond_walls = HollowBottomDiamondWalls(interior_floor, bottom)
+          
+            inner_sandwich = MeshSandwich(interior_ceiling, interior_floor, invert_normals=True)
+            
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
         print("Physical Size: %s x %s x %s" % max_cube)
         
-        bottom = MeshBasePlate(top, 0, hollow=True)
-        diamond = bottom.get_relief_diamond()
-        hollow_bottom = MeshBasePlate(hollow_ceiling, self.builder.get_min_thickness()[PZ], hollow=True, invert_normals=True)
-        hollow_bottom.set_relief_diamond(diamond)
-        
-        diamond_walls = HollowBottomDiamondWalls(hollow_bottom, bottom)
-       
-        sandwich = MeshSandwich(top, bottom)
-        inner_sandwich = MeshSandwich(hollow_ceiling, hollow_bottom, invert_normals=True)
-        
         canvas = STLCanvas()
-        canvas.add_shape(inner_sandwich)
         canvas.add_shape(sandwich)
-        canvas.add_shape(diamond_walls)
+        if make_hollow:
+            print "Made Hollow"
+            canvas.add_shape(inner_sandwich)
+            canvas.add_shape(diamond_walls)
+            model_volume = self._compute_volume(sandwich,inner_sandwich)
+        else:
+            print "Made Solid"
+            model_volume = self._compute_volume(sandwich)
+        
         
         model_area = canvas.compute_area()
-        model_volume = self._compute_volume(sandwich,inner_sandwich)
         
         print("Starting tapeout")
         canvas.write_stl(self.builder.get_output_file_name())
