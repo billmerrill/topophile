@@ -32,7 +32,8 @@ def run_model_get():
 def run_price_check():
     test_model_name = "c0xbw8e1b50n-c22p78x48p8n"
     test_url = url + "price"
-    kv = {'model_id': test_model_name}
+    kv = {'model_id': test_model_name,
+          'mult': 2.0}
     r = requests.get(test_url, params=kv)
     print test_url
     # print r.headers

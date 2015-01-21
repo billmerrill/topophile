@@ -7,21 +7,26 @@ var modelController = (function() {
         comparisonButton,
         resetViewButton,
         modelCanvas, 
+        currentModelId,
         nwlat, nwlon, selat, selon, zfactor, sizeTools,
   
     presetChangeHandler = function(data) {
         switch (data['preset']) {
             case 'small':
                 modelCanvas.scaleReferenceObject(1);
+                scalePricing(1.0);
                 break;
             case 'medium': 
                 modelCanvas.scaleReferenceObject(.5);
+                scalePricing(2.0);
                 break;
             case 'large': 
                 modelCanvas.scaleReferenceObject(1.0/3.0);
+                scalePricing(3.0);
                 break;
             case 'custom': 
                 modelCanvas.scaleReferenceObject(.2);
+                scalePricing(5.0);
                 break;
         }
     },
@@ -58,6 +63,7 @@ var modelController = (function() {
             modelCanvas.showModel(data['url'], data['x-size-mm']);
             sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
             sizeTools.initPresets();
+            currentModelId = data['model_id'];
             setSendButton(data['model_id'] + ".stl");
             setPricing(data['model_id'])
 
@@ -71,23 +77,31 @@ var modelController = (function() {
         });
     },
     
-    setPricing = function(model_id) {
-            displayPrices("Estimating...", "Estimating...", "Estimating...")
-            $.ajax({
-                type: "GET",
-                url: swPriceService,
-                data: {'model_id': model_id}
-            })
-            .done(function(data, status, jqxhr) {
-                if ('6' in data) {
-                    displayPrices(data['6'], data['26'], data['100']);
-                } else {
-                    displayPrices("No", "Prices", "Today");
-                }
-            })
-            .fail(function(data) {
-                displayPrices("Network", "Error", "Oh well");
-            });
+    setPricing = function(model_id,scale) {
+        displayPrices("Estimating...", "Estimating...", "Estimating...")
+        if (!scale) {
+            scale = 1.0
+        }
+        $.ajax({
+            type: "GET",
+            url: swPriceService,
+            data: {'model_id': model_id,
+                    'mult': scale}
+        })
+        .done(function(data, status, jqxhr) {
+            if ('6' in data) {
+                displayPrices(data['6'], data['26'], data['100']);
+            } else {
+                displayPrices("No", "Prices", "Today");
+            }
+        })
+        .fail(function(data) {
+            displayPrices("Network", "Error", "Oh well");
+        });
+    },
+    
+    scalePricing = function(scale) {
+            setPricing(currentModelId, scale);
     },
     
     displayPrices = function(six, twosix, hundred) {
