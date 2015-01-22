@@ -42,3 +42,4 @@ def run_price_check():
     
 # run_model_get()
 run_price_check()
+
