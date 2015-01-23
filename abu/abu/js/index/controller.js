@@ -2,7 +2,7 @@ var indexController = (function(){
     "use strict";
     
     var map, model, geocoder,
-        bamService = "http://127.0.0.1:8080/",
+        bamService = "http://127.0.0.1:8080/build",
         abuService = "http://127.0.0.1:8888/",
         firstBounds = true,
         firstTopo = true,

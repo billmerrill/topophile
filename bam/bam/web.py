@@ -1,3 +1,5 @@
+import base64
+import datetime
 import os
 import tempfile
 import json
@@ -6,6 +8,9 @@ import cherrypy
 import cove.model
 import job
 import shapeways_printer as printer
+from mako.template import Template
+from mako.lookup import TemplateLookup
+
 
 MODEL_DIR = os.path.join(os.getcwd(), "app/model_cache")
 
@@ -50,13 +55,16 @@ class ModelPricing(object):
             model_data = exagerate_model(model_data, mult)
 
         return json.dumps(printer.price_model(model_data))
+        
     
+class TestyClass(object):
+    exposed = True
+    @cherrypy.expose
+    def index(self):
+        return "I went to stock market today. I did a business."
 
 class STLModelService(object):
     exposed = True
-    def __init__(self):
-        self.test = ModelStub()
-        self.price = ModelPricing()
    
     def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube"):
         '''
@@ -94,6 +102,61 @@ class STLModelService(object):
             elevation_data.close()
             
         return model_fn
+
+class ShapewaysService(object):
+    def __init__(self):
+        self.lookup = TemplateLookup(directories=['html'])
+  
+    def build_model_message(self, model):
+        m = {'fileName': 'Your New Model %s.stl' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'hasRightsToModel': 1,
+            'acceptTermsAndConditions': 1,
+            'isPrivate': 1,
+            'isForSale': 1,
+            'materials': {'6': {'isActive': 1, 'markup': 900.09, 'materialId': '6'}}}
+                        
+        model_file = os.path.join(MODEL_DIR, model)
+        with open(model_file, 'rb') as f:
+            m['file'] = base64.b64encode(f.read())
+            
+        return m
+      
+    @cherrypy.expose    
+    def upload_to_store(self, model):
+        client = printer.new_shapeways_client()
+        response = client.add_model(self.build_model_message(model))
+        return self.render("buy.html", {'modelUrl': response['urls']['privateProductUrl']['address'],
+                                        'modelId': response['modelId']})
+       
+    @cherrypy.expose    
+    def is_printable(self, id):
+        client = printer.new_shapeways_client()
+        model = client.get_model_info(int(id))
+        printable = model['materials']['6']['isPrintable'] == 1
+        active = model['materials']['6']['isActive'] == 1
+        response = {'url': model['urls']['privateProductUrl']['address']}
+        response['ready'] = printable and active
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        return json.dumps(response)
+        
+    @cherrypy.expose    
+    def fake_buy(self ):
+        p = {'modelUrl': 'http://foo.bar/model.com', 'modelId': '3009591'}
+        return self.render("buy.html",p)
+    
+    @cherrypy.expose    
+    def fake_ready(self ):
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        return json.dumps({'url': 'http://fakecom/model/dot/click/click',
+                            'ready': True})
+        
+class RootClass(object):
+    exposed = True
+    def __init__(self):
+        self.build = STLModelService()
+        self.price = ModelPricing()
+        self.vincent = TestyClass()
+        self.printer = ShapewaysService()
         
 def CORS():
     cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
@@ -103,11 +166,22 @@ if __name__ == '__main__':
     cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
     conf = {
         '/': {
-         'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
          'tools.sessions.on': True,
+         'tools.CORS.on': True
+        },
+        '/build': {
+         'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
          'tools.response_headers.on': True,
          'tools.response_headers.headers': [('Content-Type', 'application/json')],
-         'tools.CORS.on': True
+        },
+        '/price': {
+         'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+         'tools.response_headers.on': True,
+         'tools.response_headers.headers': [('Content-Type', 'application/json')],
+        },
+        '/static': {
+        'tools.staticdir.on' : True,
+        'tools.staticdir.dir' : "/Users/bill/topo/bam/bam/static"
         }
     }
-    cherrypy.quickstart(STLModelService(), '/', conf)
+    cherrypy.quickstart(RootClass(), '/', conf)
