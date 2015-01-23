@@ -62,7 +62,11 @@ var indexController = (function(){
         },
         
         geocoderResultHandler = function(data, status) {
-            map.showSearchResult(data[0]['lat'], data[0]['lon'])
+            if (data.length > 0) {
+                map.showSearchResult(data[0]['lat'], data[0]['lon'])
+            } else {
+                alert("No place found.");
+            }
         },
         
         previewTopo = function() {
