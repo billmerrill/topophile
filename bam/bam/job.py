@@ -2,12 +2,16 @@ import elevation.cay_src as el_src
 import cove
 import os
 import time
+import cherrypy
 
 
 
 class BoundingBoxJob(object):
     
-    def __init__(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style):
+    def __init__(self, 
+        nwlat, nwlon, selat, selon, 
+        size, rez, zfactor, 
+        hollow, model_style):
         '''
         nwlat - string - northwest corner latitude
         nwlon - string - northwest corner longitude
@@ -38,9 +42,9 @@ class BoundingBoxJob(object):
         model_filename = self.build_model(elevation_data['filename'])
         
         t3 = time.time()
-        print "-----Job Times------"
-        print "-Elevation Data:\t", t2-t1
-        print "-Model Build:\t", t3-t2
+        cherrypy.log("-Job: %s %s,%s-%s,%s" % (self.model_style, self.nwlat, self.nwlon, self.selat, self.selon))
+        cherrypy.log("-Elevation Data:\t%s" % (t2-t1))
+        cherrypy.log("-Model Build:\t%s" % (t3-t2))
         return model_filename 
         
     def build_model(self, elevation_filename):
