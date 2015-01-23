@@ -106,6 +106,10 @@ class STLModelService(object):
 class ShapewaysService(object):
     def __init__(self):
         self.lookup = TemplateLookup(directories=['html'])
+
+    def render(self, template, params = {}):
+        tmpl = self.lookup.get_template(template)
+        return tmpl.render(**params)
   
     def build_model_message(self, model):
         m = {'fileName': 'Your New Model %s.stl' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),

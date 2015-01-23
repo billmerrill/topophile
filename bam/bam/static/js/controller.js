@@ -5,7 +5,7 @@ var buyController = (function() {
         modelId,
         modelUrl,
         mockprintableService = "http://127.0.0.1:9090/fake_ready",
-        danaPrintableService = "http://127.0.0.1:9090/is_printable",
+        danaPrintableService = "http://127.0.0.1:8080/printer/is_printable",
    
     modelIsReady = function() {
         $.ajax({
