@@ -16,7 +16,6 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 
 
-MODEL_DIR = os.path.join(os.getcwd(), "app/model_cache")
 app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache") }
         
     
