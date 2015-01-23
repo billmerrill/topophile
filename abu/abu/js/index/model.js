@@ -1,7 +1,7 @@
 var indexModel = (function() {
     "use strict";
 
-    var canvas,viewer, zFactor = 1;
+    var canvas,viewer, zFactor = 1, resetAABB = false;
      
     return {
         v: function() {
@@ -28,6 +28,11 @@ var indexModel = (function() {
                 this.TOPOzScale = zFactor;
                 var scene = this.getScene();
                 if (scene) { 
+                    if (resetAABB) {
+                        this.baseAABBmaxZ = null;
+                        this.baseAABBminZ = null;
+                        resetAABB = false;
+                    }
                     // save the original aabb, distort it like the model Z
                     if (!this.baseAABBmaxZ) {
                         this.baseAABBminZ = scene.aabb.minZ;
@@ -41,7 +46,8 @@ var indexModel = (function() {
         },
        
         showModel: function(modelUrl) {
-           viewer.replaceSceneFromUrl(modelUrl);
+            resetAABB = true;
+            viewer.replaceSceneFromUrl(modelUrl);
         },
         
         updateZFactor: function(newZFactor) {
