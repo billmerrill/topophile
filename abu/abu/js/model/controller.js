@@ -1,7 +1,7 @@
 var modelController = (function() {
     "use strict";
     
-    var bamService = "http://127.0.0.1:8080",
+    var bamService = "http://127.0.0.1:8080/build",
         swPriceService = "http://127.0.0.1:8080/price",
         physicalXDisplay, physicalYDisplay, physicalZDisplay,
         comparisonButton,
@@ -134,7 +134,7 @@ var modelController = (function() {
     },
     
     setSendButton = function(model) {
-        var url = "http://127.0.0.1:9090/upload_to_store?model=" + model
+        var url = "http://127.0.0.1:8080/printer/upload_to_store?model=" + model
         $('#send-to-printer').click(function() {window.open(url, "_self")});
     },
     

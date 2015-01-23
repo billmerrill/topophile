@@ -1,5 +1,14 @@
 from shapeways.client import Client
 
+def new_shapeways_client():
+    return Client(
+        consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
+        consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
+        oauth_token = "ee87280a80066e0e1920b7030c855a715c7d70f2",
+        oauth_secret = "c4904cf2dbf2f34958a828f06208637175114a57",
+    )
+        
+
 def price_model(model_data):
     client = Client(
         consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
