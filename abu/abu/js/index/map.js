@@ -48,7 +48,16 @@ var indexMap = (function() {
             locationFilter.disable();
             var latlng = L.latLng(lat, lon);
             map.setView(latlng, 10);
+        },
+        
+        getPixelPt: function(lat, lon) {
+            var ll = L.latLng(lat, lon)
+            // var pt = map.latLngToLayerPoint(ll, map.getZoom());
+            var pt = map.project(ll);
+            return pt
         }
+        
+        
     }
     
 }());

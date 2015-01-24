@@ -65,10 +65,7 @@ def get_elevation_image(filename, base_url, params):
      filename = os.path.join(os.getcwd(), 'app/elevation_cache', filename)
      ret = {'file':None, 'status':None}
      written = 0
-     import pprint
      with closing(requests.get(base_url, params=params, stream=True)) as response:
-     # Do things with the response here.
-         pprint.pprint(response)
          ret['status'] = response.status_code
          if response.status_code == 200:
              with open(filename, "wb") as save:
@@ -86,7 +83,8 @@ def get_elevation_image(filename, base_url, params):
              
 def main():
     #bbox = "-121.9870000,46.6867333,-121.5270000,47.0084000"
-    print get_elevation('38.2', '-90','38','-89.8')
+    print get_elevation('47.0084000','-121.9870000','46.6867333','-121.5270000')
+    # print get_elevation('38.2', '-90','38','-89.8')
     
 # main()
  

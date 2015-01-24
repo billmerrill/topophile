@@ -11,9 +11,11 @@ var indexController = (function(){
         selatDisplay,
         selonDisplay,
         zFactorDisplay,
+        locationFilterSize = {x:0, y:0},
     
         getModelUrl = function() {
             $("#model-building").show();
+            var modelSize = getModelSize(100);
             $.ajax({
                 type: "GET",
                 url: bamService,
@@ -22,6 +24,8 @@ var indexController = (function(){
                         'selat': selatDisplay.val(),
                         'selon': selonDisplay.val(),
                         'size': 100, 
+                        'width': modelSize['x'],
+                        'height': modelSize['y'],
                         'rez': 75,
                         'zfactor': 1,
                         'model_style': 'preview'}
@@ -42,16 +46,35 @@ var indexController = (function(){
             });
         },
         
+        getModelSize = function(max_length) {
+            var s = {x:0, y:0};
+            if (locationFilterSize['x'] > locationFilterSize['y']) {
+                s['x'] = max_length;
+                s['y'] = max_length * (locationFilterSize['y'] / locationFilterSize['x']);
+            } else {
+                s['y'] = max_length;
+                s['x'] = max_length * (locationFilterSize['x'] / locationFilterSize['y']);
+            }
+            return s
+        },
+        
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
                 firstBounds = false;
             }
+            updateLocationFilterSize(newBounds);
             updateBoundsDisplay(newBounds);
             previewTopo();
         },
         
         clearedBoundsHandler = function() {
             // something
+        },
+      
+        updateLocationFilterSize = function(bounds) {
+            var nwpt = map.getPixelPt(bounds['nwlat'], bounds['nwlon'])
+            var sept = map.getPixelPt(bounds['selat'], bounds['selon'])
+            locationFilterSize = sept.subtract(nwpt)
         },
         
         updateBoundsDisplay = function(bounds) {

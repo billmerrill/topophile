@@ -5,7 +5,7 @@ import json
 class STLModelService(object):
     exposed = True
    
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube"):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube", **kwargs):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
