@@ -41,9 +41,11 @@ var indexMap = (function() {
                 locationFilter.clearBounds();
                 clearedBoundsCallback();
             });
+            
         },
         
         showSearchResult: function(lat, lon) {
+            locationFilter.disable();
             var latlng = L.latLng(lat, lon);
             map.setView(latlng, 10);
         }
