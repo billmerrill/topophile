@@ -13,15 +13,17 @@ var indexModel = (function() {
     		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
             viewer = new JSC3D.Viewer(canvas);
-            viewer.setParameter('ModelColor',       '#9999FF');
+            // viewer.setParameter('ModelColor',       '#9999FF');
+            viewer.setParameter('ModelColor',       '#aaaaaa');
             viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
-            viewer.setParameter('RenderMode',       'texture');
+            viewer.setParameter('RenderMode',       'flat');
             viewer.setParameter('Renderer',         'webgl');
             viewer.setParameter('InitRotationX',     '-60');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('FaceCulling' ,    'off');
+            viewer.setParameter('Definition',       'standard');
             
             viewer.beforeupdate = function() {
                 // set Z axis distortion, aka height multiplier
