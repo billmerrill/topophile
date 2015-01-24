@@ -60,6 +60,11 @@ var indexModel = (function() {
         
         getZFactor: function() {
             return zFactor;
+        },
+        
+        resetScene: function() {
+            viewer.resetScene();
+            viewer.update();
         }
     } 
     

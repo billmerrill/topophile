@@ -107,9 +107,6 @@ var indexController = (function(){
             
             $('#exag').on('change', function(e) {
                 console.log('exag change', e);
-                if (e.target.id == 'height-factor-slider') {
-                    console.log('**********************FU');
-                }
                 if (e.target.id == 'zfactor') {
                     var val = parseFloat(e.target.value);
                     model.updateZFactor(val);
@@ -125,6 +122,9 @@ var indexController = (function(){
                 
             $('#height-factor').slider();
             
+            $("#model-view-reset").click(
+                function(){ model.resetScene();}
+            );
             $("#gc-search-button").click(
                 function() {geocoder.search($("#gc-search").val())}
             );
@@ -147,6 +147,7 @@ var indexController = (function(){
             });
             
             $("#model-building").hide();
+            
         };
         
         
