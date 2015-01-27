@@ -38,6 +38,18 @@ def get_elevation_url_parts(nwlat, nwlon, selat, selon):
         'RESY':     '0.000277777777778',
         'FORMAT':   'image/tiff'
     }
+    new_srtm_params = {
+        'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
+        'SERVICE':  'WCS',
+        'VERSION':  '1.0.0',
+        'REQUEST':  'GetCoverage',
+        'coverage': 'srtmgl1',
+        'CRS':      'epsg:4236',
+        'BBOX':     bbox,
+        'RESX':     '0.000277777777778',
+        'RESY':     '0.000277777777778',
+        'FORMAT':   'image/tiff'
+    }
     
     return server_base, srtm_params
         
@@ -62,7 +74,7 @@ def get_elevation(nwlat, nwlon, selat, selon, retry = 0):
              'status': status['status']}
              
 def get_elevation_image(filename, base_url, params):
-     filename = os.path.join(os.getcwd(), 'app/elevation_cache', filename)
+    #  filename = os.path.join(os.getcwd(), 'app/elevation_cache', filename)
      ret = {'file':None, 'status':None}
      written = 0
      with closing(requests.get(base_url, params=params, stream=True)) as response:
@@ -83,7 +95,14 @@ def get_elevation_image(filename, base_url, params):
              
 def main():
     #bbox = "-121.9870000,46.6867333,-121.5270000,47.0084000"
-    print get_elevation('47.0084000','-121.9870000','46.6867333','-121.5270000')
+    # print get_elevation('47.0084000','-121.9870000','46.6867333','-121.5270000')
+    print get_elevation('46.88225369059212','-121.805419921875' , '46.854556538855746', '-121.76628112792967' )
+#     46.88225369059212
+# -121.805419921875
+# 
+# se
+# 46.854556538855746
+# -121.76628112792967
     # print get_elevation('38.2', '-90','38','-89.8')
     
 # main()
