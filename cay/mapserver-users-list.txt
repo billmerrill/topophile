@@ -1,0 +1,15 @@
+Projecting Dataset as it is served.
+
+I’m trying to create a mapfile + WCS request that will reproject SRTM raster from epgs:4236 to epgs:3587.
+
+I currently have configured a mapserver WCS to vend SRTM G1 data, and have a web app utilizing the WCS.  The web app resamples and reprojects the map data from epgs4236 to epgs3857 using gdal, I like to try having mapserver do this work instead.
+
+http://localhost/cgi-bin/mapserv?map=/new-srtm-wcs.map&
+SERVICE=WCS&
+VERSION=1.0.0&
+REQUEST=GetCoverage&
+coverage=srtmgl1&
+CRS=epsg:3857&
+BBOX=-13579530.723399062,5891090.039494356,-13528323.757634155,5943445.274026636&
+RESX=30.922080775934063&RESY=-30.922080777037397&
+FORMAT=image/tiff
