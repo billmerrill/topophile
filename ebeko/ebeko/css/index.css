@@ -2,19 +2,26 @@ body {
     padding: 1em;
 }
 
-.page-header {
-    margin: 0px;
-}
 
 .page-header h1 {
     font-family:     'Nunito', sans-serif;
 }
 
-section {
-    margin: 0px;
-    padding-bottom: 20px;
+#map {
+    height: 400px;
+    width: 100%;
 }
 
-div, section {
-    border: 1px solid #ccc;
+#terrain-progress {
+    padding-top: 180px;
+}
+
+.building-status {
+    font-variant: small-caps;
+}
+
+#terrain-instructions {
+    position: absolute;
+    float: left;
+    z-index: 1000;
 }
