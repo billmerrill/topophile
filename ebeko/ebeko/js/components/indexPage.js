@@ -5,6 +5,7 @@ TOPO.BUILD1.indexPage = (function() {
         terrain = TOPO.BUILD1.Terrain,
         geocoder = TOPO.BUILD1.Geocoder,
         firstBounds = true,
+        zFactorDisplay,
 
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
@@ -28,6 +29,28 @@ TOPO.BUILD1.indexPage = (function() {
                 if(e.keyCode == 13) {
                     geocoder.search($("#gc-search").val());
                 }});
+                
+                
+            zFactorDisplay = $("#zfactor");
+            
+            zFactorDisplay.val("1.5");
+            
+            $('#exag').on('change', function(e) {
+                console.log('exag change', e);
+                if (e.target.id == 'zfactor') {
+                    var val = parseFloat(e.target.value);
+                    terrain.updateZFactor(val);
+                    if ((val >= .1) && (val <= 10)) {
+                        $('#height-factor').slider('setValue', val);
+                    }
+                } else {
+                    var val = e.value.newValue;
+                    terrain.updateZFactor(val);
+                    zFactorDisplay.val(val)
+                }
+            });
+            
+            $('#height-factor').slider();
         };
         
     
