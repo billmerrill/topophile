@@ -31,7 +31,10 @@
     <script type="text/javascript">
         $(document).ready( function() { 
             var initConf = {'mapStartPoint': [46.852947, -121.760424],
-                            'elExageration': 1.5};
+                            'elExageration': 1.5,
+                            'terrainSize': 100,
+                            'terrainRez': 75,
+                            'bamService': "http://127.0.0.1:8080/build"};
             TOPO.BUILD1.setConfig(initConf);
             TOPO.BUILD1.indexPage.init(); 
         }); 

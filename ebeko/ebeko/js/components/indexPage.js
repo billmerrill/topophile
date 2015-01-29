@@ -4,17 +4,17 @@ TOPO.BUILD1.indexPage = (function() {
     var map = TOPO.BUILD1.Map,
         terrain = TOPO.BUILD1.Terrain,
         firstBounds = true,
-        
+
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
+                $("#terrain-instructions").hide();        
                 firstBounds = false;
             }
-            previewTopo();
+            terrain.renderBounds(newBounds);
         },
         
         initComponents = function() {
-            // map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler, clearedBoundsHandler);
-            map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'));
+            map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
             terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress");
         };
     
@@ -22,7 +22,6 @@ TOPO.BUILD1.indexPage = (function() {
     return {
         init: function() {
             initComponents();
-            
         }
     }
 }());

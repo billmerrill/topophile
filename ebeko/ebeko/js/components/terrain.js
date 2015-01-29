@@ -1,7 +1,7 @@
 TOPO.BUILD1.Terrain = (function() {
     "use strict";
 
-    var canvas, viewer, busyDisplay, zFactor = 1, resetAABB = false;
+    var canvas, viewer, busyDisplay, canvasJQ, zFactor = 1, resetAABB = false;
      
     return {
         v: function() {
@@ -15,6 +15,8 @@ TOPO.BUILD1.Terrain = (function() {
             viewer = new JSC3D.Viewer(canvas);
             busyDisplay = $('#' + progressDisplayId);
             busyDisplay.hide();
+            canvasJQ = $('#' + displayCanvasId);
+            canvasJQ.hide();
             // viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('ModelColor',       '#aaaaaa');
             viewer.setParameter('Background',       'off');
@@ -73,10 +75,37 @@ TOPO.BUILD1.Terrain = (function() {
         
         showBusy: function() {
             busyDisplay.show();
+            canvasJQ.hide();
         },
         
         hideBusy: function() {
             busyDisplay.hide();
-        }
+            canvasJQ.show();
+        },
+        
+        renderBounds: function(bounds) {
+            var thee = this;
+            $.ajax({
+                type: "GET",
+                url: TOPO.BUILD1.getConfig('bamService'),
+                data: { 'nwlat': bounds.nwlat,
+                'nwlon': bounds.nwlon,
+                'selat': bounds.selat,
+                'selon': bounds.selon,
+                'size': TOPO.BUILD1.getConfig('terrainSize'), 
+                'rez': TOPO.BUILD1.getConfig('terrainRez'),
+                'zfactor': 1,
+                'model_style': 'preview'}
+            })
+            .done(function(data, status, jqxhr) {
+                thee.showModel(data['url']);
+            })
+            .fail(function(data, stats, error) {
+                alert("Sorry, I couldn't build a model.")
+            })
+            .always(function(data) {
+                thee.hideBusy();
+            });
+        },
     }
 }());
