@@ -44,11 +44,17 @@ TOPO.BUILD1.Map = (function() {
             
         },
         
-        showSearchResult: function(lat, lon) {
-            locationFilter.disable();
-            var latlng = L.latLng(lat, lon);
-            map.setView(latlng, 10);
+        
+        showSearchResult: function(data, status) {
+            if (data.length > 0) {
+                locationFilter.disable();
+                var latlng = L.latLng(data[0]['lat'], data[0]['lon']);
+                map.setView(latlng, 10);
+            } else {
+                alert("No place found.");
+            }
         }
+        
     }
     
 }());
