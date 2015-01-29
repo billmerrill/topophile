@@ -18,17 +18,26 @@ TOPO.BUILD1.Geocoder = (function(){
         .done(function(data, status, jqxhr) {
             searchResultCallback(data, status);
         });
+    }, 
+    search = function(searchString) {
+        var searchUrl = buildSearch(searchString);
+        executeSearch(searchUrl);
     };
 
-
-
     return {
-        init: function(searchResultCb) {
+        init: function(searchResultCb, searchFieldId, searchButtonId) {
+            var searchField = $('#' + searchFieldId),
+                searchButton = $('#' + searchButtonId);
+                
             searchResultCallback = searchResultCb;
-        },
-        search: function(searchString) {
-            var searchUrl = buildSearch(searchString);
-            executeSearch(searchUrl);
+            searchButton.click(
+                function() {
+                    search(searchField.val())}
+            );
+            searchField.keyup(function(e){
+                if(e.keyCode == 13) {
+                    search(searchField.val());
+                }}); 
         }
     }
 }());
