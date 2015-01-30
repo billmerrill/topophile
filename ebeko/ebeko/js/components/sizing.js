@@ -28,15 +28,25 @@ TOPO.BUILD1.Sizing = (function(){
             }
             presetChangeCallback(cbData);
         },
+    
+        showCurrentDimensions = function() {
+            if (currentUnits == 'm') {
+                showMetricDimensions();
+            } else {
+                showImperialDimensions();
+            }
+        },
        
         showImperialDimensions = function () {
             $(".size-cm").hide();
             $(".size-in").show();    
+            currentUnits = 'i';
         },
         
         showMetricDimensions = function () {
             $(".size-cm").show();
             $(".size-in").hide();    
+            currentUnits = 'm';
         },
         
         makeDisplayDimension = function(mmval) {
@@ -49,7 +59,7 @@ TOPO.BUILD1.Sizing = (function(){
             xDisplay.html(makeDisplayDimension(xSize()));
             yDisplay.html(makeDisplayDimension(ySize()));
             zDisplay.html(makeDisplayDimension(zSize()));
-            showMetricDimensions();
+            showCurrentDimensions();
         },
         
         updatePresets = function() {
@@ -109,6 +119,16 @@ TOPO.BUILD1.Sizing = (function(){
             getCurrentDimensions: function() {
                 return dimensions[currentSizePreset]
             },
+            
+            toggleUnits: function() {
+                if (currentUnits == 'm') {
+                    currentUnits = 'i';
+                } else {
+                    currentUnits = 'm';
+                }
+                
+                showCurrentDimensions();
+            }
             
 
     }

@@ -9,6 +9,7 @@ TOPO.BUILD1.indexPage = (function() {
         pricing = TOPO.BUILD1.Pricing,
         sizing = TOPO.BUILD1.Sizing,
         firstBounds = true,
+        currentModelId,
         
         getModelSpec = function () {
             var modelSpec = terrain.getBounds();
@@ -24,8 +25,25 @@ TOPO.BUILD1.indexPage = (function() {
             terrain.renderBounds(newBounds);
         },
         
-        presetChangeHandler = function() {
-            
+        presetChangeHandler = function(data) {
+            switch (data['preset']) {
+                case 'small':
+                    model.scaleReferenceObject(1);
+                    pricing.updatePrice(currentModelId, 1.0);
+                    break;
+                case 'medium': 
+                    model.scaleReferenceObject(.5);
+                    pricing.updatePrice(currentModelId, 2.0);
+                    break;
+                case 'large': 
+                    model.scaleReferenceObject(1.0/3.0);
+                    pricing.updatePrice(currentModelId, 3.0);
+                    break;
+                case 'custom': 
+                    model.scaleReferenceObject(.2);
+                    pricing.updatePrice(currentModelId, 5.0);
+                    break;
+            }
         },
         
         newModelHandler = function(modelData) {
@@ -38,6 +56,7 @@ TOPO.BUILD1.indexPage = (function() {
             
             sizing.setSize(modelData['x-size-mm'], modelData['y-size-mm'], modelData['z-size-mm']);
             pricing.updatePrice(modelData['model_id']);
+            currentModelId = modelData['model_id'];
         },
         
         initComponents = function() {
@@ -55,7 +74,11 @@ TOPO.BUILD1.indexPage = (function() {
         initElements = function() {
             $('#build-model').click(function() {
                 model.renderModel(getModelSpec())
-            })
+            });
+            
+            $('#model-sizes').click(function() {
+                sizing.toggleUnits();
+            });
         }
         
     

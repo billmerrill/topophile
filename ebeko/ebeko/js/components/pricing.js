@@ -36,9 +36,15 @@ TOPO.BUILD1.Pricing = (function(){
                 priceSpan = $('#'+priceSpanId);
             },
             
+            clearPrice: function() {
+                displayPrice("...");
+            },
+            
             updatePrice: function(model_id, scale) {
+                displayPrice("...");
                 getPricing(model_id, scale);
-            }
+            },
+            
             
         }
     
