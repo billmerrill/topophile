@@ -8,21 +8,18 @@ TOPO.BUILD1.Model = (function() {
         comparisonMeshParts,
         modelWidth = 100,
         busyDisplay,
+        resetButton,
+        compareButton,
         
         buildComparison = function(scale) {
             if (!scale) {
                 scale = [1,1,1]
             }
             var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
-            comparisonMeshParts = references.token(xform);
-        }; 
-     
-    return {
-        init: function(displayCanvasId, progressDisplayId) {
-            busyDisplay = $('#'+progressDisplayId);
-            busyDisplay.hide();
-            canvas = document.getElementById(displayCanvasId);
-            jcanvas = $(canvas);
+            comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.token(xform);
+        },
+        
+        initViewer = function() {
             viewer = new JSC3D.Viewer(canvas);
             viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('Background',       'off');
@@ -35,10 +32,8 @@ TOPO.BUILD1.Model = (function() {
             viewer.init();
             viewer.update();
         },
-      
         
-       
-        toggleSizeReference: function() {
+        toggleSizeReference = function() {
             showSizeReference = !showSizeReference; 
             if (comparisonMeshParts) {
                 var i;
@@ -56,13 +51,31 @@ TOPO.BUILD1.Model = (function() {
                 viewer.update();
             }
         },
-       
-        showChit: function() {
-            var scene = new JSC3D.Scene();
-            scene.addChild(references.token());
-            viewer.replaceScene(scene);
-        },
         
+        resetScene = function() {
+            viewer.resetScene();
+            viewer.update();
+        } 
+    
+    return {
+    
+        init: function(displayCanvasId, progressDisplayId, compareButtonId, resetButtonId) {
+            compareButton = $('#'+compareButtonId);
+            compareButton.click(function() {
+                toggleSizeReference();
+                resetScene();
+            })
+            resetButton = $('#'+resetButtonId);
+            resetButton.click(function() {
+                resetScene();
+            })
+            busyDisplay = $('#'+progressDisplayId);
+            busyDisplay.hide();
+            canvas = document.getElementById(displayCanvasId);
+            jcanvas = $(canvas);
+            initViewer();
+        },
+       
         scaleReferenceObject: function(scale) {
             var i;
             var currScene = viewer.getScene();
@@ -94,11 +107,6 @@ TOPO.BUILD1.Model = (function() {
             };
             loader.loadFromUrl(modelUrl);
         },
-        
-        resetScene: function() {
-            viewer.resetScene();
-            viewer.update();
-        }, 
         
         showBusy: function() {
             jcanvas.hide();

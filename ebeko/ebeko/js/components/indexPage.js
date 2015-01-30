@@ -29,7 +29,7 @@ TOPO.BUILD1.indexPage = (function() {
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
             exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
             pricing.init('white_plastic_price');
-            model.init('model-canvas', 'model-progress');
+            model.init('model-canvas', 'model-progress', 'toggle-size-comparison', 'reset-view');
         },
         
         initElements = function() {
