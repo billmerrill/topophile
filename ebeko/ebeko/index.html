@@ -30,6 +30,7 @@
     <script src="js/components/terrain.js"></script>
     <script src="js/components/geocoder.js"></script>
     <script src="js/components/elexag.js"></script>
+    <script src="js/components/sizing.js"></script>
     <script src="js/components/pricing.js"></script>
     <script src="js/components/reference.js"></script>
     <script src="js/components/model.js"></script>
@@ -43,7 +44,8 @@
                             'terrainRez': 75,
                             'modelSize': 100,
                             'modelRez': 50,
-                            'bamService': "http://127.0.0.1:8080/build"};
+                            'bamService': "http://127.0.0.1:8080/build",
+                            'pricingService': "http://127.0.0.1:8080/price"};
             TOPO.BUILD1.setConfig(initConf);
             TOPO.BUILD1.indexPage.init(); 
         }); 
@@ -111,7 +113,7 @@
 <hr>
     <div class="row">
         
-        <div class="col-md-8">
+        <div class="col-md-9">
             <div class="model-container" id="model-container">
                 <div id="model-progress">
                     <span class="building-status">building model</span>
@@ -126,13 +128,13 @@
         </div>
     
     
-        <div class="col-md-4" id="controls">
-            <h3>Dimensions<h3>
+        <div class="col-md-3" id="controls">
+            <h3>Dimensions</h3>
                 
             <ul id="model-sizes">
-                <li><span id="model-height"><span class="size-cm">99.9 cm</span><span class="size-in">44.6 in<span></span></li>
-                <li><span id="model-length"><span class="size-cm">98.9 cm</span><span class="size-in">49.6 in<span></span></li>
-                <li><span id="model-width"><span class="size-cm">78.9 cm</span><span class="size-in">51.6 in<span></span></li>
+                <li><span id="zsize">Height <span class="size-cm">99.9 cm</span><span class="size-in">44.6 in<span></span></li>
+                <li><span id="xsize">Length <span class="size-cm">98.9 cm</span><span class="size-in">49.6 in<span></span></li>
+                <li><span id="ysize">Depth <span class="size-cm">78.9 cm</span><span class="size-in">51.6 in<span></span></li>
             </ul>
             
             <div>
@@ -151,7 +153,7 @@
                 
             <h3>Shapeways Base Price Estimate</h3>
             <div id="prices">
-                    <li>White Plastic: <span id="white_plastic_price"></span></li>
+                    <li>White Plastic: <span id="white_plastic_price"> </span></li>
             </div>
             
             <h3>View<h3>

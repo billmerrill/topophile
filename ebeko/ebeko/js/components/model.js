@@ -10,6 +10,7 @@ TOPO.BUILD1.Model = (function() {
         busyDisplay,
         resetButton,
         compareButton,
+        newModelCallback,
         
         buildComparison = function(scale) {
             if (!scale) {
@@ -59,7 +60,8 @@ TOPO.BUILD1.Model = (function() {
     
     return {
     
-        init: function(displayCanvasId, progressDisplayId, compareButtonId, resetButtonId) {
+        init: function(newModelCb, displayCanvasId, progressDisplayId, compareButtonId, resetButtonId) {
+            newModelCallback = newModelCb;
             compareButton = $('#'+compareButtonId);
             compareButton.click(function() {
                 toggleSizeReference();
@@ -140,6 +142,7 @@ TOPO.BUILD1.Model = (function() {
                 thee.currentModelId = data['model_id'];
                 // setSendButton(data['model_id'] + ".stl");
                 // setPricing(data['model_id'])
+                newModelCallback(data);
 
             })
             .fail(function(data, stats, error) {

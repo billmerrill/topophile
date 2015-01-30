@@ -4,7 +4,8 @@ TOPO.BUILD1.Pricing = (function(){
     var priceSpan, 
     
         displayPrice = function(price) {
-            priceSpan.val(price);
+            console.log(price)
+            priceSpan.html(price);
         },
     
         getPricing = function(model_id,scale) {

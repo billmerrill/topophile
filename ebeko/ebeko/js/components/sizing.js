@@ -1,7 +1,8 @@
-modelSizing = (function(){
+TOPO.BUILD1.Sizing = (function(){
     "use strict";
     
-    var presetChangeCallback, currentSizePreset = 'small',
+    var currentUnits = 'm',
+        presetChangeCallback, currentSizePreset = 'small',
         dimensions = {'small': [],
                        'medium': [],
                        'large': [],
@@ -27,12 +28,40 @@ modelSizing = (function(){
             }
             presetChangeCallback(cbData);
         },
+       
+        showImperialDimensions = function () {
+            $(".size-cm").hide();
+            $(".size-in").show();    
+        },
         
+        showMetricDimensions = function () {
+            $(".size-cm").show();
+            $(".size-in").hide();    
+        },
+        
+        makeDisplayDimension = function(mmval) {
+            var cmval = (mmval / 10.0).toPrecision(2);
+            var inval = (mmval / 25.4).toPrecision(2);
+            return '<span class="size-cm">'+cmval+' cm</span><span class="size-in">'+inval+' in<span>';
+        },
         
         updateDisplay =  function() {
-            xDisplay.val(xSize());
-            yDisplay.val(ySize());
-            zDisplay.val(zSize());
+            xDisplay.html(makeDisplayDimension(xSize()));
+            yDisplay.html(makeDisplayDimension(ySize()));
+            zDisplay.html(makeDisplayDimension(zSize()));
+            showMetricDimensions();
+        },
+        
+        updatePresets = function() {
+            dimensions['medium'] = [dimensions['small'][0] * 2,
+                                     dimensions['small'][1] * 2,
+                                     dimensions['small'][2] * 2];
+            dimensions['large'] = [dimensions['small'][0] * 3,
+                                     dimensions['small'][1] * 3,
+                                     dimensions['small'][2] * 3];
+            dimensions['custom'] = [dimensions['small'][0] * 5,
+                                     dimensions['small'][1] * 5,
+                                     dimensions['small'][2] * 5];
         },
     
         xSize = function(val) { return accessDimension(0,val) },
@@ -45,6 +74,8 @@ modelSizing = (function(){
             init: function(presetChangeCb, 
                             x, y, z, 
                             presetS, presetM, presetL, presetC) {
+                showMetricDimensions();    
+                                
                 presetChangeCallback = presetChangeCb;
                 xDisplay = $(x);
                 yDisplay = $(y);
@@ -72,18 +103,7 @@ modelSizing = (function(){
             setSize: function(x,y,z) {
                 dimensions[currentSizePreset] = [x,y,z];
                 updateDisplay();
-            },
-            
-            initPresets: function() {
-                dimensions['medium'] = [dimensions['small'][0] * 2,
-                                         dimensions['small'][1] * 2,
-                                         dimensions['small'][2] * 2];
-                dimensions['large'] = [dimensions['small'][0] * 3,
-                                         dimensions['small'][1] * 3,
-                                         dimensions['small'][2] * 3];
-                dimensions['custom'] = [dimensions['small'][0] * 5,
-                                         dimensions['small'][1] * 5,
-                                         dimensions['small'][2] * 5];
+                updatePresets();
             },
             
             getCurrentDimensions: function() {
