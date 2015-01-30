@@ -1,7 +1,13 @@
 TOPO.BUILD1.Terrain = (function() {
     "use strict";
 
-    var canvas, viewer, busyDisplay, canvasJQ, zFactor = 1, resetAABB = false;
+    var canvas, 
+        viewer, 
+        busyDisplay, 
+        canvasJQ, 
+        zFactor = 1, 
+        resetAABB = false,
+        terrainBounds = {};
      
     return {
         v: function() {
@@ -85,6 +91,7 @@ TOPO.BUILD1.Terrain = (function() {
         
         renderBounds: function(bounds) {
             var thee = this;
+            var newBounds = bounds;
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('bamService'),
@@ -98,6 +105,7 @@ TOPO.BUILD1.Terrain = (function() {
                 'model_style': 'preview'}
             })
             .done(function(data, status, jqxhr) {
+                terrainBounds = newBounds;
                 thee.showModel(data['url']);
             })
             .fail(function(data, stats, error) {
@@ -106,6 +114,10 @@ TOPO.BUILD1.Terrain = (function() {
             .always(function(data) {
                 thee.hideBusy();
             });
-        },
+        }, 
+        
+        getBounds: function() {
+            return terrainBounds;
+        }
     }
 }());

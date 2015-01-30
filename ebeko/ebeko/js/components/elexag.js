@@ -1,12 +1,14 @@
 TOPO.BUILD1.Exaggerater =  (function(){
     "use strict";
     
+    var exagValue;
+    
     return {
         init: function(startExag, exagContainerId, exagSliderId, exagValueId) {
             var terrain = TOPO.BUILD1.Terrain,
-                exagValue = $("#" + exagValueId),
                 slider = $('#' + exagSliderId);
                 
+            exagValue = $("#" + exagValueId);
             exagValue.val(startExag);
             slider.slider();
             
@@ -24,6 +26,10 @@ TOPO.BUILD1.Exaggerater =  (function(){
                 }
             });
             
-        },
+        }, 
+        
+        getFactor: function() {
+            return exagValue.val();
+        }
     }
 }());
