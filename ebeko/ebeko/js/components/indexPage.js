@@ -46,22 +46,20 @@ TOPO.BUILD1.indexPage = (function() {
             }
         },
         
+        newTerrainHandler = function() {
+            $('#build-model').prop('disabled', false);
+        },
+        
         newModelHandler = function(modelData) {
-            // modelCanvas.showModel(data['url'], data['x-size-mm']);
-            // sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
-            // sizeTools.initPresets();
-            // currentModelId = data['model_id'];
-            // setSendButton(data['model_id'] + ".stl");
-            // setPricing(data['model_id'])    
-            
             sizing.setSize(modelData['x-size-mm'], modelData['y-size-mm'], modelData['z-size-mm']);
             pricing.updatePrice(modelData['model_id']);
             currentModelId = modelData['model_id'];
+            $("#print-model").prop('disabled', false);
         },
         
         initComponents = function() {
             map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
-            terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress");
+            terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler);
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
             exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
             pricing.init('white_plastic_price');
@@ -74,11 +72,17 @@ TOPO.BUILD1.indexPage = (function() {
         initElements = function() {
             $('#build-model').click(function() {
                 model.renderModel(getModelSpec())
-            });
+            }).prop('disabled', true);
             
             $('#model-sizes').click(function() {
                 sizing.toggleUnits();
             });
+            
+            $('#print-model').click(fucntion() {
+                console.log("printit");
+            }).prop('disabled', true);
+            
+            
         }
         
     

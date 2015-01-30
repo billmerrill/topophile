@@ -6,6 +6,7 @@ TOPO.BUILD1.Terrain = (function() {
         busyDisplay, 
         canvasJQ, 
         zFactor = 1, 
+        newTerrainCallback,
         resetAABB = false,
         terrainBounds = {};
      
@@ -14,7 +15,7 @@ TOPO.BUILD1.Terrain = (function() {
             return viewer;
         },
         
-        init: function(displayCanvasId, initZFactor, progressDisplayId) {
+        init: function(displayCanvasId, initZFactor, progressDisplayId, newTerrainCb) {
             zFactor = initZFactor;
     		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
@@ -22,6 +23,9 @@ TOPO.BUILD1.Terrain = (function() {
             busyDisplay = $('#' + progressDisplayId);
             busyDisplay.hide();
             canvasJQ = $('#' + displayCanvasId);
+            newTerrainCallback = newTerrainCb;
+            
+            
             canvasJQ.hide();
             // viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('ModelColor',       '#aaaaaa');
@@ -92,6 +96,7 @@ TOPO.BUILD1.Terrain = (function() {
         renderBounds: function(bounds) {
             var thee = this;
             var newBounds = bounds;
+            this.showBusy();
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('bamService'),
@@ -107,6 +112,7 @@ TOPO.BUILD1.Terrain = (function() {
             .done(function(data, status, jqxhr) {
                 terrainBounds = newBounds;
                 thee.showModel(data['url']);
+                newTerrainCallback();
             })
             .fail(function(data, stats, error) {
                 alert("Sorry, I couldn't build a model.")
