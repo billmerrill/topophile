@@ -29,6 +29,14 @@ class ShapewaysService(object):
             m['file'] = base64.b64encode(f.read())
             
         return m
+    
+    @cherrypy.expose
+    def upload(self, model_id):
+        model = model_id + ".stl"
+        client = printer.new_shapeways_client()
+        response = client.add_model(self.build_model_message(model))
+        cherrypy.response.headers['Content-Type'] = "application/json"
+        return json.dumps(response)
       
     @cherrypy.expose    
     def upload_to_store(self, model):

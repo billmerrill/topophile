@@ -34,6 +34,7 @@
     <script src="js/components/pricing.js"></script>
     <script src="js/components/reference.js"></script>
     <script src="js/components/model.js"></script>
+    <script src="js/components/printer.js"></script>
     <script src="js/components/indexPage.js"></script>
     
     <script type="text/javascript">
@@ -45,7 +46,10 @@
                             'modelSize': 100,
                             'modelRez': 50,
                             'bamService': "http://127.0.0.1:8080/build",
-                            'pricingService': "http://127.0.0.1:8080/price"};
+                            'pricingService': "http://127.0.0.1:8080/price",
+                            'uploadService': "http://127.0.0.1:8080/printer/upload",
+                            'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
+                            'mockPrintableService':  "http://127.0.0.1:9090/fake_ready"};
             TOPO.BUILD1.setConfig(initConf);
             TOPO.BUILD1.indexPage.init(); 
         }); 
@@ -170,6 +174,10 @@
     <hr>
     <div class="row">
         Uploading - Preparing - Ready Go!
+        <h3 id="print-status"></h3>
+
+        <button id="buyit" class="btn-lg btn-success">GO!</button>
+
     </div>
     </div>
 </div>

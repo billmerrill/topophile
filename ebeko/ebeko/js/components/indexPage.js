@@ -8,6 +8,7 @@ TOPO.BUILD1.indexPage = (function() {
         model = TOPO.BUILD1.Model,  
         pricing = TOPO.BUILD1.Pricing,
         sizing = TOPO.BUILD1.Sizing,
+        printer = TOPO.BUILD1.Printer,
         firstBounds = true,
         currentModelId,
         
@@ -78,11 +79,10 @@ TOPO.BUILD1.indexPage = (function() {
                 sizing.toggleUnits();
             });
             
-            $('#print-model').click(fucntion() {
+            $('#print-model').click(function() {
                 console.log("printit");
+                printer.upload(currentModelId);
             }).prop('disabled', true);
-            
-            
         }
         
     
