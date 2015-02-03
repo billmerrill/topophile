@@ -59,6 +59,7 @@ TOPO.BUILD1.Printer = (function() {
         
         upload: function(modelId) {
             setPrintStatus("Sending Model to Shapeways");
+            $('#buyit').hide();
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('uploadService'),
