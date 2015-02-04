@@ -25,3 +25,53 @@ body {
     float: left;
     z-index: 1000;
 }
+
+#threewrapper {
+    height: 125px;
+    width: 125px;
+}
+#threedim {
+    background-image: url('../assets/cluster.png');
+    background-repeat: no-repeat;
+    background-position: top left; 
+    width: 125px;
+    height: 125px;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+}
+
+#threedim div {
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+#threedim #x {
+    top: 45px;
+    left: 16px;
+}
+#threedim #y {
+    top: 90px;
+    left: 55px;
+}
+#threedim #z {
+    top: 30px;
+    left: 78px;
+}
+
+#threedim #units {
+    top: 1px;
+    left: 1px;
+    color: #999;
+}
+
+#threedim .dimension-label {
+    display: none;
+}
+
+#threedim .current {
+    font-weight: bold;
+    color: #000;
+}

@@ -133,16 +133,17 @@
     
     
         <div class="col-md-3" id="controls">
-            <h3>Dimensions</h3>
+            <div id="threewrapper" alt="click to switch unites">
+                <div id="threedim">
+                    <div id="units"><span class="current">cm</span> / <span>in<span></div>
+                    <div id="x"><span class="dimension-label">Width: </span><span class="size-cm">☃</span><span class="size-in">☃</span></div>
+                    <div id="y"><span class="dimension-label">Depth: </span><span class="size-cm">♫</span><span class="size-in">♫</span></div>
+                    <div id="z"><span class="dimension-label">Height: </span><span class="size-cm">❀</span><span class="size-in">❀</span></div>
+                </div>
+            </div>
                 
-            <ul id="model-sizes">
-                <li><span id="zsize">Height <span class="size-cm">99.9 cm</span><span class="size-in">44.6 in<span></span></li>
-                <li><span id="xsize">Length <span class="size-cm">98.9 cm</span><span class="size-in">49.6 in<span></span></li>
-                <li><span id="ysize">Depth <span class="size-cm">78.9 cm</span><span class="size-in">51.6 in<span></span></li>
-            </ul>
-            
             <div>
-                <button type="button" class="btn btn-default" id="toggle-size-comparison">Compare to a</button> dollar
+                Compare <button type="button" class="btn btn-default" id="toggle-size-comparison">$</button> 
             </div>
             
             

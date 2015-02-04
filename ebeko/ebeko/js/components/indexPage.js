@@ -64,7 +64,7 @@ TOPO.BUILD1.indexPage = (function() {
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
             exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
             pricing.init('white_plastic_price');
-            sizing.init(presetChangeHandler, '#xsize', '#ysize', '#zsize', '#small-size-preset',
+            sizing.init(presetChangeHandler, '#x', '#y', '#z', '#small-size-preset',
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                         '#toggle-size-comparison');
             printer.init();
@@ -76,7 +76,7 @@ TOPO.BUILD1.indexPage = (function() {
                 model.renderModel(getModelSpec())
             }).prop('disabled', true);
             
-            $('#model-sizes').click(function() {
+            $('#threewrapper').click(function() {
                 sizing.toggleUnits();
             });
             

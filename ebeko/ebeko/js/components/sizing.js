@@ -50,9 +50,9 @@ TOPO.BUILD1.Sizing = (function(){
         },
         
         makeDisplayDimension = function(mmval) {
-            var cmval = (mmval / 10.0).toPrecision(2);
-            var inval = (mmval / 25.4).toPrecision(2);
-            return '<span class="size-cm">'+cmval+' cm</span><span class="size-in">'+inval+' in<span>';
+            var cmval = (mmval / 10.0).toPrecision(3);
+            var inval = (mmval / 25.4).toPrecision(3);
+            return '<span class="size-cm">'+cmval+'</span><span class="size-in">'+inval+'<span>';
         },
         
         updateDisplay =  function() {
@@ -127,6 +127,7 @@ TOPO.BUILD1.Sizing = (function(){
                     currentUnits = 'm';
                 }
                 
+                $("#threedim #units span").toggleClass("current");
                 showCurrentDimensions();
             }
             

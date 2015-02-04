@@ -31,6 +31,7 @@ TOPO.BUILD1.Model = (function() {
             viewer.setParameter('Renderer',         'webgl');
             viewer.setParameter('InitRotationX',     '-80');
             viewer.setParameter('InitRotationY' ,    '30');
+            viewer.setParameter('CreaseAngle',       '25');
             viewer.init();
             viewer.update();
         },
