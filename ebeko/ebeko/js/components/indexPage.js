@@ -60,7 +60,7 @@ TOPO.BUILD1.indexPage = (function() {
         
         initComponents = function() {
             map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
-            terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler);
+            terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler, 'terrain-reset');
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
             exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
             pricing.init('white_plastic_price');
@@ -68,7 +68,7 @@ TOPO.BUILD1.indexPage = (function() {
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                         '#toggle-size-comparison');
             printer.init();
-            model.init(newModelHandler, 'model-canvas', 'model-progress', 'toggle-size-comparison', 'reset-view');
+            model.init(newModelHandler, 'model-canvas', 'model-progress', 'toggle-size-comparison', 'model-reset');
         },
         
         initElements = function() {

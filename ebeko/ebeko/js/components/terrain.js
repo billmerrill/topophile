@@ -8,14 +8,22 @@ TOPO.BUILD1.Terrain = (function() {
         zFactor = 1, 
         newTerrainCallback,
         resetAABB = false,
-        terrainBounds = {};
+        terrainBounds = {},
+        
+        resetScene =  function() {
+            viewer.resetScene();
+            viewer.update();
+        };
+     
+     
+     
      
     return {
         v: function() {
             return viewer;
         },
         
-        init: function(displayCanvasId, initZFactor, progressDisplayId, newTerrainCb) {
+        init: function(displayCanvasId, initZFactor, progressDisplayId, newTerrainCb, resetViewId) {
             zFactor = initZFactor;
     		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
@@ -24,6 +32,9 @@ TOPO.BUILD1.Terrain = (function() {
             busyDisplay.hide();
             canvasJQ = $('#' + displayCanvasId);
             newTerrainCallback = newTerrainCb;
+            $("#" + resetViewId).click(function() {
+                resetScene();
+            })
             
             
             canvasJQ.hide();
@@ -78,11 +89,7 @@ TOPO.BUILD1.Terrain = (function() {
             return zFactor;
         },
         
-        resetScene: function() {
-            viewer.resetScene();
-            viewer.update();
-        }, 
-        
+
         showBusy: function() {
             busyDisplay.show();
             canvasJQ.hide();
