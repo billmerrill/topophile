@@ -87,28 +87,28 @@ class MeshSandwich(GridShape):
         
         return vol
         
-    def compute_approx_volume(self):
-        vol = {'min': 0.0,
-                'avg': 0.0,
-                'max': 0.0}
-        # vol = 0.0
-        corner0 = self.top.get(0,0)
-        corner1 = self.top.get(self.top.x_max(), self.top.y_max())
-        print (corner1[PX] - corner0[PY]), (corner1[PY] - corner0[PY])
-        
+    def compute_approx_volume(self, val='avg'):
+        '''
+        NOTE: This methods only work for gridded trianlges.  They won't work 
+            for the freely decimated interoirs
+        '''
+        volume = 0.0
+        meth = None
+        if val == 'avg':
+            meth = compute_approx_square_vol
+        elif val == 'min':
+            meth = compute_approx_square_min_vol
+        else:
+            meth = compute_approx_square_max_vol
         for sy in range(0, self.top.y_max()):
             for sx in range(0, self.top.x_max()):
-                q = [self.top.get(sx, sy),
+                volume += meth([self.top.get(sx, sy),
                      self.top.get(sx+1, sy),
                      self.top.get(sx, sy+1),
-                     self.top.get(sx+1, sy+1)]
-                vol['avg'] += compute_approx_square_vol(q)
-                vol['min'] += compute_approx_square_min_vol(q)
-                vol['max'] += compute_approx_square_max_vol(q)
-                                 
-        return vol
+                     self.top.get(sx+1, sy+1)])
+        return volume
 
-def compute_approx_square_vol(q):
+def compute_approx_square_vol(q):   
     q = np.array(q)
     avg_height = np.mean(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))

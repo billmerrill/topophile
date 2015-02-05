@@ -14,7 +14,6 @@ class STLModelService(object):
         model = gig.run()
         if model is None:
             return "GB Error"
-           
         model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
         model['model_id'] = os.path.splitext(os.path.split(model['filename'])[1])[0]
         del(model['filename'])

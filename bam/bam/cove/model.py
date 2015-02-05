@@ -117,13 +117,20 @@ class HollowElevationModel(Model):
         json.dump(m,jf)
         jf.close()
 
-    def _compute_volume(iself, outer, inner=None):
-        ''' this ignores the volume lost to the relief diamond '''
+    def _compute_volume(self, outer, inner=None):
+        volume = outer.compute_approx_volume('avg')
         if inner:
-            return outer.compute_volume() - inner.compute_volume()
-        else:
-            return outer.compute_volume()
+            volume = volume - inner.compute_volume()
             
+        return volume
+        
+    def _compute_exact_volume(self, outer, inner=None):
+        volume = outer.compute_volume()
+        if inner:
+            volume = volume - inner.compute_volume()
+            
+        return volume
+
     def build_stl(self):
         print "STARTING HOLLOW MODEL", self.builder
         elevation = Elevation(self.builder)
@@ -164,6 +171,7 @@ class HollowElevationModel(Model):
         
         canvas = STLCanvas()
         canvas.add_shape(sandwich)
+        model_volume = 0
         if make_hollow:
             print "Made Hollow"
             canvas.add_shape(inner_sandwich)
