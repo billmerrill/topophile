@@ -105,32 +105,32 @@ class MeshSandwich(GridShape):
                 volume += meth([self.top.get(sx, sy),
                      self.top.get(sx+1, sy),
                      self.top.get(sx, sy+1),
-                     self.top.get(sx+1, sy+1)])
+                     self.top.get(sx+1, sy+1)], self.bottom.elevation)
         return volume
 
-def compute_approx_square_vol(q):   
+def compute_approx_square_vol(q, bottom_height):   
     q = np.array(q)
     avg_height = np.mean(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * avg_height
+    return area * (avg_height - bottom_height)
     
-def compute_approx_square_min_vol(q):
+def compute_approx_square_min_vol(q, bottom_height):
     q = np.array(q)
     height = np.min(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * height
+    return area * (height - bottom_height)
     
-def compute_approx_square_max_vol(q):
+def compute_approx_square_max_vol(q, bottom_height):
     q = np.array(q)
     height = np.max(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * height
+    return area * (height - bottom_height)
     
        
 def compute_polyhedron_volume(t):
