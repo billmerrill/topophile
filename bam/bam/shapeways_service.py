@@ -50,7 +50,7 @@ class ShapewaysService(object):
         response = {'url': '', 'ready': False}
         client = printer.new_shapeways_client()
         model = client.get_model_info(int(id))
-        if materials not in model or '6' not in model['materials']:
+        if 'materials' not in model or '6' not in model['materials']:
             response['errmsg'] = "Materials missing from response"
             return json.dumps(response)
             
