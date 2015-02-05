@@ -2,19 +2,84 @@ body {
     padding: 1em;
 }
 
-.page-header {
-    margin: 0px;
-}
 
 .page-header h1 {
     font-family:     'Nunito', sans-serif;
 }
 
-section {
-    margin: 0px;
-    padding-bottom: 20px;
+#map {
+    height: 400px;
+    width: 100%;
 }
 
-div, section {
-    border: 1px solid #ccc;
+#terrain-progress {
+    padding-top: 180px;
+}
+
+.building-status {
+    font-variant: small-caps;
+}
+
+#terrain-instructions {
+    position: absolute;
+    float: left;
+    z-index: 1000;
+}
+
+#model-reset, #terrain-reset {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #999;
+    margin: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+
+#threewrapper {
+    height: 125px;
+    width: 125px;
+}
+#threedim {
+    background-image: url('../assets/cluster.png');
+    background-repeat: no-repeat;
+    background-position: top left; 
+    width: 125px;
+    height: 125px;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+}
+
+#threedim div {
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+#threedim #x {
+    top: 45px;
+    left: 16px;
+}
+#threedim #y {
+    top: 90px;
+    left: 55px;
+}
+#threedim #z {
+    top: 30px;
+    left: 78px;
+}
+
+#threedim #units {
+    top: 1px;
+    left: 1px;
+    color: #999;
+}
+
+#threedim .dimension-label {
+    display: none;
+}
+
+#threedim .current {
+    font-weight: bold;
+    color: #000;
 }

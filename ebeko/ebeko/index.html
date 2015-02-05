@@ -4,77 +4,185 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Topofile: Make your Molehill</title>
+    <title>Topophile: Make your Molehill</title>
     <link href='http://fonts.googleapis.com/css?family=Nunito:700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css" type="text/css" media="screen"  charset="utf-8">
+    <link rel="stylesheet" href="vendor/bootstrap-slider/css/bootstrap-slider.min.css" type="text/css" media="screen"  charset="utf-8">
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
     <link rel="stylesheet" href="vendor/leaflet-locationfilter/locationfilter.css" />
     <link rel="stylesheet" href="css/index.css" type="text/css" media="screen"  charset="utf-8">
 
     <script src="vendor/jquery-1.11.1.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.js"></script>
-    <!--
+    <script src="vendor/bootstrap-slider/bootstrap-slider.js"></script>
     <script src="vendor/leaflet/leaflet.js"></script>
     <script src="vendor/leaflet-locationfilter/locationfilter.js"></script>
--->
    
-   <!-- 
     <script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-map.js?key=Fmjtd%7Cluurnua7n0%2Caa%3Do5-9w8x54"></script>
     <script src="http://open.mapquestapi.com/sdk/leaflet/v1.s/mq-geocoding.js?key=Fmjtd%7Cluurnua7n0%2Caa%3Do5-9w8x54"></script>
      
     
-    <script src="vendor/jsc3d/jsc3d.console.js"></script>
     <script src="vendor/jsc3d/jsc3d.js"></script>
-        <script src="vendor/jsc3d/jsc3d.webgl.js"></script>
+    <script src="vendor/jsc3d/jsc3d.webgl.js"></script>
 
-    <script src="js/index/map.js"></script>
-    <script src="js/index/geocoder.js"></script>
-    <script src="js/index/model.js"></script>
-    <script src="js/index/controller.js"></script>
-
+    <script src="js/build1App.js"></script>
+    <script src="js/components/map.js"></script>
+    <script src="js/components/terrain.js"></script>
+    <script src="js/components/geocoder.js"></script>
+    <script src="js/components/elexag.js"></script>
+    <script src="js/components/sizing.js"></script>
+    <script src="js/components/pricing.js"></script>
+    <script src="js/components/reference.js"></script>
+    <script src="js/components/model.js"></script>
+    <script src="js/components/printer.js"></script>
+    <script src="js/components/indexPage.js"></script>
+    
     <script type="text/javascript">
         $(document).ready( function() { 
-            indexController.init(indexMap, indexModel, indexGeocoder); 
-        });
+            var initConf = {'mapStartPoint': [46.852947, -121.760424],
+                            'elExaggerate': 1.5,
+                            'terrainSize': 100,
+                            'terrainRez': 75,
+                            'modelSize': 100,
+                            'modelRez': 200,
+                            'bamService': "http://127.0.0.1:8080/build",
+                            'pricingService': "http://127.0.0.1:8080/price",
+                            'uploadService': "http://127.0.0.1:8080/printer/upload",
+                            'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
+                            'mockPrintableService':  "http://127.0.0.1:9090/fake_ready"};
+            TOPO.BUILD1.setConfig(initConf);
+            TOPO.BUILD1.indexPage.init(); 
+        }); 
     </script>
--->
 </head>
 <body>
 <div class="page-header">
     <h1>Topophile</h1>    
 </div>
 
-<div class="container">
-        
-            <section id="map">
-                        <div style="width: 800px; height: 600px; background-color: #ddd;">...map...</div>
-                        <div style="width:200px; height: 400px; background: #eee">controls</div>
-            </section>
-
-            <section id="preview">
-                <div class="container-fluid"> <div class="row"> <div class="col-md-9">
-                    <div class="center-block" style="width: 800px; height: 600px; background-color: #ddd;">...terrian...</div>
-                </div> <div class="col-md-3">
-                    <div style="width:200px; height: 400px; background: #eee">controls</div>
-                </div> </div> </div>             
-            </section>
-
-            <section id="model">
-                <div class="container-fluid"> <div class="row"> <div class="col-md-9">
-                    <div class="center-block" style="width: 800px; height: 600px; background-color: #ddd;">...model...</div>
-                </div> <div class="col-md-3">
-                    <div style="width:200px; height: 400px; background: #eee">controls</div>
-                </div> </div> </div>             
-            </section>
-
-            <section id="shipit">
-                <div class="container-fluid"> <div class="row"> <div class="col-md-9">
-                    <div class="center-block" style="width: 800px; height: 600px; background-color: #ddd;">...shipit...</div>
-                </div> <div class="col-md-3">
-                    <div style="width:200px; height: 400px; background: #eee">controls</div>
-                </div> </div> </div>             
-            </section>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="map" class="map"></div>
         </div>
+        
+        <div class="col-md-6">
+            <div class="model-container" id="model-container">
+                <button type="button" class="btn-sm bn-defaault" id="terrain-reset"><span class="glyphicon glyphicon-refresh"></span></button>
+
+                <img src="assets/model_instructions.jpg" id="terrain-instructions">
+                <div id="terrain-progress">
+                    <span class="building-status">building preview</span>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            <span class="sr-only">working</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="terrain-canvas" width="600" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+   
+    <div class="row control-row ">
+        <div class="col-md-4">
+            <span class="col-header">find a place</span>
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-default btn-md " id="build-model">
+                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+        <div class="col-md-4">
+            <span class="col-header">exagerate elevation</span>
+        </div>
+    </div>  
+    
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="gc-search" id="gc-search"/>
+            <button type="button" class="btn btn-default btn-md" id="gc-search-button">
+                Search <span class="glyphicon glyphicon-search"></span>
+            </button> 
+        </div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <form class="form-inline" id="exag">
+                <input id="height-factor" data-slider-id='height-factor-slider' type="text" data-slider-tooltip="hide"
+                data-slider-min="0.1" data-slider-max="10.0" data-slider-step="0.1" data-slider-value="1.5"/>
+                <input type="number" id="zfactor" name="zfactor" class="form-control"/>&nbsp;<span class="val-suffix">X</span>
+            </form>
+        </div>
+    </div>
+            
+<hr>
+    <div class="row">
+        
+        <div class="col-md-9">
+            <div class="model-container" id="model-container">
+                <button type="button" class="btn-sm bn-defaault" id="model-reset"><span class="glyphicon glyphicon-refresh"></span></button>
+                <div id="model-progress">
+                    <span class="building-status">building model</span>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            <span class="sr-only">working</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="model-canvas" width="800" height="400"></canvas>
+            </div>
+        </div>
+    
+    
+        <div class="col-md-3" id="controls">
+            <div id="threewrapper" alt="click to switch unites">
+                <div id="threedim">
+                    <div id="units"><span class="current">cm</span> / <span>in<span></div>
+                    <div id="x"><span class="dimension-label">Width: </span><span class="size-cm">☃</span><span class="size-in">☃</span></div>
+                    <div id="y"><span class="dimension-label">Depth: </span><span class="size-cm">♫</span><span class="size-in">♫</span></div>
+                    <div id="z"><span class="dimension-label">Height: </span><span class="size-cm">❀</span><span class="size-in">❀</span></div>
+                </div>
+            </div>
+                
+            <div>
+                Compare <button type="button" class="btn btn-default" id="toggle-size-comparison">$</button> 
+            </div>
+            
+            
+            
+            
+            <h3>Sizes<h3>
+            <div id="presets" class="btn-group" role="group" aria-label="Model Size Choices">
+                <button type="button" class="btn btn-default" id="small-size-preset">Small</button>
+                <button type="button" class="btn btn-default" id="medium-size-preset">Medium</button>
+                <button type="button" class="btn btn-default" id="large-size-preset">Large</button>
+            </div>
+                
+            <h3>Shapeways Base Price Estimate</h3>
+            <div id="prices">
+                    <li>White Plastic: <span id="white_plastic_price"> </span></li>
+            </div>
+            
+            <h3>View<h3>
+            <button type="button" class="btn btn-default" id="reset-view">Reset</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-default btn-md " id="print-model">
+                Print Model <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        Uploading - Preparing - Ready Go!
+        <h3 id="print-status"></h3>
+
+        <button id="buyit" class="btn-lg btn-success">GO!</button>
+
+    </div>
     </div>
 </div>
 
