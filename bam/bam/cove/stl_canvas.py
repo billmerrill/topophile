@@ -2,8 +2,8 @@ import struct
 import math
 import numpy as np
 from numpy.linalg import norm
-
 from indicies import *
+
 
 class STLCanvas:
     
@@ -30,19 +30,18 @@ class STLCanvas:
             
         
     def make_positive(self, base=[1,1,1]):
-        thresh = [1,1,1]
-        for tx, tri in enumerate(self.triangles):
-            for pt in [TA, TB, TC]:
-                thresh[PX] = min(thresh[PX], tri[pt][PX])
-                thresh[PY] = min(thresh[PY], tri[pt][PY])
-                thresh[PZ] = min(thresh[PZ], tri[pt][PZ])
+        ''' make sure all of the model is at or above base '''
+        pts = np.array([coord for tri in self.triangles for pt in tri for coord in pt])
+        self.triangles = pts.reshape(-1,3,3)
+        mmin = [ self.triangles[:,:,PX].min(),
+                 self.triangles[:,:,PY].min(),
+                 self.triangles[:,:,PZ].min()]
 
-        if thresh != base:
-            inc = np.subtract(base, thresh)
-            print("Moving model by %s" % inc)
-            for tx, tri in enumerate(self.triangles):
-                for pt in [TA,TB,TC]:
-                    self.triangles[tx][pt] = np.add(tri[pt], inc)
+        trans = np.subtract(base,mmin)
+        if not np.equal(trans, [0.0,0.0,0.0]).all():
+            self.triangles = np.add(self.triangles, trans)
+            
+
         
     def write_stl(self, outfile, make_positive=True):
         '''
