@@ -17,7 +17,6 @@ class GridShape(object):
             0  1
             2  3
         '''
-        tri = []
         if invert_normals:
             return [[square[0], square[1], square[3]],
                    [square[0], square[3], square[2]]]
@@ -87,50 +86,50 @@ class MeshSandwich(GridShape):
         
         return vol
         
-    def compute_approx_volume(self):
-        vol = {'min': 0.0,
-                'avg': 0.0,
-                'max': 0.0}
-        # vol = 0.0
-        corner0 = self.top.get(0,0)
-        corner1 = self.top.get(self.top.x_max(), self.top.y_max())
-        print (corner1[PX] - corner0[PY]), (corner1[PY] - corner0[PY])
-        
+    def compute_approx_volume(self, val='avg'):
+        '''
+        NOTE: This methods only work for gridded trianlges.  They won't work 
+            for the freely decimated interoirs
+        '''
+        volume = 0.0
+        meth = None
+        if val == 'avg':
+            meth = compute_approx_square_vol
+        elif val == 'min':
+            meth = compute_approx_square_min_vol
+        else:
+            meth = compute_approx_square_max_vol
         for sy in range(0, self.top.y_max()):
             for sx in range(0, self.top.x_max()):
-                q = [self.top.get(sx, sy),
+                volume += meth([self.top.get(sx, sy),
                      self.top.get(sx+1, sy),
                      self.top.get(sx, sy+1),
-                     self.top.get(sx+1, sy+1)]
-                vol['avg'] += compute_approx_square_vol(q)
-                vol['min'] += compute_approx_square_min_vol(q)
-                vol['max'] += compute_approx_square_max_vol(q)
-                                 
-        return vol
+                     self.top.get(sx+1, sy+1)], self.bottom.elevation)
+        return volume
 
-def compute_approx_square_vol(q):
+def compute_approx_square_vol(q, bottom_height):   
     q = np.array(q)
     avg_height = np.mean(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * avg_height
+    return area * (avg_height - bottom_height)
     
-def compute_approx_square_min_vol(q):
+def compute_approx_square_min_vol(q, bottom_height):
     q = np.array(q)
     height = np.min(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * height
+    return area * (height - bottom_height)
     
-def compute_approx_square_max_vol(q):
+def compute_approx_square_max_vol(q, bottom_height):
     q = np.array(q)
     height = np.max(q[:,PZ])
     area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
     # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
     # print area, avg_height
-    return area * height
+    return area * (height - bottom_height)
     
        
 def compute_polyhedron_volume(t):
@@ -603,40 +602,40 @@ class MeshBasePlate(object):
 
         # star inset base
         for sy in range(0, sample_height-1):
-            a_triangle = { TA: self.make_pt(0, sy, 0),
-                           TB: negx,
-                           TC: self.make_pt(0, sy+1, 0)}
-            z_triangle = { TA: self.make_pt(sample_width-1, sy, 0),
-                          TB: self.make_pt(sample_width-1, sy+1, 0),
-                          TC: posx }
+            a_triangle = [  self.make_pt(0, sy, 0),
+                            negx,
+                            self.make_pt(0, sy+1, 0)]
+            z_triangle = [  self.make_pt(sample_width-1, sy, 0),
+                           self.make_pt(sample_width-1, sy+1, 0),
+                           posx ]
 
             triangles.append(a_triangle)
             triangles.append(z_triangle)
 
         for sx in range(0, sample_width-1):
-            a_triangle = { TA: self.make_pt(sx, 0, 0),
-                           TB: self.make_pt(sx+1, 0, 0),
-                           TC: negy }
-            z_triangle = { TA: self.make_pt(sx, sample_height-1, 0),
-                           TB: posy,
-                           TC: self.make_pt(sx+1, sample_height-1, 0) }
+            a_triangle = [  self.make_pt(sx, 0, 0),
+                            self.make_pt(sx+1, 0, 0),
+                            negy ]
+            z_triangle = [  self.make_pt(sx, sample_height-1, 0),
+                            posy,
+                            self.make_pt(sx+1, sample_height-1, 0) ]
 
             triangles.append(a_triangle)
             triangles.append(z_triangle)
 
 
-        a_triangle = { TA: self.make_pt(0,0,0),
-                       TB: negy,
-                       TC: negx }
-        b_triangle = { TA: negy,
-                       TB: self.make_pt(sample_width-1, 0, 0),
-                       TC: posx }
-        c_triangle = { TA: posx,
-                       TB: self.make_pt(sample_width-1, sample_height-1, 0),
-                       TC: posy }
-        d_triangle = { TA: negx,
-                       TB: posy,
-                       TC: self.make_pt(0, sample_height-1, 0) }
+        a_triangle = [  self.make_pt(0,0,0),
+                        negy,
+                        negx ]
+        b_triangle = [  negy,
+                        self.make_pt(sample_width-1, 0, 0),
+                        posx ]
+        c_triangle = [  posx,
+                        self.make_pt(sample_width-1, sample_height-1, 0),
+                        posy ]
+        d_triangle = [  negx,
+                        posy,
+                        self.make_pt(0, sample_height-1, 0) ]
 
         triangles.append(a_triangle)
         triangles.append(b_triangle)
@@ -644,13 +643,13 @@ class MeshBasePlate(object):
         triangles.append(d_triangle)
         
         if not self.hollow:
-            e_triangle = { TA: negy,
-                           TB: posx,
-                           TC: negx }
+            e_triangle = [  negy,
+                            posx,
+                            negx ]
 
-            f_triangle = { TA: posx,
-                           TB: posy,
-                           TC: negx }
+            f_triangle = [  posx,
+                            posy,
+                            negx ]
 
             triangles.append(e_triangle)
             triangles.append(f_triangle)
@@ -658,7 +657,7 @@ class MeshBasePlate(object):
         if self.invert_normals or invert_normals:
             new_tris = []
             for t in triangles:
-                new_tris.append( {TA:t[TA], TB:t[TC], TC:t[TB]})
+                new_tris.append( [t[TA], t[TC], t[TB]])
             triangles = new_tris
             
         return triangles
