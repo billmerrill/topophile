@@ -39,18 +39,13 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon):
     return server_base, srtm_params
         
         
-def get_elevation(app_config, base_filename, nwlat, nwlon, selat, selon, retry = 0):
+def get_elevation(app_config, elevation_filename, nwlat, nwlon, selat, selon, retry = 0):
     if retry == 2:
         return None
     
     base_url, params = get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon)
-    elevation_fn = '%s.tif' % base_filename
-    status = get_elevation_image(elevation_fn, base_url, params)
+    status = get_elevation_image(elevation_filename, base_url, params)
     
-    # if fn is None:
-    #     retry = retry+1
-    #     return get_elevation(nwlat, nwlon, selat, selon, retry=retry)        
-       
     return  {'filename': status['file'],
              'nwlat': nwlat,
              'nwlon': nwlon,
@@ -59,7 +54,6 @@ def get_elevation(app_config, base_filename, nwlat, nwlon, selat, selon, retry =
              'status': status['status']}
              
 def get_elevation_image(filename, base_url, params):
-     filename = os.path.join(os.getcwd(), 'app/elevation_cache', filename)
      ret = {'file':None, 'status':None}
      written = 0
      import pprint

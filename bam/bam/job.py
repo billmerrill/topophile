@@ -3,6 +3,7 @@ import cove
 import os
 import time
 import cherrypy
+import json
 
 class BoundingBoxTicketJob(object):
     
@@ -22,13 +23,21 @@ class BoundingBoxTicketJob(object):
     
     def run(self):
         t1 = time.time()
-        bbox = self.ticket.inputs.bbox
-        elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_base_filename(), bbox.north, bbox.west, bbox.south, bbox.east)
-        if elevation_data is None:
-            return None
+        
+        self.ticket.set_elevation_filepath(self.app_config['elevation_dir'], ".tif")
+        
+        if not os.path.exists(self.ticket.get_elevation_filepath()):
+            bbox = self.ticket.inputs.bbox
+            elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_elevation_filepath(), bbox.north, bbox.west, bbox.south, bbox.east)
+            if elevation_data is None:
+                return None
+        else:
+            cherrypy.log("Elevation Cached!")
+
+            
         t2 = time.time()
         
-        self.ticket.set_elevation_filename(elevation_data['filename'])
+        # self.ticket.set_elevation_filename(elevation_data['filename'])
             
         model_filename = self.build_model()
         
@@ -39,19 +48,27 @@ class BoundingBoxTicketJob(object):
         return model_filename 
         
     def build_model(self):
-        model_fn = self.ticket.get_base_filename() + ".stl" 
-        self.ticket.set_model_filename(os.path.join(os.getcwd(), "app/model_cache", model_fn)) 
+        self.ticket.set_model_filepaths(self.app_config['model_dir'], ".stl")
+        
         model_config = self.ticket.get_builder_config()
-                        
-        if self.ticket.inputs.style == "preview":
-            model = cove.model.PreviewTerrainModel(model_config)
-        else:
-            if self.hollow:
-                model = cove.model.HollowElevationModel(model_config)
+        if not os.path.exists(self.ticket.get_model_filepath()) or \
+           not os.path.exists(self.ticket.get_model_metadata_filepath()):
+            if self.ticket.inputs.style == "preview":
+                model = cove.model.PreviewTerrainModel(model_config)
             else:
-                model = cove.model.SolidElevationModel(model_config)
+                if self.hollow:
+                    model = cove.model.HollowElevationModel(model_config)
+                else:
+                    model = cove.model.SolidElevationModel(model_config)
                 
-        model_data = model.build_stl()
+            model_data = model.build_stl()
+        else:
+            cherrypy.log("Model Cached!")
+            with open(self.ticket.get_model_metadata_filepath()) as mjf:
+                model_data = json.load(mjf)
+        
+        # we could update the ticket with the model_data
+                
         return model_data
         
 

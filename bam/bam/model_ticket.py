@@ -1,4 +1,5 @@
 import UserDict
+import os
 
 
 BBOX = 'cube'
@@ -46,19 +47,32 @@ class BBoxModelTicket(object):
             'area-mm2':  None,
             'volume-mm3': None})
         
-    def get_base_filename(self):
+    def get_elevation_name(self):
+        return '{geohash}-{size}-{rez}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez)
+        
+    def get_model_name(self):
         return '{geohash}-{style}-{size}-{rez}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez)
             
     def get_builder_config(self):
-        return { 'src': self.outputs.elevation_filename,
-                 'dst': self.outputs.model_filename,
+        return { 'src': self.get_elevation_filepath(),
+                 'dst': self.get_model_filepath(),
                  'output_resolution': self.inputs.rez,
                  'output_physical_max': self.inputs.size,
                  'z_factor': self.inputs.zmult,
                  'hollow': self.inputs.hollow}
 
-    def set_model_filename(self, name):
-        self.outputs.model_filename = name
+    def get_model_filepath(self):
+        return self.outputs.model_filename
         
-    def set_elevation_filename(self, name):
-        self.outputs.elevation_filename = name
+    def get_model_metadata_filepath(self):
+        return self.outputs.model_metadata
+        
+    def get_elevation_filepath(self):
+        return self.outputs.elevation_filename
+    
+    def set_model_filepaths(self, dst_dir, model_ext):
+        self.outputs.model_filename = os.path.join(dst_dir, self.get_model_name() + model_ext)
+        self.outputs.model_metadata = os.path.join(dst_dir, self.get_model_name() + ".json")
+        
+    def set_elevation_filepath(self, dst_dir, ele_ext):
+        self.outputs.elevation_filename = os.path.join(dst_dir, self.get_elevation_name() + ele_ext)
