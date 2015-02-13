@@ -15,8 +15,7 @@ class STLModelService(object):
         return the stl file
         '''
         ticket = mt.get_ticket(style=model_style, bbox = BoundingBox(nwlat, nwlon, selat, selon), size=int(size), rez=int(rez), zmult=float(zfactor), hollow=hollow)
-        # gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style)
-        gig = job.BoundingBoxTicketJob(self.app_config, ticket)
+        gig = job.BoundingBoxJob(self.app_config, ticket)
         model = gig.run()
         if model is None:
             return "GB Error"

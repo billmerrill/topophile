@@ -51,7 +51,8 @@ class BBoxModelTicket(object):
         return '{geohash}-{size}-{rez}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez)
         
     def get_model_name(self):
-        return '{geohash}-{style}-{size}-{rez}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez)
+        zstr = str(self.inputs.zmult).replace(".", "_")
+        return '{geohash}-{style}-{size}-{rez}-{zmult}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez, zmult=zstr  )
             
     def get_builder_config(self):
         return { 'src': self.get_elevation_filepath(),
@@ -76,3 +77,6 @@ class BBoxModelTicket(object):
         
     def set_elevation_filepath(self, dst_dir, ele_ext):
         self.outputs.elevation_filename = os.path.join(dst_dir, self.get_elevation_name() + ele_ext)
+    
+    def get_hollow(self):
+        return self.inputs.hollow
