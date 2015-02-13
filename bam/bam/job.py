@@ -4,7 +4,56 @@ import os
 import time
 import cherrypy
 
-
+class BoundingBoxTicketJob(object):
+    
+    def __init__(self, app_config, ticket):
+        '''
+        nwlat - string - northwest corner latitude
+        nwlon - string - northwest corner longitude
+        selat - string - southeast corner latitude
+        selon - string - southeast corner longitude
+        size - number - model physical size, mm
+        rez - number - data resolution of model's long side
+        zfactor - elevation multiplier
+        hollow - boolean
+        '''
+        self.app_config = app_config
+        self.ticket = ticket
+    
+    def run(self):
+        t1 = time.time()
+        bbox = self.ticket.inputs.bbox
+        elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_base_filename(), bbox.north, bbox.west, bbox.south, bbox.east)
+        if elevation_data is None:
+            return None
+        t2 = time.time()
+        
+        self.ticket.set_elevation_filename(elevation_data['filename'])
+            
+        model_filename = self.build_model()
+        
+        t3 = time.time()
+        # cherrypy.log("-Job: %s %s,%s-%s,%s" % (self.ticket.inputs.style, self.inputs.nwlat, self.nwlon, self.selat, self.selon))
+        cherrypy.log("-Elevation Data:\t%s" % (t2-t1))
+        cherrypy.log("-Model Build:\t%s" % (t3-t2))
+        return model_filename 
+        
+    def build_model(self):
+        model_fn = self.ticket.get_base_filename() + ".stl" 
+        self.ticket.set_model_filename(os.path.join(os.getcwd(), "app/model_cache", model_fn)) 
+        model_config = self.ticket.get_builder_config()
+                        
+        if self.ticket.inputs.style == "preview":
+            model = cove.model.PreviewTerrainModel(model_config)
+        else:
+            if self.hollow:
+                model = cove.model.HollowElevationModel(model_config)
+            else:
+                model = cove.model.SolidElevationModel(model_config)
+                
+        model_data = model.build_stl()
+        return model_data
+        
 
 class BoundingBoxJob(object):
     
@@ -48,6 +97,7 @@ class BoundingBoxJob(object):
         return model_filename 
         
     def build_model(self, elevation_filename):
+        model_filename = ms.get_filename(self.model)
         dst_filename = os.path.split(elevation_filename)[1].replace('tif', 'stl')
         dst_filename = os.path.join(os.getcwd(), "app/model_cache", dst_filename) 
         model_config = { 'src': elevation_filename,

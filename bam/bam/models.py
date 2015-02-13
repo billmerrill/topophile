@@ -1,16 +1,22 @@
 import os
 import job
 import json
+import model_ticket as mt
+from geo import BoundingBox
 
 class STLModelService(object):
     exposed = True
+    def __init__(self, app_config):
+        self.app_config = app_config
    
     def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube"):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
         '''
-        gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style)
+        ticket = mt.get_ticket(style=model_style, bbox = BoundingBox(nwlat, nwlon, selat, selon), size=int(size), rez=int(rez), zmult=float(zfactor), hollow=hollow)
+        # gig = job.BoundingBoxJob(nwlat, nwlon, selat, selon, size, rez, zfactor, hollow, model_style)
+        gig = job.BoundingBoxTicketJob(self.app_config, ticket)
         model = gig.run()
         if model is None:
             return "GB Error"

@@ -16,7 +16,8 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 
 
-app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache") }
+app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache"),
+              'elevation_server': 'http://127.0.0.1/cgi-bin/mapserv?' }
         
     
 class TestyClass(object):
@@ -28,7 +29,7 @@ class TestyClass(object):
 class RootClass(object):
     exposed = True
     def __init__(self):
-        self.build = STLModelService()
+        self.build = STLModelService(app_config)
         self.price = ModelPricing(app_config)
         self.vincent = TestyClass()
         self.printer = ShapewaysService(app_config)
