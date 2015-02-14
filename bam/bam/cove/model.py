@@ -9,6 +9,7 @@ from indicies import *
 class Model(object):
     
     def __init__(self, config):
+        print config
         self.builder = Builder(config)
 
 class PreviewTerrainModel(Model):
