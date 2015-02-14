@@ -7,6 +7,10 @@ TOPO.BUILD1.Sizing = (function(){
                        'medium': [],
                        'large': [],
                        'custom': []},
+        modelSizes = {'small': 50,
+                     'medium': 100,
+                     'large': 200,
+                     'custume': 250},
                        
         accessDimension = function(dim, val) {
             if (val) {
@@ -85,6 +89,7 @@ TOPO.BUILD1.Sizing = (function(){
                             x, y, z, 
                             presetS, presetM, presetL, presetC) {
                 showMetricDimensions();    
+                
                                 
                 presetChangeCallback = presetChangeCb;
                 xDisplay = $(x);
@@ -95,7 +100,7 @@ TOPO.BUILD1.Sizing = (function(){
                 largeButton = $(presetL);
                 customButton = $(presetC);
                 
-                smallButton.toggleClass("active");
+                // smallButton.toggleClass("active");
                 
                 var presetClick = function(size, e) {
                     changePresetSize(size);
@@ -109,15 +114,24 @@ TOPO.BUILD1.Sizing = (function(){
                 customButton.click(function(e) { presetClick('custom',e);});
             },
             
-            
             setSize: function(x,y,z) {
                 dimensions[currentSizePreset] = [x,y,z];
-                updateDisplay();
                 updatePresets();
+                updateDisplay();
+            },
+            
+            resetPresets: function() {
+                currentSizePreset = 'small'
+                $("#presets button").removeClass("active");
+                smallButton.toggleClass("active");    
             },
             
             getCurrentDimensions: function() {
                 return dimensions[currentSizePreset]
+            },
+            
+            getCurrentSize: function() {
+                return modelSizes[currentSizePreset]
             },
             
             toggleUnits: function() {

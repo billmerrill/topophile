@@ -96,7 +96,6 @@ TOPO.BUILD1.Model = (function() {
         },
        
         showModel: function(modelUrl, width) {
-            // viewer.replaceSceneFromUrl(modelUrl);
             modelWidth = width
             buildComparison([1,1,1]);
             var loader = new JSC3D.StlLoader;
@@ -104,7 +103,7 @@ TOPO.BUILD1.Model = (function() {
                 if (showSizeReference) {
                     var i;
                     for (i in comparisonMeshParts) {
-                        currScene.addChild(comparisonMeshParts[i]);
+                        scene.addChild(comparisonMeshParts[i]);
                     }
                 }
                     viewer.replaceScene(scene);
@@ -132,7 +131,7 @@ TOPO.BUILD1.Model = (function() {
                         'nwlon': modelSpec.nwlon,
                         'selat': modelSpec.selat,
                         'selon': modelSpec.selon,
-                        'size': TOPO.BUILD1.getConfig('modelSize'), 
+                        'size': modelSpec.modelSize, 
                         'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
                         'zfactor': modelSpec.zfactor,
                         'hollow': 1}
@@ -154,6 +153,13 @@ TOPO.BUILD1.Model = (function() {
                 thee.hideBusy();
             });
         },
+        
+        resizeModel: function(modelSpec) {
+            viewer.replaceScene(new JSC3D.Scene());
+            viewer.update();
+
+            this.renderModel(modelSpec);
+        }
        
     } 
     

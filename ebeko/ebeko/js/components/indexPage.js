@@ -14,7 +14,8 @@ TOPO.BUILD1.indexPage = (function() {
         
         getModelSpec = function () {
             var modelSpec = terrain.getBounds();
-            modelSpec['zfactor'] = exaggerater.getFactor();
+            modelSpec.zfactor = exaggerater.getFactor();
+            modelSpec.modelSize = sizing.getCurrentSize();
             return modelSpec;
         },
                      
@@ -27,21 +28,22 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         presetChangeHandler = function(data) {
+            model.resizeModel(getModelSpec());
             switch (data['preset']) {
                 case 'small':
-                    model.scaleReferenceObject(1);
+                    // model.scaleReferenceObject(1);
                     pricing.updatePrice(currentModelId, 1.0);
                     break;
                 case 'medium': 
-                    model.scaleReferenceObject(.5);
+                    // model.scaleReferenceObject(.5);
                     pricing.updatePrice(currentModelId, 2.0);
                     break;
                 case 'large': 
-                    model.scaleReferenceObject(1.0/3.0);
+                    // model.scaleReferenceObject(1.0/3.0);
                     pricing.updatePrice(currentModelId, 3.0);
                     break;
                 case 'custom': 
-                    model.scaleReferenceObject(.2);
+                    // model.scaleReferenceObject(.2);
                     pricing.updatePrice(currentModelId, 5.0);
                     break;
             }
@@ -73,6 +75,7 @@ TOPO.BUILD1.indexPage = (function() {
         
         initElements = function() {
             $('#build-model').click(function() {
+                sizing.resetPresets();
                 model.renderModel(getModelSpec())
             }).prop('disabled', true);
             
