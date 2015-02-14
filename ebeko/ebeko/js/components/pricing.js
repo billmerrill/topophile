@@ -4,26 +4,29 @@ TOPO.BUILD1.Pricing = (function(){
     var priceSpan, 
     
         displayPrice = function(price) {
-            console.log(price)
-            priceSpan.html(price);
+            price = price.toFixed(2);
+            priceSpan.html('$' + price);
+        },
+        
+        displayMsg = function(msg) {
+            priceSpan.html(msg);    
         },
     
-        getPricing = function(model_id,scale) {
+        getPricing = function(model_id) {
             if (!scale) {
-                scale = 1.0
+                scale = 1.0;
             }
             
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('pricingService'),
-                data: {'model_id': model_id,
-                        'mult': scale}
+                data: {'model_id': model_id}
             })
             .done(function(data, status, jqxhr) {
                 if ('6' in data) {
                     displayPrice(data['6']);
                 } else {
-                    displayPrice('nope');
+                    displayMsg('nope');
                 }
             })
             .fail(function(data) {
@@ -37,12 +40,12 @@ TOPO.BUILD1.Pricing = (function(){
             },
             
             clearPrice: function() {
-                displayPrice("...");
+                displayMsg("...");
             },
             
-            updatePrice: function(model_id, scale) {
-                displayPrice("...");
-                getPricing(model_id, scale);
+            updatePrice: function(model_id) {
+                displayMsg("...");
+                getPricing(model_id);
             },
             
             

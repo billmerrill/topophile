@@ -20,7 +20,7 @@ class BoundingBoxJob(object):
         '''
         self.app_config = app_config
         self.ticket = ticket
-    
+
     def run(self):
         t1 = time.time()
         

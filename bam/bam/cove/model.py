@@ -94,6 +94,7 @@ class SolidElevationModel(Model):
         canvas.write_stl(self.builder.get_output_file_name())
         
         desc = {'filename': self.builder.get_output_file_name(),
+                'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich), 
@@ -189,6 +190,7 @@ class HollowElevationModel(Model):
         canvas.write_stl(self.builder.get_output_file_name())
         # 
         desc = {'filename': self.builder.get_output_file_name(),
+                'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich),
