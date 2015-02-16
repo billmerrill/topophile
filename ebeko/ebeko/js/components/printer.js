@@ -2,15 +2,16 @@ TOPO.BUILD1.Printer = (function() {
     "use strict";
    
     var readyInterval,
-        modelId,
-        modelUrl,
+        topoModelId,
+        swModelId,
+        swModelUrl,
   
     uploadComplete = function(data) {
         scheduleCheck();
-        modelId = data['modelId'];
-        modelUrl = data['urls']['privateProductUrl']['address'];
+        swModelId = data['modelId'];
+        swModelUrl = data['urls']['privateProductUrl']['address'];
         setPrintStatus("Shapeways is processing your model.");
-        $('#buyit').click(function(){window.open(modelUrl)});
+        $('#buyit').click(function(){window.open(swModelUrl)});
     }, 
     
     scheduleCheck = function() {
@@ -21,7 +22,8 @@ TOPO.BUILD1.Printer = (function() {
         $.ajax({
             type: "GET",
             url: TOPO.BUILD1.getConfig('modelPrintableService'),
-            data: {'id': modelId}
+            data: {'swid': swModelId,
+                   'tpid': topoModelId}
         })
         .fail(function(data, stats, error) {
             alert("I'm sorry, I couldn't connect.");
@@ -57,13 +59,14 @@ TOPO.BUILD1.Printer = (function() {
             $('#buyit').hide();
         },
         
-        upload: function(modelId) {
+        upload: function(modelName) {
+            topoModelId = modelName
             setPrintStatus("Sending Model to Shapeways");
             $('#buyit').hide();
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('uploadService'),
-                data: {'model_id': modelId}
+                data: {'model_id': modelName}
             })
             .fail(function(data, stats, error) {
                 alert("I'm sorry, I couldn't connect.");
