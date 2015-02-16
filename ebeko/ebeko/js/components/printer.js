@@ -1,8 +1,7 @@
 TOPO.BUILD1.Printer = (function() {
     "use strict";
    
-    var readyInterval,
-        topoModelId,
+    var topoModelId,
         swModelId,
         swModelUrl,
   
@@ -15,7 +14,7 @@ TOPO.BUILD1.Printer = (function() {
     }, 
     
     scheduleCheck = function() {
-        readyInterval = setInterval(isModelReady, 5000);
+        setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
     },
    
     isModelReady = function() {
@@ -27,13 +26,12 @@ TOPO.BUILD1.Printer = (function() {
         })
         .fail(function(data, stats, error) {
             alert("I'm sorry, I couldn't connect.");
-            clearInterval(readyInterval);
         })
         .done(function(data, status, jqxhr) {
             checkPrinterProcessingComplete(data);
         })
         .always(function(data){
-            console.log('modelIsReady check');
+            console.log("checked ready")
         });
         
     },
@@ -41,11 +39,11 @@ TOPO.BUILD1.Printer = (function() {
     checkPrinterProcessingComplete = function(data) {
         console.log(data)
         if (data['ready']) {
-            // $('#status').html("MODEL IS READY");
             $('#buyit').show();
             $('#model-building').hide();
-            clearInterval(readyInterval);
             setPrintStatus("Your Model Is Ready!");
+        } else {
+            setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
     },
     
