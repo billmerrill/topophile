@@ -13,10 +13,6 @@ TOPO.BUILD1.Pricing = (function(){
         },
     
         getPricing = function(model_id) {
-            if (!scale) {
-                scale = 1.0;
-            }
-            
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('pricingService'),
