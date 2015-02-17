@@ -146,18 +146,27 @@ class HollowElevationModel(Model):
                             self.builder.get_min_thickness()[PZ],
                             self.builder.get_z_factor())
         make_hollow = True                    
-        print "Low Z", top.get_low_z()
+
         # 3mm gap for material flow, + the floor thickness required for hollow model
         if top.get_low_z() < (3 + self.builder.get_min_thickness()[PZ]):
+            print "Make Solid: too low: %s" % top.get_low_z()
             make_hollow = False
+           
+        # don't bother making it hollow if the piece is too narrow in a dimension
+        x_min_thick = self.builder.get_min_thickness()[1]
+        y_min_thick = self.builder.get_min_thickness()[0]
+        if ((top.get_data_x_size() <= (3 * x_min_thick)) or \
+           (top.get_data_y_size() <= (3 * y_min_thick))):
+            print "Make Solid: too narrow: %s %s" % (top.get_data_x_size(), top.get_data_y_size())
+            make_hollow = False;
                             
         bottom = MeshBasePlate(top, 0, make_hollow)
         sandwich = MeshSandwich(top, bottom)
         
         if make_hollow:
+            cdf = self.builder.get_ceiling_decimation_factor()
             interior_ceiling = top.create_ceiling(
-                self.builder.get_min_thickness(), 
-                self.builder.get_ceiling_decimation_factor())
+                self.builder.get_min_thickness(), cdf)
             interior_ceiling.transform_border_stepwise((1,1,0.7), (0,0,0.1), (0,0,0), (0,0,0), 3) # bevel the crown 
             interior_ceiling.invert_normals = True  # interior faces point inward
             
@@ -182,7 +191,6 @@ class HollowElevationModel(Model):
         else:
             print "Made Solid"
             model_volume = self._compute_volume(sandwich)
-        
         
         model_area = canvas.compute_area()
         
