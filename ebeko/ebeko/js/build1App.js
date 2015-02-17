@@ -24,4 +24,5 @@ TOPO.BUILD1.setConfig({
     'bamService': "http://127.0.0.1:8080/build",
     'pricingService': "http://127.0.0.1:8080/price",
     'uploadService': "http://127.0.0.1:8080/printer/upload",
-    'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable"});
+    'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
+    'printablePause': 10000});
