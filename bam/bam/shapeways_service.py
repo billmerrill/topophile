@@ -19,7 +19,9 @@ class ShapewaysService(object):
         return tmpl.render(**params)
   
     def build_model_message(self, model, include_file = True):
-        m = {'fileName': 'Your New Model %s.stl' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        m = {'fileName': 'Your New Model %s.stl' % dt_str,
+            'description': 'Created on %s' % dt_str,
             'hasRightsToModel': 1,
             'acceptTermsAndConditions': 1,
             'isPrivate': 1,
