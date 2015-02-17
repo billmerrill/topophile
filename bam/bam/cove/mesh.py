@@ -295,36 +295,48 @@ class Mesh(GridShape):
         nz_mm: the size, in mm, of the walls of the hollowed model
         ceil_size: the resolution of the ceiling mesh
         '''
-        print self.mesh.shape
-        eleshape = np.array(self.mesh.shape[0:1])
+        print "MESHSHAPE",  self.mesh.shape
+        eleshape = np.array((self.mesh.shape[0], self.mesh.shape[1]))
+        # eleshape = np.array(self.mesh.shape[0])
+        print "ELESHAPE", eleshape
         dezfactor = np.array(dezfactor)
+        print "DEZFACTOR", dezfactor
         d_mesh_size = np.divide(eleshape, dezfactor) 
+        print "DMESHSIZE", d_mesh_size
         nz_mm = np.array(nz_mm)
-        
+        print "NZMM", nz_mm
         pix_mm = [ abs(self.mesh[0][1][PX] - self.mesh[0][0][PX]),
                    abs(self.mesh[0][0][PY] - self.mesh[1][0][PY])]     
                    
               
         # number of pixels to skip on the borders     
-        nz_pix = np.ceil(nz_mm[0:1] / pix_mm)
+        nz_pix = np.ceil(nz_mm[0:2] / pix_mm)
         for a in [0,1]:
             if nz_pix[a] == 0:
                 nx_pix[a] = 1
-        
+       
+        print "NZPIX", nz_pix
        
         # window on mesh data to be decimated
-        src = self.mesh[nz_pix[PY]:-nz_pix[PY], nz_pix[PX]:-nz_pix[PX] ]
+        src = self.mesh[nz_pix[0]:-nz_pix[0], nz_pix[1]:-nz_pix[1] ]
         
         #add 2 for the border values
-        full_ceiling_mesh = np.ndarray((d_mesh_size[PY]+2, d_mesh_size[PX]+2, 3))
-
+        full_ceiling_mesh = np.ndarray((d_mesh_size[0]+2, d_mesh_size[1]+2, 3))
+        print full_ceiling_mesh.shape
         cell_mesh = full_ceiling_mesh[1:-1,1:-1]
+        print "RILLCELLMESHSHAPE", cell_mesh.shape
         cell_mesh_shape = np.array(cell_mesh.shape)
 
+
         #sample cell size in pixels
+        print "SRCSHAPE", src.shape
+        print "CELL MESH SHAPE", cell_mesh.shape   
+        
         pix_per_cell = np.floor(np.divide(src.shape, cell_mesh.shape))
+        print "PIXPERCELL", pix_per_cell
         # the fractional remainder of the cell division
         fstep = np.modf(np.divide(src.shape, cell_mesh_shape.astype(float)))[0]
+        print "FSTEP", fstep
         
         
         # smooth the remainders out over the width of the mesh
@@ -356,13 +368,17 @@ class Mesh(GridShape):
 
         # top and bottom edges stretched ot exact dimensions
        
+        # print cell_mesh
         if (True):
             for x in range(0, cell_mesh.shape[1]):
-                # ternayies to not include the corner data points
+                # ternaries to not include the corner data points
+                # the line includes all the pixels along y=0 and x from the begning to the end of a cell
                 line = src[0, 
                            x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
+                print 'LINE: ', line
                 elevations = line[:,2]
+                print 'ELEVATIONS', elevations
                 line_min = elevations.argmin()
                 # x+1 to skip the cornder
                 full_ceiling_mesh[0][x+1] = [ line[line_min][PX],
@@ -370,7 +386,7 @@ class Mesh(GridShape):
                                               line[line_min][PZ] - nz_mm[PZ] ]
                                               
             
-                # ternayies to not include the corner data points
+                # ternaries to not include the corner data points
                 line = src[-1, 
                            x * pix_per_cell[1] + acc(x, fstep[1] + (1 if x == 0 else 0)) :
                            (x+1) * pix_per_cell[1] + acc(x, fstep[1]) - 1 - (1 if x == (cell_mesh_shape[1]-1) else 0 )]                            
