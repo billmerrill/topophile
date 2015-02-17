@@ -38,29 +38,15 @@ class ShapewaysService(object):
         model_data = modelmd.get_model_metadata(self.config['model_dir'], tpid)
         if not model_data:
             return False
-            
-        # SWDATA
-        # u'6': {u'basePrice': u'7.840000',
-        #        u'isActive': 1,
-        #        u'isPrintable': 1,
-        #        u'markup': 892.25,
-        #        u'materialId': u'6',
-        #        u'name': u'White Strong & Flexible',
-        #        u'price': 7.84,
-        #        u'restrictions': None},       
-        
+    
         sw_markup = swdata['materials']['6']['markup']
         tp_markup = model_pricing.get_markup_by_size(model_data['size'])
-        print "SW:MARK %s TP:MARK %s" % (sw_markup, tp_markup)
         if sw_markup != tp_markup:
             msg = self.build_model_message(tpid, include_file=False)
             msg['materials']['6']['markup'] = tp_markup
             
             client = printer.new_shapeways_client()
             response = client.update_model_info(swid, msg)
-
-            import pprint 
-            pprint.pprint(response)
        
         return success
     
