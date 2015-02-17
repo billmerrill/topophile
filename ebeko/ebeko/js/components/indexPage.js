@@ -84,6 +84,42 @@ TOPO.BUILD1.indexPage = (function() {
                 console.log("printit");
                 printer.upload(currentModelId);
             }).prop('disabled', true);
+        },
+        
+        initUrl = function() {
+            var getParams = function() {
+                var searchObject = {}, queries, split, i;
+
+                queries = document.location.search.replace(/^\?/, '').split('&');
+                for( i = 0; i < queries.length; i++ ) {
+                    split = queries[i].split('=');
+                    searchObject[split[0]] = split[1];
+                }
+                return searchObject;
+            };
+            
+            var getBounds = function(ghs) {
+                var result = false;
+                if (ghs.length==25) {
+                    var corners = ghs.split('-');
+                    if (corners.length == 2) {
+                        // woops, topo is nw-se, leaflet is sw-ne
+                        var nwc = geohash.decode(corners[0]);
+                        var sec = geohash.decode(corners[1]);
+                        result = L.latLngBounds(
+                            L.latLng(sec[0], nwc[1]),
+                            L.latLng(nwc[0], sec[1]));
+                    }
+                }
+               
+                return result;
+            };
+            
+            var params = getParams()
+            console.log(params);
+            if ('b' in params) {
+                map.setUrlBbox(params['b']);
+            }
         }
         
     
@@ -91,6 +127,7 @@ TOPO.BUILD1.indexPage = (function() {
         init: function() {
             initComponents();
             initElements();
+            initUrl();
         }
     }
 }());
