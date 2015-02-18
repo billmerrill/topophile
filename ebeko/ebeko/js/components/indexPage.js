@@ -18,6 +18,15 @@ TOPO.BUILD1.indexPage = (function() {
             modelSpec.modelSize = sizing.getCurrentSize();
             return modelSpec;
         },
+        
+        setUrl = function(newBounds) {
+            var newurl = document.location.origin + document.location.pathname  
+                        + "?b=" 
+                        + geohash.encode(newBounds['nwlat'], newBounds['nwlon'])  
+                        + '-'
+                        + geohash.encode(newBounds['selat'], newBounds['selon']);
+            history.pushState(null, null, newurl);
+        },
                      
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
@@ -25,6 +34,7 @@ TOPO.BUILD1.indexPage = (function() {
                 firstBounds = false;
             }
             terrain.renderBounds(newBounds);
+            setUrl(newBounds);  
         },
         
         presetChangeHandler = function(data) {
@@ -116,7 +126,6 @@ TOPO.BUILD1.indexPage = (function() {
             };
             
             var params = getParams()
-            console.log(params);
             if ('b' in params) {
                 map.setUrlBbox(params['b']);
             }
