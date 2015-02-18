@@ -53,6 +53,42 @@ TOPO.BUILD1.Map = (function() {
             } else {
                 alert("No place found.");
             }
+        },
+        
+        setSelection: function(bbox) {
+            locationFilter.setBounds(bbox);
+            if (!locationFilter.isEnabled()) {
+                locationFilter.enable();
+            }
+        },
+        
+        setUrlBbox: function(bboxText) {
+            var extractBounds = function(ghs) {
+                var result = false;
+                if (ghs.length==25) {
+                    var corners = ghs.split('-');
+                    if (corners.length == 2) {
+                        // woops, topo is nw-se, leaflet is sw-ne
+                        var nwc = geohash.decode(corners[0]);
+                        var sec = geohash.decode(corners[1]);
+                        result = L.latLngBounds(
+                            L.latLng(sec[0], nwc[1]),
+                            L.latLng(nwc[0], sec[1]));
+                    }
+                }
+               
+                return result;
+            };
+            
+            var bbox = extractBounds(bboxText);
+            if (bbox != false) {
+                if (bbox.isValid()) {
+                    locationFilter.setBounds(bbox);
+                    if (!locationFilter.isEnabled()) {
+                        locationFilter.enable();
+                    }
+                }
+            }
         }
         
     }
