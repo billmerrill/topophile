@@ -56,6 +56,9 @@ class ShapewaysService(object):
     def upload(self, model_id):
         model = model_id + ".stl"
         client = printer.new_shapeways_client()
+        # m = self.build_model_message(model)
+        # del(m['file'])
+        # pprint.pprint(m)
         response = client.add_model(self.build_model_message(model))
         cherrypy.response.headers['Content-Type'] = "application/json"
         return json.dumps(response)
