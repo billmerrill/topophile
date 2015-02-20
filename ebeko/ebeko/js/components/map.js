@@ -22,7 +22,7 @@ TOPO.BUILD1.Map = (function() {
             
             // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
-              layers: MQ.hybridLayer(),
+              layers: MQ.mapLayer(),
               center: mapCenter, // mt rainier
               zoom: 12 } );
              
