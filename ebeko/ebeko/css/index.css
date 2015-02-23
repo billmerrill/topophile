@@ -1,11 +1,46 @@
 body {
-    padding: 1em;
+    padding: 0; 
 }
 
-
+/*
 .page-header h1 {
     font-family:     'Nunito', sans-serif;
 }
+*/
+
+.navbar {background-color: inherit;
+         border: inherit;
+         font-family: Nunito;
+         margin-bottom: 0;}
+.navbar, .navbar a { color: #000;}
+.navbar-brand:hover , #navbar:hover{
+        color: #000;
+}   
+
+
+.section-header {
+    background-color: #000;
+    color: #fff;
+    font-family: Nunito;
+    margin: .5em 0em;
+}
+
+.section-header:nth-of-type(1)  {
+    margin: 0em;
+    margin-bottom: .5em;
+    
+}
+
+.section-header > div {
+    margin: .25em 0em;
+    padding: .25em .5em;
+}
+
+
+#app, nav>div.container {
+    width: 1100px !important;
+}
+
 
 #map {
     height: 400px;
