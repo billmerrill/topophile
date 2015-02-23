@@ -81,6 +81,10 @@ body {
     margin-left: 1em;
 }
 
+.ready-to-build {
+    box-shadow: 0 0px 5px 5px rgba(0,180,0,.4);
+}
+
 
 
 /*  three dimensional decription */

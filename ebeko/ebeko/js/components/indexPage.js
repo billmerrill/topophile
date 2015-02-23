@@ -55,8 +55,34 @@ TOPO.BUILD1.indexPage = (function() {
             }
         },
         
+        MODEL_DISABLE = 'disabled',
+        MODEL_NEW = 'new',
+        MODEL_ABLE = 'able',
+        setBuildButton = function(state) {
+            switch(state) {
+                case MODEL_DISABLE:
+                    $('#build-model').prop('disabled', true);
+                    break;
+                case MODEL_NEW:
+                    $('#build-model')
+                        .prop('disabled', false)
+                        .addClass('ready-to-build');
+                    
+                    break;
+                case MODEL_ABLE:
+                    $('#build-model')
+                        .prop('disabled', false)
+                        .removeClass('ready-to-build');
+                        
+                    break;
+                default:
+                    console.log("Build Button Error");
+            }
+            
+        },
+        
         newTerrainHandler = function() {
-            $('#build-model').prop('disabled', false);
+            setBuildButton(MODEL_NEW);
         },
         
         newModelHandler = function(modelData) {
@@ -80,11 +106,13 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         initElements = function() {
+            setBuildButton(MODEL_DISABLE);
             $('#build-model').click(function() {
                 sizing.resetPresets();
                 pricing.clearPrice();
-                model.renderModel(getModelSpec())
-            }).prop('disabled', true);
+                model.renderModel(getModelSpec());
+                setBuildButton(MODEL_ABLE);
+            });
             
             $('#threewrapper').click(function() {
                 sizing.toggleUnits();
