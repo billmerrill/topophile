@@ -54,7 +54,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Topophile – Build Terrain Models</a>
+          <a class="navbar-brand" href="#">Topophile – Model Builder One</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -105,30 +105,32 @@
     </div>
    
     <div class="row control-row ">
-        <div class="col-xs-4">
+        <div class="col-xs-7">
             <span class="col-header">find a place</span>
         </div>
-        <div class="col-xs-4">
-            <button type="button" class="btn btn-default btn-md " id="build-model">
-                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
-        </div>
-        <div class="col-xs-4">
-            <span class="col-header">exagerate elevation</span>
+    <div class="col-xs-5">
+            <span class="col-header pull-right">exagerate elevation</span>
         </div>
     </div>  
     
     <div class="row">
         <div class="col-xs-4">
             <input type="text" class="form-control" name="gc-search" id="gc-search"/>
+        </div>
+        <div class="col-xs-1">
             <button type="button" class="btn btn-default btn-md" id="gc-search-button">
                 Search <span class="glyphicon glyphicon-search"></span>
             </button> 
         </div>
-        <div class="col-xs-4">
+        
+        <div class="col-xs-2">
+            <button type="button" class="btn btn-default btn-md center-block" id="build-model">
+                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
         </div>
-        <div class="col-xs-4">
-            <form class="form-inline" id="exag">
+        
+        <div class="col-xs-5">
+            <form class="form-inline pull-right" id="exag">
                 <input id="height-factor" data-slider-id='height-factor-slider' type="text" data-slider-tooltip="hide"
                 data-slider-min="0.1" data-slider-max="10.0" data-slider-step="0.1" data-slider-value="1.5"/>
                 <input type="number" id="zfactor" name="zfactor" class="form-control"/>&nbsp;<span class="val-suffix">X</span>
