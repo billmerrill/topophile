@@ -92,11 +92,15 @@ TOPO.BUILD1.indexPage = (function() {
             $("#print-model").prop('disabled', false);
         },
         
+        newExagHandler = function(val) {
+            buildButtonState(MODEL_NEW);
+        },
+        
         initComponents = function() {
             map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
             terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler, 'terrain-reset');
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
-            exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
+            exaggerater.init(newExagHandler, TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor');
             pricing.init('white_plastic_price');
             sizing.init(presetChangeHandler, '#x', '#y', '#z', '#small-size-preset',
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
