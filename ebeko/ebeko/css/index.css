@@ -123,7 +123,31 @@ div#model-controls .control-label {
     margin: .5em;
 }
 
+/* section three */
+.state {
+    font-family: Nunito;
+    font-size: 18px;
+    width: 175px;
+    height: 175px;
+    background-color: #ddd;
+    color: #bbb;
+    text-align: center;
+    padding-top: 77px;
+    -webkit-border-radius: 87.5px;
+	-moz-border-radius: 87.5px;
+	border-radius: 87.5px;
+}
 
+.state.done {
+    
+    color: #eee;
+    background-color: #869AAC;
+}
+
+.state.doing {
+    color: #fff;
+    background-color: #86AC98;
+}
 
 
 /*  three dimensional decription */

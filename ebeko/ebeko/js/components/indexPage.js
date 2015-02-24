@@ -58,7 +58,7 @@ TOPO.BUILD1.indexPage = (function() {
         MODEL_DISABLE = 'disabled',
         MODEL_NEW = 'new',
         MODEL_ABLE = 'able',
-        setBuildButton = function(state) {
+        buildButtonState = function(state) {
             switch(state) {
                 case MODEL_DISABLE:
                     $('#build-model').prop('disabled', true);
@@ -82,7 +82,7 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         newTerrainHandler = function() {
-            setBuildButton(MODEL_NEW);
+            buildButtonState(MODEL_NEW);
         },
         
         newModelHandler = function(modelData) {
@@ -106,12 +106,12 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         initElements = function() {
-            setBuildButton(MODEL_DISABLE);
+            buildButtonState(MODEL_DISABLE);
             $('#build-model').click(function() {
                 sizing.resetPresets();
                 pricing.clearPrice();
                 model.renderModel(getModelSpec());
-                setBuildButton(MODEL_ABLE);
+                buildButtonState(MODEL_ABLE);
             });
             
             $('#threewrapper').click(function() {
