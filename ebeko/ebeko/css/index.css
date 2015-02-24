@@ -149,6 +149,11 @@ div#model-controls .control-label {
     background-color: #86AC98;
 }
 
+.expectation {
+    font-size: 11px;
+    
+}
+
 
 /*  three dimensional decription */
 #threewrapper {

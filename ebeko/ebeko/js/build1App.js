@@ -25,4 +25,4 @@ TOPO.BUILD1.setConfig({
     'pricingService': "http://127.0.0.1:8080/price",
     'uploadService': "http://127.0.0.1:8080/printer/upload",
     'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
-    'printablePause': 10000});
+    'printablePause': 20000});
