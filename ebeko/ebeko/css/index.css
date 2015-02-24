@@ -86,6 +86,45 @@ body {
 }
 
 
+/* section two controls */
+#model-controls {
+    padding-left: 1em;
+}
+
+div#model-controls>ul{ 
+    padding: 0px;
+}
+
+div#model-controls>ul>li{
+    list-style-type: none;
+    margin-bottom: 1.2em;
+    
+}
+
+div#model-controls .control-label {
+    margin-bottom: .5em;
+}
+
+.control-label {
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
+    font-variant: small-caps;
+}
+
+#print-model {
+    position: absolute:
+    bottom: 0px;
+}
+
+#model-controls .tooltip-inner {
+    font-size: 16px;
+    margin: .5em;
+}
+
+
+
 
 /*  three dimensional decription */
 #threewrapper {

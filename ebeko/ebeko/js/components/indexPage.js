@@ -122,6 +122,11 @@ TOPO.BUILD1.indexPage = (function() {
                 console.log("printit");
                 printer.upload(currentModelId);
             }).prop('disabled', true);
+            
+            // init bootstrap tooltips
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+              });
         },
         
         initUrl = function() {
