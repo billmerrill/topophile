@@ -55,8 +55,34 @@ TOPO.BUILD1.indexPage = (function() {
             }
         },
         
+        MODEL_DISABLE = 'disabled',
+        MODEL_NEW = 'new',
+        MODEL_ABLE = 'able',
+        buildButtonState = function(state) {
+            switch(state) {
+                case MODEL_DISABLE:
+                    $('#build-model').prop('disabled', true);
+                    break;
+                case MODEL_NEW:
+                    $('#build-model')
+                        .prop('disabled', false)
+                        .addClass('ready-to-build');
+                    
+                    break;
+                case MODEL_ABLE:
+                    $('#build-model')
+                        .prop('disabled', false)
+                        .removeClass('ready-to-build');
+                        
+                    break;
+                default:
+                    console.log("Build Button Error");
+            }
+            
+        },
+        
         newTerrainHandler = function() {
-            $('#build-model').prop('disabled', false);
+            buildButtonState(MODEL_NEW);
         },
         
         newModelHandler = function(modelData) {
@@ -66,11 +92,15 @@ TOPO.BUILD1.indexPage = (function() {
             $("#print-model").prop('disabled', false);
         },
         
+        newExagHandler = function(val) {
+            buildButtonState(MODEL_NEW);
+        },
+        
         initComponents = function() {
             map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
             terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler, 'terrain-reset');
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
-            exaggerater.init(TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor')
+            exaggerater.init(newExagHandler, TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor');
             pricing.init('white_plastic_price');
             sizing.init(presetChangeHandler, '#x', '#y', '#z', '#small-size-preset',
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
@@ -80,11 +110,13 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         initElements = function() {
+            buildButtonState(MODEL_DISABLE);
             $('#build-model').click(function() {
                 sizing.resetPresets();
                 pricing.clearPrice();
-                model.renderModel(getModelSpec())
-            }).prop('disabled', true);
+                model.renderModel(getModelSpec());
+                buildButtonState(MODEL_ABLE);
+            });
             
             $('#threewrapper').click(function() {
                 sizing.toggleUnits();
@@ -94,6 +126,11 @@ TOPO.BUILD1.indexPage = (function() {
                 console.log("printit");
                 printer.upload(currentModelId);
             }).prop('disabled', true);
+            
+            // init bootstrap tooltips
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+              });
         },
         
         initUrl = function() {

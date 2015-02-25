@@ -54,7 +54,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Topophile – Build Terrain Models</a>
+          <a class="navbar-brand" href="#">Topophile – Model Builder One</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -99,36 +99,38 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="terrain-canvas" width="600" height="400"></canvas>
+                <canvas id="terrain-canvas" width="550" height="400"></canvas>
             </div>
         </div>
     </div>
    
     <div class="row control-row ">
-        <div class="col-xs-4">
+        <div class="col-xs-7">
             <span class="col-header">find a place</span>
         </div>
-        <div class="col-xs-4">
-            <button type="button" class="btn btn-default btn-md " id="build-model">
-                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
-        </div>
-        <div class="col-xs-4">
-            <span class="col-header">exagerate elevation</span>
+    <div class="col-xs-5">
+            <span class="col-header pull-right">exagerate elevation</span>
         </div>
     </div>  
     
     <div class="row">
-        <div class="col-xs-4">
+        <div class="col-xs-3">
             <input type="text" class="form-control" name="gc-search" id="gc-search"/>
+        </div>
+        <div class="col-xs-2">
             <button type="button" class="btn btn-default btn-md" id="gc-search-button">
                 Search <span class="glyphicon glyphicon-search"></span>
             </button> 
         </div>
-        <div class="col-xs-4">
+        
+        <div class="col-xs-2">
+            <button type="button" class="btn btn-default btn-md center-block" id="build-model">
+                Build Model <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
         </div>
-        <div class="col-xs-4">
-            <form class="form-inline" id="exag">
+        
+        <div class="col-xs-5">
+            <form class="form-inline pull-right" id="exag">
                 <input id="height-factor" data-slider-id='height-factor-slider' type="text" data-slider-tooltip="hide"
                 data-slider-min="0.1" data-slider-max="10.0" data-slider-step="0.1" data-slider-value="1.5"/>
                 <input type="number" id="zfactor" name="zfactor" class="form-control"/>&nbsp;<span class="val-suffix">X</span>
@@ -155,57 +157,114 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="model-canvas" width="800" height="400"></canvas>
+                <canvas id="model-canvas" width="825" height="400"></canvas>
             </div>
         </div>
     
     
-        <div class="col-xs-3" id="controls">
-            <div id="threewrapper" alt="click to switch unites">
-                <div id="threedim">
-                    <div id="units"><span class="current">cm</span> / <span>in<span></div>
-                    <div id="x"><span class="dimension-label">Width: </span><span class="size-cm">☃</span><span class="size-in">☃</span></div>
-                    <div id="y"><span class="dimension-label">Depth: </span><span class="size-cm">♫</span><span class="size-in">♫</span></div>
-                    <div id="z"><span class="dimension-label">Height: </span><span class="size-cm">❀</span><span class="size-in">❀</span></div>
+        <div class="col-xs-3" id="model-controls">
+            <ul>
+            <li>
+                <div class="control-label">Choose a size</div>
+                
+                <div id="presets" class="btn-group" role="group" aria-label="Model Size Choices">
+                    <button type="button" class="btn btn-default" id="small-size-preset">Small</button>
+                    <button type="button" class="btn btn-default" id="medium-size-preset">Medium</button>
+                    <button type="button" class="btn btn-default" id="large-size-preset">Large</button>
                 </div>
-            </div>
+            </li>
+            
+            <li> 
+                 <div>
+                     <span class="control-label">Compare to a:</span> <button type="button" class="btn btn-default" id="toggle-size-comparison">$</button> 
+                 </div>
+             </li>
+            
+            <li>
+                <div class="control-label">Model Dimensions</div>
+                <div id="threewrapper" alt="click to switch unites">
+                    <div id="threedim">
+                        <div id="units"><span class="current">cm</span> / <span>in<span></div>
+                        <div id="x"><span class="dimension-label">Width: </span><span class="size-cm">☃</span><span class="size-in">☃</span></div>
+                        <div id="y"><span class="dimension-label">Depth: </span><span class="size-cm">♫</span><span class="size-in">♫</span></div>
+                        <div id="z"><span class="dimension-label">Height: </span><span class="size-cm">❀</span><span class="size-in">❀</span></div>
+                    </div>
+                </div>
+            </li>
+               
+
                 
-            <div>
-                Compare <button type="button" class="btn btn-default" id="toggle-size-comparison">$</button> 
-            </div>
-            
-            
-            
-            
-            <h3>Sizes<h3>
-            <div id="presets" class="btn-group" role="group" aria-label="Model Size Choices">
-                <button type="button" class="btn btn-default" id="small-size-preset">Small</button>
-                <button type="button" class="btn btn-default" id="medium-size-preset">Medium</button>
-                <button type="button" class="btn btn-default" id="large-size-preset">Large</button>
-            </div>
-                
-            <h3>Shapeways Base Price Estimate</h3>
-            <div id="prices">
-                    <li>White Plastic: <span id="white_plastic_price"> </span></li>
-            </div>
+            <li>
+                <div data-toggle="tooltip" data-placement="top" 
+                title="This price is an estimate based on the model's size.  Upload the model to a true price.">    
+                <span class="control-label">Price Guess: ~</span><span id="white_plastic_price">☘☼?</span>
+                </div>
+            </li>
+            </ul>
+                <button type="button" class="btn btn-default btn-md " id="print-model">
+                    Upload Model <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
             
         </div>
     </div>
-    <div class="row">
+    
+    <div class="row section-header">
         <div class="col-xs-12">
-            <button type="button" class="btn btn-default btn-md " id="print-model">
-                Print Model <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
+            Upload your model to Shapeways for 3D printing.
         </div>
     </div>
-    <hr>
-    <div class="row">
-        Uploading - Preparing - Ready Go!
-        <h3 id="print-status"></h3>
 
-        <button id="buyit" class="btn-lg btn-success">GO!</button>
+    <div class="row">
+        <div class="col-xs-6">
+        <p>
+            It takes a couple minutes to upload your 3D model and
+            analyze for printability.
+        </p>
+        <p>
+            Thank you for your patience!
+        </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <h3 id="print-status"></h3>
+            <button id="buyit" class="btn-lg btn-success">GO!</button>
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-2">
+            <div id="print_uploading" class="state">
+                Uploading File<br>
+                <span class="expectation">expect < 1 minute</span>
+            </div>
+        </div>
+        <div class="col-xs-1">
+        </div>
+        <div class="col-xs-2">
+            <div id="print_processing" class="state">
+                Processing Model<br>
+                <span class="expectation">expect 1-3 minutes</span> 
+            </div>
+        </div>
+        <div class="col-xs-1">
+        </div>
+        <div class="col-xs-2">
+            <div id="print_ready" class="state">
+                Ready!
+            </div>
+        </div>
+        <div class="col-xs-2">
+        </div>
+
 
     </div>
+    <div class="row">
+        
+        <div class="col-xs-12" style="height: 200px">
+        </div>
     </div>
 </div>
 
