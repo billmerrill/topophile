@@ -148,9 +148,20 @@ div#model-controls .control-label {
     background-color: #86AC98;
 }
 
+#print_ready.doing {
+    padding-top: 60px;
+}
+
 .expectation {
     font-size: 11px;
-    
+}
+
+.state a {
+    color: #fff;
+}
+
+.gotoprint {
+    text-decoration: underline;
 }
 
 #upload-error-msg {

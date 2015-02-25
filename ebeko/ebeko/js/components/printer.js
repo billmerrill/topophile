@@ -12,8 +12,7 @@ TOPO.BUILD1.Printer = (function() {
         scheduleCheck();
         swModelId = data['modelId'];
         swModelUrl = data['urls']['privateProductUrl']['address'];
-        setPrintStatus("Shapeways is processing your model.");
-        $('#buyit').click(function(){window.open(swModelUrl)});
+        console.log("You'll be able to see your model here, but it's not ready yet: ", swModelUrl);
     }, 
     
     scheduleCheck = function() {
@@ -48,19 +47,13 @@ TOPO.BUILD1.Printer = (function() {
     
     checkPrinterProcessingComplete = function(data) {
         if (data['ready']) {
-            $('#buyit').show();
             $('#model-building').hide();
             printingState(PRINT_READY);
-            setPrintStatus("Your Model Is Ready!");
         } else {
             setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
     },
     
-    setPrintStatus =  function(status) {
-        $("#print-status").html(status);
-    },
-   
     PRINT_INIT = 'init',
     PRINT_UPLOAD = 'upload',
     PRINT_PROCESS = 'process',
@@ -83,7 +76,9 @@ TOPO.BUILD1.Printer = (function() {
                 break;
             case PRINT_READY:
                 stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
-                stateDisplays[PRINT_READY].addClass("doing");
+                stateDisplays[PRINT_READY].addClass("doing")
+                    .html('<span class="gotoprint">Go See<br>Your Model</span>')
+                    .click(function(){window.open(swModelUrl)});
                 break;
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
@@ -100,7 +95,6 @@ TOPO.BUILD1.Printer = (function() {
 
     return {
         init: function() {
-            $('#buyit').hide();
             $('#error-row').hide();
             stateDisplays = {};
             stateDisplays[PRINT_UPLOAD] = $('#print_uploading'); 
@@ -113,8 +107,6 @@ TOPO.BUILD1.Printer = (function() {
             printingState(PRINT_INIT);
             topoModelId = modelName
             printingState(PRINT_UPLOAD);
-            setPrintStatus("Sending Model to Shapeways");
-            $('#buyit').hide();
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('uploadService'),
