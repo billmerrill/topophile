@@ -5,6 +5,7 @@ TOPO.BUILD1.Printer = (function() {
         swModelId,
         swModelUrl,
         stateDisplays,
+        newModelName = null,
   
     uploadComplete = function(data) {
         printingState(PRINT_PROCESS);
@@ -20,11 +21,17 @@ TOPO.BUILD1.Printer = (function() {
     },
    
     isModelReady = function() {
+        var data = {'swid': swModelId,
+                    'tpid': topoModelId};
+        if (newModelName != null) {
+            data['name'] = newModelName;
+            newModelName = null;
+        }
+        
         $.ajax({
             type: "GET",
             url: TOPO.BUILD1.getConfig('modelPrintableService'),
-            data: {'swid': swModelId,
-                   'tpid': topoModelId}
+            data: data
         })
         .fail(function(data, stats, error) {
             alert("I'm sorry, I couldn't connect.");
@@ -116,7 +123,13 @@ TOPO.BUILD1.Printer = (function() {
             })
             .always(function(data){
             });    
+        },
+        
+        setModelName: function(name) { 
+            newModelName = name;
         }
+        
+        
     }
     
 }());

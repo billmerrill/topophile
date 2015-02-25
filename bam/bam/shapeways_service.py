@@ -71,15 +71,20 @@ class ShapewaysService(object):
                                         'modelId': response['modelId']})
        
     @cherrypy.expose    
-    def is_printable(self, swid, tpid):
+    def is_printable(self, swid, tpid, name=""):
         response = {'url': '', 'ready': False}
         client = printer.new_shapeways_client()
-        model = client.get_model_info(int(swid))
+        if name:
+            model = client.update_model_info(int(swid), {'title': name})
+        else:
+            model = client.get_model_info(int(swid))
+            
         if 'materials' not in model or '6' not in model['materials']:
             response['errmsg'] = "Materials missing from response"
             return json.dumps(response)
             
-        printable = model['materials']['6']['isPrintable'] == 1
+        # printable = model['materials']['6']['isPrintable'] == 1
+        printable = model['printable'] == 'yes'
         active = model['materials']['6']['isActive'] == 1
         response = {'url': model['urls']['privateProductUrl']['address']}
         response['ready'] = printable and active
