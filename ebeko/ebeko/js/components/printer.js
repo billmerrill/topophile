@@ -34,19 +34,19 @@ TOPO.BUILD1.Printer = (function() {
             data: data
         })
         .fail(function(data, stats, error) {
-            alert("I'm sorry, I couldn't connect.");
+            console.log("Error occurred checking printability.");
+            printingState(PRINT_ERROR);
         })
         .done(function(data, status, jqxhr) {
             checkPrinterProcessingComplete(data);
         })
         .always(function(data){
-            console.log("checked ready")
+            console.log("printer ready?")
         });
         
     },
     
     checkPrinterProcessingComplete = function(data) {
-        console.log(data)
         if (data['ready']) {
             $('#buyit').show();
             $('#model-building').hide();
@@ -86,6 +86,10 @@ TOPO.BUILD1.Printer = (function() {
                 stateDisplays[PRINT_READY].addClass("doing");
                 break;
             case PRINT_ERROR:
+                $('#return-url').html(document.location.href);
+                $('#error-row').show();
+                printingState(PRINT_INIT);
+                
                 break;
             default:
                 console.log("Build Button Error");
@@ -97,6 +101,7 @@ TOPO.BUILD1.Printer = (function() {
     return {
         init: function() {
             $('#buyit').hide();
+            $('#error-row').hide();
             stateDisplays = {};
             stateDisplays[PRINT_UPLOAD] = $('#print_uploading'); 
             stateDisplays[PRINT_PROCESS] =  $('#print_processing');
