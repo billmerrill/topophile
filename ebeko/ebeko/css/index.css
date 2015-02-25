@@ -16,6 +16,17 @@ body {
         color: #000;
 }   
 
+.footer {
+    padding-top: 50px;
+    font-family: Nunito;
+    margin-bottom: 0;
+    color: #000;
+}
+
+.footer a {
+    color: #000;
+}
+
 
 /* sections */
 .section-header {
