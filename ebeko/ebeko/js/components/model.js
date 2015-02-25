@@ -6,18 +6,31 @@ TOPO.BUILD1.Model = (function() {
         references = TOPO.BUILD1.ModelReferenceObjects, 
         showSizeReference = false, 
         comparisonMeshParts,
+        deleteMeshParts,
         modelWidth = 100,
         busyDisplay,
         resetButton,
         compareButton,
         newModelCallback,
+        COMPARE_DOLLAR = 'dollar',
+        COMPARE_EURO = 'euro',
+        currentComp = COMPARE_DOLLAR,
         
         buildComparison = function(scale) {
             if (!scale) {
                 scale = [1,1,1]
             }
             var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
-            comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.token(xform);
+            switch (currentComp) {
+                case COMPARE_DOLLAR:
+                    comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.dollar(xform);
+                    break;
+                case COMPARE_EURO:
+                    comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.euro(xform);
+                    break;
+                default:
+                    console.log('buildComparison Error');
+            }
         },
         
         initViewer = function() {
@@ -55,10 +68,65 @@ TOPO.BUILD1.Model = (function() {
             }
         },
         
+        toggleComparison = function(comp) {
+            if (showSizeReference) {
+                if (comp == currentComp) {
+                    showSizeReference = false;
+                } else {
+                    currentComp = comp;
+                    deleteMeshParts = comparisonMeshParts;
+                    buildComparison([1,1,1]);
+                }
+            } else {
+                showSizeReference = true;
+                if (comp != currentComp){
+                    currentComp = comp;
+                    deleteMeshParts = comparisonMeshParts;
+                    buildComparison([1,1,1]);
+                }
+            }
+        
+            updateComparisonScene();
+        },
+        
+        updateComparisonScene = function() {
+            if (comparisonMeshParts) {
+                var i;
+                var currScene = viewer.getScene();
+                if (deleteMeshParts) {
+                    for (i in deleteMeshParts) {
+                        currScene.removeChild(deleteMeshParts[i]);
+                    }
+                    deleteMeshParts = null;
+                }
+                if (showSizeReference) {
+                    for (i in comparisonMeshParts) {
+                        currScene.addChild(comparisonMeshParts[i]);
+                    }
+                } else {
+                    for (i in comparisonMeshParts) {
+                        currScene.removeChild(comparisonMeshParts[i]);
+                    }
+                }    
+                currScene.calcAABB();
+                viewer.update();
+            }
+        },
+        
         resetScene = function() {
             viewer.resetScene();
             viewer.update();
-        } 
+        } ,
+        
+        initReferences = function() {
+            $('#compare-dollar').click(function(e) {
+                toggleComparison(COMPARE_DOLLAR);
+            });
+            $('#compare-euro').click(function(e) {
+                toggleComparison(COMPARE_EURO);
+            });
+        };
+ 
     
     return {
     
@@ -78,23 +146,10 @@ TOPO.BUILD1.Model = (function() {
             canvas = document.getElementById(displayCanvasId);
             jcanvas = $(canvas);
             initViewer();
+            initReferences();
         },
-       
-        scaleReferenceObject: function(scale) {
-            var i;
-            var currScene = viewer.getScene();
-            for (i in comparisonMeshParts) {
-                currScene.removeChild(comparisonMeshParts[i]);
-            }
-            buildComparison([scale,scale,scale]);
-            if (showSizeReference) {
-                for (i in comparisonMeshParts) {
-                    currScene.addChild(comparisonMeshParts[i]);
-                }
-            }
-            viewer.update();
-        },
-       
+        
+  
         showModel: function(modelUrl, width) {
             modelWidth = width
             buildComparison([1,1,1]);
@@ -159,8 +214,8 @@ TOPO.BUILD1.Model = (function() {
             viewer.update();
 
             this.renderModel(modelSpec);
-        }
-       
+        }, 
+        
     } 
     
 }());
