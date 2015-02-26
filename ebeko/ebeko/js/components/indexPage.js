@@ -96,11 +96,10 @@ TOPO.BUILD1.indexPage = (function() {
             buildButtonState(MODEL_NEW);
         },
         
-        scrollToElement = function(ele) {
+        scrollToElement = function(ele, fudge) {
             var offset = ele.offset();
-            console.log(offset);
             $('html, body').animate({
-                scrollTop: offset.top,
+                scrollTop: offset.top - window.innerHeight + fudge 
             });
             
         },
@@ -125,7 +124,7 @@ TOPO.BUILD1.indexPage = (function() {
                 pricing.clearPrice();
                 model.renderModel(getModelSpec());
                 buildButtonState(MODEL_ABLE);
-                scrollToElement($('#print-model'));
+                scrollToElement($('#print-section'), 40);
             });
             
             $('#threewrapper').click(function() {
@@ -135,7 +134,7 @@ TOPO.BUILD1.indexPage = (function() {
             $('#print-model').click(function() {
                 console.log("printit");
                 printer.upload(currentModelId);
-                scrollToElement($('.footer'));
+                scrollToElement($('.footer'), 100);
             }).prop('disabled', true);
             
             // init bootstrap tooltips
