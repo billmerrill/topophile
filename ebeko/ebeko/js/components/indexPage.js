@@ -30,8 +30,8 @@ TOPO.BUILD1.indexPage = (function() {
                      
         newBoundsHandler = function(newBounds) {
             if (firstBounds) {
-                $("#terrain-instructions").hide();        
                 firstBounds = false;
+                $("#terrain-instructions").hide();        
             }
             terrain.renderBounds(newBounds);
             setUrl(newBounds);  

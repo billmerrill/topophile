@@ -61,7 +61,15 @@ body {
 }
 
 #terrain-progress {
-    padding-top: 180px;
+    width: 550px;
+    height: 400px;
+    padding-left: 58px;
+    padding-top: 220px;
+    background-image: url('../assets/the-brothers-fill.png');
+}
+
+#terrain-progress .progress {
+    width: 431px;
 }
 
 .building-status {
@@ -70,8 +78,7 @@ body {
 
 #terrain-instructions {
     position: absolute;
-    float: left;
-    z-index: 1000;
+    top: 0px;
 }
 
 #model-reset, #terrain-reset {
