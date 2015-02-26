@@ -128,7 +128,7 @@ TOPO.BUILD1.indexPage = (function() {
                 sizing.resetPresets();
                 pricing.clearPrice();
                 model.renderModel(getModelSpec());
-                buildButtonState(MODEL_ABLE);
+                buildButtonState(MODEL_DISABLE);
                 scrollToElement($('#print-section'), 40);
             });
             
