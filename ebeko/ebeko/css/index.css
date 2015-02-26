@@ -60,15 +60,16 @@ body {
     width: 100%;
 }
 
-#terrain-progress {
+#terrain-progress, #model-progress {
     width: 550px;
     height: 400px;
     padding-left: 58px;
     padding-top: 220px;
     background-image: url('../assets/the-brothers-fill.png');
+    margin: 0 auto;
 }
 
-#terrain-progress .progress {
+#terrain-progress .progress, #model-progress .progress {
     width: 431px;
 }
 

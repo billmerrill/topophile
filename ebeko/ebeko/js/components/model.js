@@ -145,6 +145,7 @@ TOPO.BUILD1.Model = (function() {
             busyDisplay.hide();
             canvas = document.getElementById(displayCanvasId);
             jcanvas = $(canvas);
+            jcanvas.hide();
             initViewer();
             initReferences();
         },
@@ -167,6 +168,7 @@ TOPO.BUILD1.Model = (function() {
         },
         
         showBusy: function() {
+            $("#model-instructions").hide();        
             jcanvas.hide();
             busyDisplay.show();
         },
