@@ -13,10 +13,82 @@ TOPO.BUILD1.Terrain = (function() {
         resetScene =  function() {
             viewer.resetScene();
             viewer.update();
-        };
-     
-     
-     
+        },
+        
+        requestTerrainModel = function(bounds) {
+            var newBounds = bounds;
+            showBusy();
+            $.ajax({
+                type: "GET",
+                url: TOPO.BUILD1.getConfig('bamService'),
+                data: { 'nwlat': bounds.nwlat,
+                'nwlon': bounds.nwlon,
+                'selat': bounds.selat,
+                'selon': bounds.selon,
+                'size': TOPO.BUILD1.getConfig('terrainSize'), 
+                'rez': TOPO.BUILD1.getConfig('terrainRez'),
+                'zfactor': 1,
+                'model_style': 'preview'}
+            })
+            .done(function(data, status, jqxhr) {
+                terrainBounds = newBounds;
+                showModel(data['url']);
+                newTerrainCallback();
+                boundsBuffer.completed();
+            })
+            .fail(function(data, stats, error) {
+                alert("Sorry, I couldn't build a model.")
+            })
+            .always(function(data) {
+                hideBusy();
+            });
+        },
+        
+        showModel = function(modelUrl) {
+            resetAABB = true;
+            viewer.replaceSceneFromUrl(modelUrl);
+        },
+        
+        showBusy = function() {
+            busyDisplay.show();
+            canvasJQ.hide();
+        },
+        
+        hideBusy = function() {
+            busyDisplay.hide();
+            canvasJQ.show();
+        },
+       
+        // a singleton to limit calls for terrain previews
+        // ignore all but the last bounds requests while a preview is building
+        boundsBuffer = function() {
+            var isReady = true,
+                savedBounds;
+            
+            return {
+                reset: function() {
+                    isReady: true; 
+                    savedBounds = null
+                },
+                completed: function() {
+                    if (savedBounds) {
+                        requestTerrainModel(savedBounds);
+                        savedBounds = null;
+                        isReady = false;
+                    } else {
+                        isReady = true;
+                    }
+                },
+                getTerrain: function(bounds) {
+                    if (isReady) {
+                        requestTerrainModel(bounds);
+                        isReady = false;
+                    } else {
+                        savedBounds = bounds;
+                    }
+                }    
+            }
+        }();
      
     return {
         v: function() {
@@ -36,9 +108,7 @@ TOPO.BUILD1.Terrain = (function() {
                 resetScene();
             })
             
-            
             canvasJQ.hide();
-            // viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('ModelColor',       '#aaaaaa');
             viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
@@ -72,11 +142,6 @@ TOPO.BUILD1.Terrain = (function() {
             viewer.update();
         },
        
-        showModel: function(modelUrl) {
-            resetAABB = true;
-            viewer.replaceSceneFromUrl(modelUrl);
-        },
-        
         updateZFactor: function(newZFactor) {
             newZFactor = parseFloat(newZFactor);
             if (newZFactor > -100 && newZFactor < 100) {
@@ -89,45 +154,9 @@ TOPO.BUILD1.Terrain = (function() {
             return zFactor;
         },
         
-
-        showBusy: function() {
-            busyDisplay.show();
-            canvasJQ.hide();
-        },
-        
-        hideBusy: function() {
-            busyDisplay.hide();
-            canvasJQ.show();
-        },
-        
         renderBounds: function(bounds) {
-            var thee = this;
-            var newBounds = bounds;
-            this.showBusy();
-            $.ajax({
-                type: "GET",
-                url: TOPO.BUILD1.getConfig('bamService'),
-                data: { 'nwlat': bounds.nwlat,
-                'nwlon': bounds.nwlon,
-                'selat': bounds.selat,
-                'selon': bounds.selon,
-                'size': TOPO.BUILD1.getConfig('terrainSize'), 
-                'rez': TOPO.BUILD1.getConfig('terrainRez'),
-                'zfactor': 1,
-                'model_style': 'preview'}
-            })
-            .done(function(data, status, jqxhr) {
-                terrainBounds = newBounds;
-                thee.showModel(data['url']);
-                newTerrainCallback();
-            })
-            .fail(function(data, stats, error) {
-                alert("Sorry, I couldn't build a model.")
-            })
-            .always(function(data) {
-                thee.hideBusy();
-            });
-        }, 
+            boundsBuffer.getTerrain(bounds);
+        },
         
         getBounds: function() {
             return terrainBounds;
