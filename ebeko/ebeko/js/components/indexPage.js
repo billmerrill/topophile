@@ -39,20 +39,6 @@ TOPO.BUILD1.indexPage = (function() {
         
         presetChangeHandler = function(data) {
             model.resizeModel(getModelSpec());
-            switch (data['preset']) {
-                case 'small':
-                    // model.scaleReferenceObject(1);
-                    break;
-                case 'medium': 
-                    // model.scaleReferenceObject(.5);
-                    break;
-                case 'large': 
-                    // model.scaleReferenceObject(1.0/3.0);
-                    break;
-                case 'custom': 
-                    // model.scaleReferenceObject(.2);
-                    break;
-            }
         },
         
         MODEL_DISABLE = 'disabled',
