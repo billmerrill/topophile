@@ -37,7 +37,7 @@ TOPO.BUILD1.Model = (function() {
             viewer = new JSC3D.Viewer(canvas);
             // viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('ModelColor',       '#EEEEEE');
-            viewer.setParameter('Background',       'on');
+            viewer.setParameter('Background',       'off');
             viewer.setParameter('BackgroundColor1', '#DDDDDD');
             viewer.setParameter('BackgroundColor2', '#DDDDDD');
             viewer.setParameter('RenderMode',       'texturesmooth');
