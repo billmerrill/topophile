@@ -96,6 +96,15 @@ TOPO.BUILD1.indexPage = (function() {
             buildButtonState(MODEL_NEW);
         },
         
+        scrollToElement = function(ele) {
+            var offset = ele.offset();
+            console.log(offset);
+            $('html, body').animate({
+                scrollTop: offset.top,
+            });
+            
+        },
+        
         initComponents = function() {
             map.init("map", TOPO.BUILD1.getConfig('mapStartPoint'), newBoundsHandler);
             terrain.init("terrain-canvas", TOPO.BUILD1.getConfig('elExaggeration'), "terrain-progress", newTerrainHandler, 'terrain-reset');
@@ -116,6 +125,7 @@ TOPO.BUILD1.indexPage = (function() {
                 pricing.clearPrice();
                 model.renderModel(getModelSpec());
                 buildButtonState(MODEL_ABLE);
+                scrollToElement($('#print-model'));
             });
             
             $('#threewrapper').click(function() {
@@ -125,6 +135,7 @@ TOPO.BUILD1.indexPage = (function() {
             $('#print-model').click(function() {
                 console.log("printit");
                 printer.upload(currentModelId);
+                scrollToElement($('.footer'));
             }).prop('disabled', true);
             
             // init bootstrap tooltips

@@ -27,6 +27,13 @@ body {
     color: #000;
 }
 
+/* page structure */
+
+#model-section {
+    height: 400px;
+}
+
+
 
 /* sections */
 .section-header {
