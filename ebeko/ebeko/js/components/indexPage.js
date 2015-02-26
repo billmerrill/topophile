@@ -80,6 +80,21 @@ TOPO.BUILD1.indexPage = (function() {
             }
             
         },
+       
+        UPLOAD_ABLE = 'y',
+        UPLOAD_UNABLE = 'n',
+        uploadButtonState = function(state) {
+            switch(state) {
+                case UPLOAD_ABLE:
+                    $('#print-model').prop('disabled', false);
+                    break;
+                case UPLOAD_UNABLE:
+                    $('#print-model').prop('disabled', true);
+                    break;
+                default:
+                    console.log("Upload Button Error");
+            }
+        },
         
         newTerrainHandler = function() {
             buildButtonState(MODEL_NEW);
@@ -89,11 +104,15 @@ TOPO.BUILD1.indexPage = (function() {
             sizing.setSize(modelData['x-size-mm'], modelData['y-size-mm'], modelData['z-size-mm']);
             pricing.updatePrice(modelData['model_id']);
             currentModelId = modelData['model_id'];
-            $("#print-model").prop('disabled', false);
+            uploadButtonState(UPLOAD_ABLE);
         },
         
         newExagHandler = function(val) {
             buildButtonState(MODEL_NEW);
+        },
+        
+        printCompleteHandler = function() {
+            uploadButtonState(UPLOAD_ABLE);
         },
         
         scrollToElement = function(ele, fudge) {
@@ -113,7 +132,7 @@ TOPO.BUILD1.indexPage = (function() {
             sizing.init(presetChangeHandler, '#x', '#y', '#z', '#small-size-preset',
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                         '#toggle-size-comparison');
-            printer.init();
+            printer.init(printCompleteHandler);
             model.init(newModelHandler, 'model-canvas', 'model-progress', 'toggle-size-comparison', 'model-reset');
         },
         
@@ -132,15 +151,16 @@ TOPO.BUILD1.indexPage = (function() {
             });
             
             $('#print-model').click(function() {
-                console.log("printit");
                 printer.upload(currentModelId);
                 scrollToElement($('.footer'), 100);
-            }).prop('disabled', true);
+                uploadButtonState(UPLOAD_UNABLE);
+            });
+            uploadButtonState(UPLOAD_UNABLE);
             
             // init bootstrap tooltips
             $(function () {
               $('[data-toggle="tooltip"]').tooltip()
-              });
+            });
         },
         
         initUrl = function() {

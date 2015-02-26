@@ -6,6 +6,7 @@ TOPO.BUILD1.Printer = (function() {
         swModelUrl,
         stateDisplays,
         newModelName = null,
+        processingCompleteCallback,
   
     uploadComplete = function(data) {
         printingState(PRINT_PROCESS);
@@ -47,8 +48,8 @@ TOPO.BUILD1.Printer = (function() {
     
     checkPrinterProcessingComplete = function(data) {
         if (data['ready']) {
-            $('#model-building').hide();
             printingState(PRINT_READY);
+            processingCompleteCallback();
         } else {
             setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
@@ -66,6 +67,7 @@ TOPO.BUILD1.Printer = (function() {
                 for (x in stateDisplays) {
                     stateDisplays[x].removeClass("doing done");
                 }
+                stateDisplays[PRINT_READY].html("Ready!");
                 break;
             case PRINT_UPLOAD:
                 stateDisplays[PRINT_UPLOAD].addClass("doing");
@@ -83,6 +85,7 @@ TOPO.BUILD1.Printer = (function() {
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
                 $('#error-row').show();
+                processingCompleteCallback();
                 printingState(PRINT_INIT);
                 
                 break;
@@ -94,7 +97,8 @@ TOPO.BUILD1.Printer = (function() {
     
 
     return {
-        init: function() {
+        init: function(processingCompleteCb) {
+            processingCompleteCallback = processingCompleteCb;
             $('#error-row').hide();
             stateDisplays = {};
             stateDisplays[PRINT_UPLOAD] = $('#print_uploading'); 
