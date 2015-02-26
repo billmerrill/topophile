@@ -150,32 +150,32 @@ div#model-controls .control-label {
 }
 
 /* section three */
-.state {
-    font-family: Nunito;
-    font-size: 18px;
+.state_disc {
     width: 175px;
     height: 175px;
     background-color: #ddd;
     color: #bbb;
-    text-align: center;
-    padding-top: 70px;
     -webkit-border-radius: 87.5px;
 	-moz-border-radius: 87.5px;
 	border-radius: 87.5px;
 }
 
-.state.done {
+div.state.done .state_disc {
     color: #eee;
     background-color: #869AAC;
 }
 
-.state.doing {
+div.state.doing .state_disc {
     color: #fff;
     background-color: #86AC98;
 }
 
-#print_ready.doing {
-    padding-top: 60px;
+div.state.done .state_label {
+    color: #eee;
+}
+
+div.state.doing .state_label {
+    color: #fff;
 }
 
 .expectation {
@@ -184,6 +184,46 @@ div#model-controls .control-label {
 
 .state a {
     color: #fff;
+}
+
+.dot {
+    width: 17px;
+    height: 17px;
+    -webkit-border-radius: 8.5px;
+    -moz-border-radius: 8.5px;
+    border-radius: 8.5px;
+    position: absolute;
+    top: 10px;
+    left: 79px; 
+}
+
+div.state.doing  div.dot {
+    background-color: #fff;
+}
+
+.spinz {
+    -webkit-animation:spin 60s linear infinite;
+    -moz-animation:spin 60s linear infinite;
+    animation:spin 60s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }    
+
+.state_label {
+    position: absolute;
+    width: 175px;
+    top: 70px;
+    left: 0px;
+    z-index: 10;
+    font-family: Nunito;
+    font-size: 18px;
+    text-align:center;
+    color: #bbb;
+}
+
+#print_ready.doing .state_label {
+    top: 60px;
 }
 
 .gotoprint {

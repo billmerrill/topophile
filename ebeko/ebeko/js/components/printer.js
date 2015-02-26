@@ -39,11 +39,7 @@ TOPO.BUILD1.Printer = (function() {
         })
         .done(function(data, status, jqxhr) {
             checkPrinterProcessingComplete(data);
-        })
-        .always(function(data){
-            console.log("printer ready?")
         });
-        
     },
     
     checkPrinterProcessingComplete = function(data) {
@@ -61,24 +57,35 @@ TOPO.BUILD1.Printer = (function() {
     PRINT_READY = 'ready',
     PRINT_ERROR = 'error',
     printingState = function(newState) {
-        var x;
+        var x, 
+            spin = function(s) {
+                s.children('.state_disc').addClass("spinz");
+            },
+            nospin = function(s) {
+                s.children('.state_disc').removeClass("spinz");
+            };
         switch(newState) {
             case PRINT_INIT:
                 for (x in stateDisplays) {
                     stateDisplays[x].removeClass("doing done");
+                    nospin(stateDisplays[x]);
                 }
-                stateDisplays[PRINT_READY].html("Ready!");
+                stateDisplays[PRINT_READY].children('.state_label').html("Ready!");
                 break;
             case PRINT_UPLOAD:
                 stateDisplays[PRINT_UPLOAD].addClass("doing");
+                spin(stateDisplays[PRINT_UPLOAD]);
                 break;
             case PRINT_PROCESS:
                 stateDisplays[PRINT_UPLOAD].removeClass("doing").addClass("done");
+                nospin(stateDisplays[PRINT_UPLOAD])
                 stateDisplays[PRINT_PROCESS].addClass("doing");
+                spin(stateDisplays[PRINT_PROCESS]);
                 break;
             case PRINT_READY:
                 stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
-                stateDisplays[PRINT_READY].addClass("doing")
+                nospin(stateDisplays[PRINT_PROCESS]);
+                stateDisplays[PRINT_READY].addClass("doing").children('.state_label')
                     .html('<span class="gotoprint">Go See<br>Your Model</span>')
                     .click(function(){window.open(swModelUrl)});
                 break;
