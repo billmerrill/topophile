@@ -162,7 +162,8 @@ TOPO.BUILD1.Model = (function() {
                         scene.addChild(comparisonMeshParts[i]);
                     }
                 }
-                    viewer.replaceScene(scene);
+                viewer.replaceScene(scene);
+                viewer.zoomFactor *= 1.5;
             };
             loader.loadFromUrl(modelUrl);
         },

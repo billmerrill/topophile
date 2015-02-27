@@ -97,7 +97,6 @@ TOPO.BUILD1.Terrain = (function() {
         
         init: function(displayCanvasId, initZFactor, progressDisplayId, newTerrainCb, resetViewId) {
             zFactor = initZFactor;
-    		//JSC3D.console.setup('console-area', '120px');
             canvas = document.getElementById(displayCanvasId);
             viewer = new JSC3D.Viewer(canvas);
             busyDisplay = $('#' + progressDisplayId);
