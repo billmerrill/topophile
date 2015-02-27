@@ -2,35 +2,16 @@ TOPO.BUILD1.Sizing = (function(){
     "use strict";
     
     var currentUnits = 'm',
-        presetChangeCallback, currentSizePreset = 'small',
-        dimensions = {'small': [],
-                       'medium': [],
-                       'large': [],
-                       'custom': []},
+        presetChangeCallback, currentSizePreset = 'medium',
+        modelDimensions = [0,0,0],
         modelSizes = {'small': 50,
                      'medium': 100,
                      'large': 200,
-                     'custume': 250},
+                     'custom': 250},
                        
-        accessDimension = function(dim, val) {
-            if (val) {
-                dimensions[currentSizePreset][dim] = val;
-                return val;
-            } else {
-                return dimensions[currentSizePreset][dim]
-            }
-        },
-        
         changePresetSize = function(newPreset) {
             currentSizePreset = newPreset;
-            updateDisplay();
-            var cbData = {
-                'preset': newPreset,
-                'x': xSize(),
-                'y': ySize(),
-                'z': zSize()
-            }
-            presetChangeCallback(cbData);
+            presetChangeCallback();
         },
     
         showCurrentDimensions = function() {
@@ -59,30 +40,17 @@ TOPO.BUILD1.Sizing = (function(){
             return '<span class="size-cm">'+cmval+'</span><span class="size-in">'+inval+'<span>';
         },
         
+        
         updateDisplay =  function() {
-            xDisplay.html(makeDisplayDimension(xSize()));
-            yDisplay.html(makeDisplayDimension(ySize()));
-            zDisplay.html(makeDisplayDimension(zSize()));
+            xDisplay.html(makeDisplayDimension(modelDimensions[0]));
+            yDisplay.html(makeDisplayDimension(modelDimensions[1]));
+            zDisplay.html(makeDisplayDimension(modelDimensions[2]));
             showCurrentDimensions();
         },
         
-        updatePresets = function() {
-            dimensions['medium'] = [dimensions['small'][0] * 2,
-                                     dimensions['small'][1] * 2,
-                                     dimensions['small'][2] * 2];
-            dimensions['large'] = [dimensions['small'][0] * 3,
-                                     dimensions['small'][1] * 3,
-                                     dimensions['small'][2] * 3];
-            dimensions['custom'] = [dimensions['small'][0] * 5,
-                                     dimensions['small'][1] * 5,
-                                     dimensions['small'][2] * 5];
-        },
-    
-        xSize = function(val) { return accessDimension(0,val) },
-        ySize = function(val) { return accessDimension(1,val) },
-        zSize = function(val) { return accessDimension(2,val) },
         xDisplay, yDisplay, zDisplay, smallButton, mediumButton,
         largeButton, customButton;
+        
         return {
     
             init: function(presetChangeCb, 
@@ -95,8 +63,8 @@ TOPO.BUILD1.Sizing = (function(){
                 xDisplay = $(x);
                 yDisplay = $(y);
                 zDisplay = $(z);
-                smallButton = $(presetS).addClass('active');
-                mediumButton = $(presetM);
+                smallButton = $(presetS);
+                mediumButton = $(presetM).addClass('active');
                 largeButton = $(presetL);
                 customButton = $(presetC);
                 
@@ -115,13 +83,8 @@ TOPO.BUILD1.Sizing = (function(){
             },
             
             setSize: function(x,y,z) {
-                dimensions[currentSizePreset] = [x,y,z];
-                updatePresets();
+                modelDimensions = [x,y,z];
                 updateDisplay();
-            },
-            
-            getCurrentDimensions: function() {
-                return dimensions[currentSizePreset]
             },
             
             getCurrentSize: function() {
