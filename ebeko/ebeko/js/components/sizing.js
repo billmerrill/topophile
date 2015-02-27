@@ -95,7 +95,7 @@ TOPO.BUILD1.Sizing = (function(){
                 xDisplay = $(x);
                 yDisplay = $(y);
                 zDisplay = $(z);
-                smallButton = $(presetS);
+                smallButton = $(presetS).addClass('active');
                 mediumButton = $(presetM);
                 largeButton = $(presetL);
                 customButton = $(presetC);
@@ -118,12 +118,6 @@ TOPO.BUILD1.Sizing = (function(){
                 dimensions[currentSizePreset] = [x,y,z];
                 updatePresets();
                 updateDisplay();
-            },
-            
-            resetPresets: function() {
-                currentSizePreset = 'small'
-                $("#presets button").removeClass("active");
-                smallButton.toggleClass("active");    
             },
             
             getCurrentDimensions: function() {

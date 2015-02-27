@@ -125,7 +125,6 @@ TOPO.BUILD1.indexPage = (function() {
         initElements = function() {
             buildButtonState(MODEL_DISABLE);
             $('#build-model').click(function() {
-                sizing.resetPresets();
                 pricing.clearPrice();
                 model.renderModel(getModelSpec());
                 buildButtonState(MODEL_DISABLE);
