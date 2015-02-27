@@ -56,10 +56,8 @@ def get_elevation(app_config, elevation_filename, nwlat, nwlon, selat, selon, re
 def get_elevation_image(filename, base_url, params):
      ret = {'file':None, 'status':None}
      written = 0
-     import pprint
      with closing(requests.get(base_url, params=params, stream=True)) as response:
      # Do things with the response here.
-         pprint.pprint(response)
          ret['status'] = response.status_code
          if response.status_code == 200:
              with open(filename, "wb") as save:
