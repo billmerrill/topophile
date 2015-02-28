@@ -28,12 +28,12 @@ TOPO.BUILD1.indexPage = (function() {
             history.pushState(null, null, newurl);
         },
                      
-        newBoundsHandler = function(newBounds) {
+        newBoundsHandler = function(newBounds, selectSize) {
             if (firstBounds) {
                 firstBounds = false;
                 $("#terrain-instructions").hide();        
             }
-            terrain.renderBounds(newBounds);
+            terrain.renderBounds(newBounds, selectSize);
             setUrl(newBounds);  
         },
         

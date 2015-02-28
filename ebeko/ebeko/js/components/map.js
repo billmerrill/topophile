@@ -6,11 +6,24 @@ TOPO.BUILD1.Map = (function() {
     handleNewBounds = function(e) {
         var alterBounds = locationFilter.getBounds();
         if (alterBounds.isValid()) {
-            newBoundsCallback({"nwlat": alterBounds.getNorth(),
+            var bounds = {"nwlat": alterBounds.getNorth(),
                          "nwlon": alterBounds.getWest(),
                          "selat": alterBounds.getSouth(),
-                         "selon": alterBounds.getEast()});
+                         "selon": alterBounds.getEast()};
+            var selectionSize = computeSelectionSize(bounds);
+            newBoundsCallback(bounds, selectionSize);
         }  
+    }, 
+    
+    computeSelectionSize = function(bounds) {
+        var nwpt = getPixelPt(bounds['nwlat'], bounds['nwlon']);
+        var sept = getPixelPt(bounds['selat'], bounds['selon']);
+        return sept.subtract(nwpt);
+    },
+    
+    /* used for enableMsScaling */
+    getPixelPt = function(lat, lon) {
+        return map.project(L.latLng(lat, lon));
     };
     
     
@@ -89,7 +102,9 @@ TOPO.BUILD1.Map = (function() {
                     }
                 }
             }
-        }
+        },
+       
+
         
     }
     
