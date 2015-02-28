@@ -35,8 +35,8 @@ TOPO.BUILD1.Terrain = (function() {
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
                 var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(targetBoundsRatio, 
                                                     TOPO.BUILD1.getConfig('terrainRez'));
-                requestData['width'] = imageSize[0];
-                requestData['height'] = imageSize[1];
+                requestData['width'] = imageSize.x;
+                requestData['height'] = imageSize.y;
             }
             
             $.ajax({
