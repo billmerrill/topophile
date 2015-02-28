@@ -80,3 +80,7 @@ class BBoxModelTicket(object):
     
     def get_hollow(self):
         return self.inputs.hollow
+        
+    def set_elevation_dimensions(self, width, height):
+        self.inputs.elevation_width = width;
+        self.inputs.elevation_height = height;
