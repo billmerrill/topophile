@@ -84,3 +84,7 @@ class BBoxModelTicket(object):
     def set_elevation_dimensions(self, width, height):
         self.inputs.elevation_width = width;
         self.inputs.elevation_height = height;
+        
+    def get_elevation_dimensions(self):
+        return {'x': self.inputs.elevation_width,
+                'y': self.inputs.elevation_height}
