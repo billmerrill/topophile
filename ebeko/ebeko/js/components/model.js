@@ -193,7 +193,7 @@ TOPO.BUILD1.Model = (function() {
                     'hollow': 1};
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
                 var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect, 
-                                                    TOPO.BUILD1.getConfig('terrainRez'));
+                                                    TOPO.BUILD1.getConfig('modelRez'));
                 requestData['width'] = imageSize.x;
                 requestData['height'] = imageSize.y ;
             }
