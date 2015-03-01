@@ -14,6 +14,7 @@ TOPO.BUILD1.indexPage = (function() {
         
         getModelSpec = function () {
             var modelSpec = terrain.getBounds();
+            modelSpec.selectRect = terrain.getSelectionRect();
             modelSpec.zfactor = exaggerater.getFactor();
             modelSpec.modelSize = sizing.getCurrentSize();
             return modelSpec;

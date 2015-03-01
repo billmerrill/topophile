@@ -9,6 +9,7 @@ TOPO.BUILD1.Terrain = (function() {
         newTerrainCallback,
         resetAABB = false,
         terrainBounds = {},
+        terrainRect,
         
         resetScene =  function() {
             viewer.resetScene();
@@ -20,8 +21,9 @@ TOPO.BUILD1.Terrain = (function() {
          * targetBoundsRatio: the size of the model in pixels from a map in 
          *      spherical mercator, epgs:3857.  Used to scale wcs request
          */
-        requestTerrainModel = function(bounds, targetBoundsRatio) {
+        requestTerrainModel = function(bounds, selectionRect) {
             var newBounds = bounds;
+            var imageSize;
             showBusy();
             var requestData = {'nwlat': bounds.nwlat,
                 'nwlon': bounds.nwlon,
@@ -33,7 +35,7 @@ TOPO.BUILD1.Terrain = (function() {
                 'model_style': 'preview'};
                 
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
-                var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(targetBoundsRatio, 
+                imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(selectionRect, 
                                                     TOPO.BUILD1.getConfig('terrainRez'));
                 requestData['width'] = imageSize.x;
                 requestData['height'] = imageSize.y ;
@@ -46,6 +48,7 @@ TOPO.BUILD1.Terrain = (function() {
             })
             .done(function(data, status, jqxhr) {
                 terrainBounds = newBounds;
+                terrainRect = selectionRect;
                 showModel(data['url']);
                 newTerrainCallback();
                 boundsBuffer.completed();
@@ -78,29 +81,29 @@ TOPO.BUILD1.Terrain = (function() {
         boundsBuffer = function() {
             var isReady = true,
                 savedBounds, 
-                savedRatio;
+                savedRect;
             
             return {
                 reset: function() {
                     isReady: true; 
-                    savedBounds = savedRatio = null
+                    savedBounds = savedRect = null
                 },
                 completed: function() {
                     if (savedBounds) {
-                        requestTerrainModel(savedBounds, savedRatio);
-                        savedBounds = savedRatio = null;
+                        requestTerrainModel(savedBounds, savedRect);
+                        savedBounds = savedRect = null;
                         isReady = false;
                     } else {
                         isReady = true;
                     }
                 },
-                getTerrain: function(bounds, ratio) {
+                getTerrain: function(bounds, rect) {
                     if (isReady) {
-                        requestTerrainModel(bounds, ratio);
+                        requestTerrainModel(bounds, rect);
                         isReady = false;
                     } else {
                         savedBounds = bounds;
-                        savedRatio = ratio;
+                        savedRect = rect;
                     }
                 }    
             }
@@ -169,12 +172,16 @@ TOPO.BUILD1.Terrain = (function() {
             return zFactor;
         },
         
-        renderBounds: function(bounds, ratio) {
-            boundsBuffer.getTerrain(bounds, ratio);
+        renderBounds: function(bounds, rect) {
+            boundsBuffer.getTerrain(bounds, rect);
         },
         
         getBounds: function() {
             return terrainBounds;
+        },
+        
+        getSelectionRect: function() {
+            return terrainRect;
         }
     }
 }());
