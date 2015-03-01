@@ -22,7 +22,8 @@ class STLModelService(object):
                                 hollow=hollow, 
                                 resample=(not self.app_config['ms_scaling']))
         if kwargs['width'] and kwargs['height']:
-            ticket.set_elevation_dimensions(kwargs['width'], kwargs['height'])
+            ticket.set_elevation_dimensions(int(round(float(kwargs['width']))), 
+                int(round(float(kwargs['height']))))
             
         gig = job.BoundingBoxJob(self.app_config, ticket)
         model = gig.run()

@@ -69,6 +69,8 @@ MAP
         PROJECTION
             "init=epsg:4236"
         END
+        
+        PROCESSING "RESAMPLE=BILINEAR"
 
         METADATA
             "wcs_label"           "Elevation"  ### required
