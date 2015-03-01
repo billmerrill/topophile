@@ -16,6 +16,7 @@ class Builder(object):
         self.min_model_thickness = kwargs.get('min_model_thickness', [3,3,3]) #mm 
         self.ceiling_decimation_factor = kwargs.get('ceiling_decimation_factor', [6,6])
         self.hollow = kwargs.get('hollow', False)
+        self.resample_elevation_input = kwargs.get('resample_elevation', False)
         
     def _default_dst_name(self):
         return self.src_filename.replace(".tif", ".stl")
@@ -59,3 +60,6 @@ class Builder(object):
         
     def is_hollow(self):
         return self.hollow
+    
+    def get_resample_elevation(self):
+        return self.resample_elevation_input
