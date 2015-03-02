@@ -9,7 +9,6 @@ from indicies import *
 class Model(object):
     
     def __init__(self, config):
-        print config
         self.builder = Builder(config)
 
 class PreviewTerrainModel(Model):
@@ -23,7 +22,12 @@ class PreviewTerrainModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        elevation_data = elevation.get_meters_ndarray()
+        if self.builder.get_resample_elevation():
+            print "%%%%%%%%resampling the elevation data"
+            elevation_data = elevation.get_meters_ndarray()
+        else:
+            print "%%%%%%%%letting mapserver do all the work"
+            elevation_data = elevation.get_raw_meters()
         
         top = Mesh()
         top.load_matrix(elevation_data) 

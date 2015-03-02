@@ -182,17 +182,26 @@ TOPO.BUILD1.Model = (function() {
         renderModel: function(modelSpec) {
             var thee = this;
             this.showBusy();
+            
+            var requestData = { 'nwlat': modelSpec.nwlat,
+                    'nwlon': modelSpec.nwlon,
+                    'selat': modelSpec.selat,
+                    'selon': modelSpec.selon,
+                    'size': modelSpec.modelSize, 
+                    'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
+                    'zfactor': modelSpec.zfactor,
+                    'hollow': 1};
+            if (TOPO.BUILD1.getConfig('enableMsScaling')) {
+                var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect, 
+                                                    TOPO.BUILD1.getConfig('modelRez'));
+                requestData['width'] = imageSize.x;
+                requestData['height'] = imageSize.y ;
+            }
+
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('bamService'),
-                data: { 'nwlat': modelSpec.nwlat,
-                        'nwlon': modelSpec.nwlon,
-                        'selat': modelSpec.selat,
-                        'selon': modelSpec.selon,
-                        'size': modelSpec.modelSize, 
-                        'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
-                        'zfactor': modelSpec.zfactor,
-                        'hollow': 1}
+                data: requestData
             })
             .done(function(data, status, jqxhr) {
                 thee.showModel(data['url'], data['x-size-mm']);

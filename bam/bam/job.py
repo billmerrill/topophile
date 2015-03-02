@@ -28,7 +28,14 @@ class BoundingBoxJob(object):
         
         if not os.path.exists(self.ticket.get_elevation_filepath()):
             bbox = self.ticket.inputs.bbox
-            elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_elevation_filepath(), bbox.north, bbox.west, bbox.south, bbox.east)
+            
+            if self.app_config['ms_scaling']:
+                elevation_data = el_src.get_scaled_elevation(self.app_config, self.ticket.get_elevation_filepath(), 
+                                    bbox.north, bbox.west, bbox.south, bbox.east,
+                                    self.ticket.get_elevation_dimensions())
+            else:
+                elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_elevation_filepath(), bbox.north, bbox.west, bbox.south, bbox.east)
+                
             if elevation_data is None:
                 return None
         else:

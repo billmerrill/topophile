@@ -29,14 +29,15 @@ class BBoxModelTicket(object):
     '''
     
     
-    def __init__(self, bbox, size, rez, zmult, hollow, style):
+    def __init__(self, bbox, size, rez, zmult, hollow, style, resample):
         self.inputs = DotDict({
             'bbox': bbox,
             'size': size,
             'rez': rez,
             'zmult': zmult,
             'hollow': hollow,
-            'style': style})
+            'style': style,
+            'resample_elevation': resample})
     
         self.outputs = DotDict({
             'model_filename': None,
@@ -60,7 +61,8 @@ class BBoxModelTicket(object):
                  'output_resolution': self.inputs.rez,
                  'output_physical_max': self.inputs.size,
                  'z_factor': self.inputs.zmult,
-                 'hollow': self.inputs.hollow}
+                 'hollow': self.inputs.hollow,
+                 'resample_elevation': self.inputs.resample_elevation}
 
     def get_model_filepath(self):
         return self.outputs.model_filename
@@ -80,3 +82,11 @@ class BBoxModelTicket(object):
     
     def get_hollow(self):
         return self.inputs.hollow
+        
+    def set_elevation_dimensions(self, width, height):
+        self.inputs.elevation_width = width;
+        self.inputs.elevation_height = height;
+        
+    def get_elevation_dimensions(self):
+        return {'x': self.inputs.elevation_width,
+                'y': self.inputs.elevation_height}

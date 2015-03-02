@@ -9,29 +9,46 @@ TOPO.BUILD1.Terrain = (function() {
         newTerrainCallback,
         resetAABB = false,
         terrainBounds = {},
+        terrainRect,
         
         resetScene =  function() {
             viewer.resetScene();
             viewer.update();
         },
         
-        requestTerrainModel = function(bounds) {
+        /*
+         * bounds: the geographic bounds of the model
+         * targetBoundsRatio: the size of the model in pixels from a map in 
+         *      spherical mercator, epgs:3857.  Used to scale wcs request
+         */
+        requestTerrainModel = function(bounds, selectionRect) {
             var newBounds = bounds;
+            var imageSize;
             showBusy();
-            $.ajax({
-                type: "GET",
-                url: TOPO.BUILD1.getConfig('bamService'),
-                data: { 'nwlat': bounds.nwlat,
+            var requestData = {'nwlat': bounds.nwlat,
                 'nwlon': bounds.nwlon,
                 'selat': bounds.selat,
                 'selon': bounds.selon,
                 'size': TOPO.BUILD1.getConfig('terrainSize'), 
                 'rez': TOPO.BUILD1.getConfig('terrainRez'),
                 'zfactor': 1,
-                'model_style': 'preview'}
+                'model_style': 'preview'};
+                
+            if (TOPO.BUILD1.getConfig('enableMsScaling')) {
+                imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(selectionRect, 
+                                                    TOPO.BUILD1.getConfig('terrainRez'));
+                requestData['width'] = imageSize.x;
+                requestData['height'] = imageSize.y ;
+            }
+            
+            $.ajax({
+                type: "GET",
+                url: TOPO.BUILD1.getConfig('bamService'),
+                data: requestData
             })
             .done(function(data, status, jqxhr) {
                 terrainBounds = newBounds;
+                terrainRect = selectionRect;
                 showModel(data['url']);
                 newTerrainCallback();
                 boundsBuffer.completed();
@@ -63,28 +80,30 @@ TOPO.BUILD1.Terrain = (function() {
         // ignore all but the last bounds requests while a preview is building
         boundsBuffer = function() {
             var isReady = true,
-                savedBounds;
+                savedBounds, 
+                savedRect;
             
             return {
                 reset: function() {
                     isReady: true; 
-                    savedBounds = null
+                    savedBounds = savedRect = null
                 },
                 completed: function() {
                     if (savedBounds) {
-                        requestTerrainModel(savedBounds);
-                        savedBounds = null;
+                        requestTerrainModel(savedBounds, savedRect);
+                        savedBounds = savedRect = null;
                         isReady = false;
                     } else {
                         isReady = true;
                     }
                 },
-                getTerrain: function(bounds) {
+                getTerrain: function(bounds, rect) {
                     if (isReady) {
-                        requestTerrainModel(bounds);
+                        requestTerrainModel(bounds, rect);
                         isReady = false;
                     } else {
                         savedBounds = bounds;
+                        savedRect = rect;
                     }
                 }    
             }
@@ -153,12 +172,16 @@ TOPO.BUILD1.Terrain = (function() {
             return zFactor;
         },
         
-        renderBounds: function(bounds) {
-            boundsBuffer.getTerrain(bounds);
+        renderBounds: function(bounds, rect) {
+            boundsBuffer.getTerrain(bounds, rect);
         },
         
         getBounds: function() {
             return terrainBounds;
+        },
+        
+        getSelectionRect: function() {
+            return terrainRect;
         }
     }
 }());

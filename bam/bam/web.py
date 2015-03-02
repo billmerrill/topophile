@@ -18,7 +18,8 @@ from mako.lookup import TemplateLookup
 
 app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache"),
               'elevation_dir': os.path.join(os.getcwd(), "app/elevation_cache"),
-              'elevation_server': 'http://127.0.0.1/cgi-bin/mapserv?' }
+              'elevation_server': 'http://127.0.0.1/cgi-bin/mapserv?',
+              'ms_scaling': True }
         
     
 class TestyClass(object):

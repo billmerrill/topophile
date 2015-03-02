@@ -14,6 +14,7 @@ TOPO.BUILD1.indexPage = (function() {
         
         getModelSpec = function () {
             var modelSpec = terrain.getBounds();
+            modelSpec.selectRect = terrain.getSelectionRect();
             modelSpec.zfactor = exaggerater.getFactor();
             modelSpec.modelSize = sizing.getCurrentSize();
             return modelSpec;
@@ -28,12 +29,12 @@ TOPO.BUILD1.indexPage = (function() {
             history.pushState(null, null, newurl);
         },
                      
-        newBoundsHandler = function(newBounds) {
+        newBoundsHandler = function(newBounds, selectSize) {
             if (firstBounds) {
                 firstBounds = false;
                 $("#terrain-instructions").hide();        
             }
-            terrain.renderBounds(newBounds);
+            terrain.renderBounds(newBounds, selectSize);
             setUrl(newBounds);  
         },
         
