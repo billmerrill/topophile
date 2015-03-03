@@ -3,6 +3,8 @@ import shapefile
 import numpy as np
 
 import sys
+import json
+import pprint
 
 
 def close_enough(x, y, tol=1e-18, rel=1e-7):
@@ -14,13 +16,25 @@ def close_enough(x, y, tol=1e-18, rel=1e-7):
     # assert tests
     return abs(x - y) <= max(tests)
 
+TOP = False
+
 def run():
     input_filename = sys.argv[1]
     output_filename = sys.argv[2]
     
     sf = shapefile.Reader(input_filename)
     shapes = sf.shapes()
-    print "Starting with %s shapes." % len(shapes)    
+    points = []
+    for s in shapes:
+        
+        points.append([x.tolist() for x in s.points])
+
+    def sorter(x):
+        return x[0][1], x[0][0]
+
+    sorted_points = sorted(points, key=sorter, reverse=False)    
+    
+    print "Starting with %s shapes." % len(sorted_points)    
     
     output_rects = []
     blob = None
@@ -30,76 +44,65 @@ def run():
     def _close(a,b):
         c = [.3, .3]
         return np.all(np.less(np.absolute(np.subtract(a,b)), c))
-        
-    itr = range(len(shapes))
-    itr2 = range(len(shapes))
-      
-    for i in itr:
+       
+       
+    # for i,p in enumerate(sorted_points):
+    #     if not blob:
+    #         print "Start Blob: ", p
+    #         blob = p
+    for i in range(0, len(sorted_points)):
         if not blob:
-            blob = shapes[i].points
-        
+            if TOP:
+                print "Start Blob: ", sorted_points[i]
+            blob = sorted_points[i]
+            
         else:
-            found_neighbor = False
-            for j in itr2:
-                # print '\n-----\n'
-                # print i,j, blob, 
-                # print '\n===\n'
-                # print shapes[j].points
-                if _close(blob[1], shapes[j].points[0]):
-                    # print blob[1], shapes[j].points
+            is_neighbor = False
+            cury = blob[0][1]
+            
+            for j in range(0, len(sorted_points)):
+                print i,j
+                if sorted_points[j][0][1] != cury:
+                    if TOP:
+                        print "Mismatch 0y", sorted_points[j][0] , cury
+                    continue
+                else: 
+                    if TOP:
+                        print "continuing"
+                    else: 
+                        pass
+                
+                if _close(blob[1], sorted_points[j][0]):
+                    if TOP:
+                        print "CLOOOSE"
                     if i != j:
-                        blob[1] = shapes[j].points[1]
-                        blob[2] = shapes[j].points[2]
-                        found_neighbor = True
-                        break
-                elif _close(blob[0], shapes[j].points[1]):
-                    # print 'second check:', i, j, blob[0], shapes[j].points
-                    if i != j:
-                        blob[0] = shapes[j].points[0]
-                        blob[3] = shapes[j].points[3]
-                        found_neighbor = True
+                        blob[1] = sorted_points[j][1]
+                        blob[2] = sorted_points[j][2]
+                        is_neighbor = True
+                        if TOP:
+                            print "Matched Back, grow", blob
                         break
                         
-            if not found_neighbor:
+                elif _close(blob[0], sorted_points[j][1]):
+                    if TOP:
+                        print "CLOOOSE"
+                    if i != j:
+                        blob[0] = sorted_points[j][0]
+                        blob[3] = sorted_points[j][3]
+                        is_neighbor = True
+                        if TOP:
+                            print "Matched Front, grow", blob
+                        break
+                        
+            if not is_neighbor:
                 output_rects.append(blob)
+                if TOP:
+                    print "End Blob", blob
                 blob = None
-                print 'nope'
-            else:
-                print 'yep'
-                
- 
-    
-    # for i,s in enumerate(shapes):
-    #     if not blob:
-    #         blob = s.points
-    #         
-    #     else:
-    #         # match, grow blob
-    #         # if np.allclose(blob[1], s.points[0], atol=1):
-    #         found_neighbor = False
-    #         for x in range (i, len(shapes)):
-    #         
-    #             if _close(blob[1], shapes[x].points[0]):
-    #                 blob[1] = shapes[x].points[1]
-    #                 blob[2] = shapes[x].points[2]
-    #                 found_neighbor = True
-    #                 blob_count += 1
-    #                 break
-    #                 
-    #         if not found_neighbor:
-    #             # print 'new blob', shapes[x].points
-    #             blob_sizes.append(blob_count)
-    #             output_rects.append(blob);
-    #             # print "%s\t%s" % (blob_count, blob)
-    #             blob_count = 1
-    #             blob = None
-    #   
-    np.sort(output_rects)
-    for r in output_rects:
-        print '%s: %s' % ((r[0][0] - r[1][0]) , r)
-     
+
     print "Ending with %s shapes." % len(output_rects) 
-    # print blob_sizes
+    with open('rectangles.json', 'wb') as of:
+        json.dump(output_rects, of)
             
         
     
