@@ -5,22 +5,13 @@ import numpy as np
 import sys
 import json
 import pprint
+import geojson
 
 
-def close_enough(x, y, tol=1e-18, rel=1e-7):
-    if tol is rel is None:
-        raise TypeError('cannot specify both absolute and relative errors are None')
-    tests = []
-    if tol is not None: tests.append(tol)
-    if rel is not None: tests.append(rel*abs(x))
-    # assert tests
-    return abs(x - y) <= max(tests)
+TOP = False
 
-TOP = True
-
-def run():
+def reduce_rects():
     input_filename = sys.argv[1]
-    output_filename = sys.argv[2]
     
     sf = shapefile.Reader(input_filename)
     shapes = sf.shapes()
@@ -33,22 +24,17 @@ def run():
             bands[bandkey].append(r)
         else:
              bands[bandkey] = [r]
-            #  print bandkey
-        
-    # for bk in bands:
-    #     print bk, len(bands[bk])
-    #     
-
-
-
-    # sorted_points = sorted(points, key=sorter, reverse=False)    
-    
-    # print "Starting with %s shapes." % len(sorted_points)    
-    
+             
+    # for b in bands:
+    #     print "XX ", b, " - ", len(bands[b])
+    #     if b == -31:
+    #         for bb in bands[b]:
+    #             print bb[0]
+    # 
     output_rects = []
     blob_sizes = []
     blob_count = 0
-   
+    
     def _close(a,b):
         c = [.3, .3]
         return np.all(np.less(np.absolute(np.subtract(a,b)), c))
@@ -79,12 +65,33 @@ def run():
                         print "Ending blob, starting new"
                     output_rects.append(blob)
                     blob = curr
-                    print "NEW blob, ", blob
+                    if TOP:
+                        print "NEW blob, ", blob
+        if blob:
+            output_rects.append(blob)
 
     print "Ending with %s shapes." % len(output_rects) 
-    with open('rectangles.json', 'wb') as of:
-        json.dump(output_rects, of)
+    return output_rects
+    # with open('rectangles.json', 'wb') as of:
+    #     json.dump(output_rects, of)
             
+
+def write_geojson(rects):
+    output_filename = sys.argv[2]
+
+    features = []
+    for i,r in enumerate(rects):
+        # print round(r[0][0])
+        # if round(r[0][0]) == -30.0:
+        #     print "HEY ", r
+        features.append(geojson.Feature(geometry=geojson.Polygon([r]), id=str(i)))
+    
+    collection = geojson.FeatureCollection(features=features)
+    
+    with open (output_filename, 'wb') as output:
+        json.dump(collection, output)
+    
+    
         
     
 def check():
@@ -97,4 +104,5 @@ def check():
 
 if __name__ == '__main__':
     if check():
-        run()
+        rects = reduce_rects()
+        write_geojson(rects)
