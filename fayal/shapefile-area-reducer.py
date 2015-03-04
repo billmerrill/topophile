@@ -74,7 +74,68 @@ def reduce_rects():
     return output_rects
     # with open('rectangles.json', 'wb') as of:
     #     json.dump(output_rects, of)
-            
+
+def make_mask(rects):
+    bands = {}
+    for s in rects:
+        r = s
+        bandkey = round(r[0][1])
+        if bandkey in bands:
+            bands[bandkey].append(r)
+        else:
+             bands[bandkey] = [r]
+             
+    masks = []
+    xstart = -180.0
+    xend = 180.0
+    xcurr = xstart
+
+    ystart = 89
+    yend = -89
+    ycurr = ystart
+   
+    for y in range(ystart, yend, -1):
+        print y
+        ycurr = y
+        mask = None
+        if y not in bands:
+            mask = [[xstart, float(y)], 
+                    [xend, float(y)], 
+                    [xend, float(y) - 1.0], 
+                    [xstart, float(y-1)],
+                    [xstart, float(y)]]
+            print mask
+            masks.append(mask)
+        else:
+            xcurr = xstart
+            for coverage in bands[float(y)]:    
+                print 'coverage', coverage
+                # if no coverage starting at curr, make a mask
+                if round(coverage[0][0]) != xcurr:
+                    mask = [[xcurr, coverage[0][1]],
+                            coverage[0],
+                            coverage[3],
+                            [xcurr, coverage[3][1]],
+                            [xcurr, coverage[0][1]]]
+                    masks.append(mask)
+                    mask = None
+                   
+                # either there is coverage, or we made a mask, 
+                # move to the end of this coverage
+                xcurr = coverage[1][0]
+            # last one
+            if xcurr != xend:
+                masks.append([[xcurr, float(y)], 
+                              [xend, float(y)], 
+                              [xend, float(y) - 1.0], 
+                              [xcurr, float(y-1)],
+                              [xcurr, float(y)]])
+        
+    return masks    
+        
+        
+        
+
 
 def write_geojson(rects):
     output_filename = sys.argv[2]
@@ -105,4 +166,4 @@ def check():
 if __name__ == '__main__':
     if check():
         rects = reduce_rects()
-        write_geojson(rects)
+        write_geojson(make_mask(rects))
