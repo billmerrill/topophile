@@ -15,6 +15,7 @@ def reduce_rects():
     
     sf = shapefile.Reader(input_filename)
     shapes = sf.shapes()
+    print "Starting with %s coverage areas." % len(shapes)
     points = []
     bands = {}
     for s in shapes:
@@ -70,7 +71,7 @@ def reduce_rects():
         if blob:
             output_rects.append(blob)
 
-    print "Ending with %s shapes." % len(output_rects) 
+    print "Merging coverage into %s areas." % len(output_rects) 
     return output_rects
     # with open('rectangles.json', 'wb') as of:
     #     json.dump(output_rects, of)
@@ -95,7 +96,6 @@ def make_mask(rects):
     ycurr = ystart
    
     for y in range(ystart, yend, -1):
-        print y
         ycurr = y
         mask = None
         if y not in bands:
@@ -104,12 +104,10 @@ def make_mask(rects):
                     [xend, float(y) - 1.0], 
                     [xstart, float(y-1)],
                     [xstart, float(y)]]
-            print mask
             masks.append(mask)
         else:
             xcurr = xstart
             for coverage in bands[float(y)]:    
-                print 'coverage', coverage
                 # if no coverage starting at curr, make a mask
                 if round(coverage[0][0]) != xcurr:
                     mask = [[xcurr, coverage[0][1]],
@@ -130,6 +128,7 @@ def make_mask(rects):
                               [xend, float(y) - 1.0], 
                               [xcurr, float(y-1)],
                               [xcurr, float(y)]])
+    print "Ending with %s no data mask areas." % (len(masks))
         
     return masks    
         
@@ -158,7 +157,7 @@ def write_geojson(rects):
 def check():
     if len(sys.argv) != 3:
         print sys.argv
-        print "Usage: %s input_shapefile.shp output_filename"
+        print "Usage: %s input_shapefile.shp output_filename.json"
         return False
     return True 
     
