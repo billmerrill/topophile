@@ -30,7 +30,8 @@ class BoundingBoxJob(object):
             bbox = self.ticket.inputs.bbox
             
             if self.app_config['ms_scaling']:
-                elevation_data = el_src.get_scaled_elevation(self.app_config, self.ticket.get_elevation_filepath(), 
+                elevation_data = el_src.get_scaled_elevation(self.app_config, 
+                                    self.ticket.get_elevation_filepath(), 
                                     bbox.north, bbox.west, bbox.south, bbox.east,
                                     self.ticket.get_elevation_dimensions())
             else:

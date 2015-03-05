@@ -18,6 +18,13 @@ def get_sphere_merc_bbox(nwlat, nwlon, selat, selon):
     # bbox = "%s,%s,%s,%s"% (nwlon, selat, selon, nwlat) #-90,38,-89,39
     bbox = "%s,%s,%s,%s"% (nw[0], se[1], se[0], nw[1]) #-90,38,-89,39
     return bbox
+    
+def get_rezs(bbox, dims):
+    bbox = [float(x) for x in bbox.split(',')]
+    rez = {}
+    rez['x'] = (bbox[2] - bbox[0])/float(dims['x'])
+    rez['y'] = (bbox[3] - bbox[1])/float(dims['y'])
+    return rez
 
 def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=False):
     # http://climb.local/cgi-bin/mapserv?FORMAT=image/tiff&REQUEST=GetCoverage&map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.0.0&coverage=gmted&CRS=epsg:4236&BBOX=-121.9870000,46.6867333,-121.5270000,47.0084000&RESX=0.002083&RESY=0.002083
@@ -39,18 +46,33 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
     # }
     if dimensions:
         bbox = get_sphere_merc_bbox(nwlat,nwlon, selat, selon)
-        srtm_params = {
-            'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
-            'SERVICE':  'WCS',
-            'VERSION':  '1.0.0',
-            'REQUEST':  'GetCoverage',
-            'coverage': 'srtmgl1',
-            'CRS':      'epsg:3857',
-            'BBOX':      bbox,
-            'WIDTH':     dimensions['x'],
-            'HEIGHT':    dimensions['y'],
-            'FORMAT':   'image/tiff'
-        }
+        rezs = get_rezs(bbox, dimensions)
+        # Get elevation data by resolution or dimension,
+        # turns out about the same
+        if True:
+            srtm_params = {
+                'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                'SERVICE':  'WCS',
+                'VERSION':  '1.0.0',
+                'REQUEST':  'GetCoverage',
+                'coverage': 'srtmgl1',
+                'CRS':      'epsg:3857',
+                'BBOX':      bbox,
+                'RESX':      rezs['x'],
+                'RESY':      rezs['y'],
+                'FORMAT':   'image/tiff' }
+        else:
+            srtm_params = {
+                'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                'SERVICE':  'WCS',
+                'VERSION':  '1.0.0',
+                'REQUEST':  'GetCoverage',
+                'coverage': 'srtmgl1',
+                'CRS':      'epsg:3857',
+                'BBOX':      bbox,
+                'WIDTH':     dimensions['x'],
+                'HEIGHT':    dimensions['y'],
+                'FORMAT':   'image/tiff' }
     else:
         bbox = "%s,%s,%s,%s"% (nwlon, selat, selon, nwlat) #-90,38,-89,39
         srtm_params = {
