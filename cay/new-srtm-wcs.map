@@ -70,6 +70,7 @@ MAP
             "init=epsg:4236"
         END
         
+        PROCESSING "OVERSAMPLE_RATIO=4.0"
         PROCESSING "RESAMPLE=BILINEAR"
 
         METADATA
