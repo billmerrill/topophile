@@ -21,7 +21,7 @@ class STLModelService(object):
                                 zmult=float(zfactor), 
                                 hollow=hollow, 
                                 resample=(not self.app_config['ms_scaling']))
-        if kwargs['width'] and kwargs['height']:
+        if 'width' in kwargs and 'height' in kwargs:
             ticket.set_elevation_dimensions(int(round(float(kwargs['width']))), 
                 int(round(float(kwargs['height']))))
             
