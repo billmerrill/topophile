@@ -24,6 +24,28 @@ TOPO.BUILD1.Map = (function() {
     /* used for enableMsScaling */
     getPixelPt = function(lat, lon) {
         return map.project(L.latLng(lat, lon));
+    },
+    
+    loadGeoJson = function() {
+        $.ajax({
+            type: 'GET',
+            url: "/assets/data-mask.json"
+        })
+        .done(function(data, status, ctx) {
+            L.geoJson(data, {
+                style: function (feature) {
+                    return { fill: true, fillColor: '#fff', color: '#fff',
+                             stroke: false, opacity: 0, fillOpacity:.5};
+                },
+                onEachFeature: function(feature, layer) {
+                    layer.bindPopup("No data, yet. ");
+                    return layer;
+                }
+            }).addTo(map);
+        })
+        .fail(function(data, status, ctx) {
+            console.log("geojson ajax failure");
+        })
     };
     
     
@@ -33,11 +55,21 @@ TOPO.BUILD1.Map = (function() {
             newBoundsCallback = newBoundsCb;
             clearedBoundsCallback = clearedBoundsCb
             
+            var imageUrl = '/assets/fakemask.png',
+                imageBounds = [[-50, -180], [60, 179]];
+
+            var noData = L.imageOverlay(imageUrl, imageBounds, {'opacity':.5});
+
+            loadGeoJson();
+            
             // Abu coords:   center: [ 34.5, 131.6 ],
             map = L.map(mapDisplayId, {
-              layers: MQ.hybridLayer(),
+              layers: MQ.hybridLayer(), 
               center: mapCenter, // mt rainier
-              zoom: 12 } );
+              zoom: 12,
+              minZoom: 2,
+              maxBounds: L.latLngBounds(L.latLng(-60, -180),
+                                        L.latLng(70, 180))} );
              
             var lfOptions = {'adjustButton': null,
                              'buttonPosition': 'topright'};
@@ -52,8 +84,13 @@ TOPO.BUILD1.Map = (function() {
             
             locationFilter.on("disabled", function(e) {
                 locationFilter.clearBounds();
-                clearedBoundsCallback();
+                if (clearedBoundsCallback) {
+                    clearedBoundsCallback();
+                }
             });
+
+
+
             
         },
         
