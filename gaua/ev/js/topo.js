@@ -11,5 +11,5 @@ $(document).ready( function() {
         if (e.target.tagName != "A") {
             $("#how-show").easytabs('select', $(e.target).find("a").attr("href"));
         }
-    })
+    });
 });
