@@ -518,10 +518,10 @@
 	}
 	
 	
-	#topo-walkthru-list li.active,  {
+	#topo-walkthru-list li.active  {
 		/*background: black;*/
 		
-		border-top: 1px dashed #D87B29 ;
+		border-top: 1px dashed #D87B29;
 		border-bottom: 1px dashed #D87B29;
 	}
 	
