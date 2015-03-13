@@ -312,12 +312,12 @@
 	
 	#logo {
 		position: absolute;
-		top: 50%;
+		top: 60%;
 	}
 
 		.homepage #logo
 		{
-			margin-top: 80px;
+			/*margin-top: 80px;*/
 			padding: 30px;
 			
 		}

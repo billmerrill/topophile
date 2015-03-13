@@ -869,6 +869,19 @@
 		right: 0px;
 	}
 	
+	#topo-title {
+		/*position: absolute;*/
+		/*top: 0;*/
+		/*left: 50%;*/
+		padding: 33px;	
+		width: 100%;
+		text-align: center;
+		text-transform: uppercase;
+		display: block;
+		font-weight: 700;
+		letter-spacing: 0.25em;
+		color: #282b34
+	}
 		
 /*********************************************************************************/
 /* Logo                                                                          */
