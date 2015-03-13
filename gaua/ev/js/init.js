@@ -37,7 +37,7 @@
 					side: 'top',
 					height: 44,
 					width: '100%',
-					html: '<span class="toggle" data-action="toggleLayer" data-args="navPanel"></span><span class="title" data-action="copyHTML" data-args="logo"></span>'
+					html: '<span class="title" data-action="copyHTML" data-args="logo"></span>'
 				}
 			}
 		}
@@ -77,12 +77,12 @@
 				$(':last-child').addClass('last-child');
 
 		// Dropdowns.
-			$('#nav > ul').dropotron({
+/*			$('#nav > ul').dropotron({
 				mode: 'fade',
 				noOpenerFade: true,
 				alignment: 'center',
 				detach: false
-			});
+			}); */
 
 	});
 

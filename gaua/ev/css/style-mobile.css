@@ -415,3 +415,12 @@
 				{
 					margin-top: 0;
 				}
+				
+				
+#topo-how-list li {
+	padding: 0px;
+	margin: 0px;
+	font-size: 10px;
+	
+	color: #00f;
+}
