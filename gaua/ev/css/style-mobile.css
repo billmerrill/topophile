@@ -19,7 +19,7 @@
 	{
 		font-size: 1.2em;
 		letter-spacing: 0.05em;
-		margin: 0 0 1em 0;
+		margin: .5em 0 .5em 0;
 	}
 
 	hr
@@ -54,7 +54,7 @@
 				{
 					font-size: 1.5em;
 					letter-spacing: 0.075em;
-					line-height: 1.25em;
+					line-height: 1.75em;
 				}
 				
 				header.style1 p
@@ -281,7 +281,7 @@
 
 	#header-wrapper
 	{
-		padding: 6em 2em 6em 2em;
+		padding: 10em 2em 2em 2em;
 	}
 
 	#footer-wrapper
@@ -306,6 +306,11 @@
 /*********************************************************************************/
 /* Logo                                                                          */
 /*********************************************************************************/
+
+	.homepage #logo {
+		padding: 10px;
+		
+	}
 
 	#logo
 	{
@@ -420,7 +425,7 @@
 #topo-how-list li {
 	padding: 0px;
 	margin: 0px;
-	font-size: 10px;
+	font-size: 14px;
 	
 	color: #00f;
 }

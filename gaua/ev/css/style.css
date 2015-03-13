@@ -353,13 +353,16 @@
 			-ms-transition: all .25s ease-in-out;
 			transition: all .25s ease-in-out;
 		}
+		
+
 
 			input[type="button"].style1,
 			input[type="submit"].style1,
 			input[type="reset"].style1,
 			.button.style1
 			{
-				background: #e97770 url('images/overlay.png');
+				background: #D87B29
+ url('images/overlay.png');
 				color: #fff;
 			}
 
@@ -368,7 +371,8 @@
 				input[type="reset"].style1:hover,
 				.button.style1:hover
 				{
-					background-color: #f98780;
+					background-color: #D87B29
+;
 				}
 				
 				input[type="button"].style1:active,
@@ -376,7 +380,7 @@
 				input[type="reset"].style1:active,
 				.button.style1:active
 				{
-					background-color: #d96760;
+					background-color: #8F4300;
 				}
 
 			input[type="button"].style2,
@@ -496,28 +500,29 @@
 			
 			
 	/* Topo Works Feature List */
-	
+
 	#topo-how-list a{
 		color: inherit;
 		text-decoration: none;
 	}			
 	
 	#topo-how-list li {
-		color: #e97770 !important;
+		color: #D87B29 !important;
 		font-size: 20px; 
 		line-height: 30px;
 		font-weight: bold;
 		padding: 9px 10px;
 		border-top: 1px solid #fff;
 		border-bottom: 1px solid #fff;
+		width: 400px;
 	}
 	
 	
 	#topo-how-list li.active {
 		/*background: black;*/
 		
-		border-top: 1px dashed rgb(217, 103, 96);
-		border-bottom: 1px dashed rgb(217, 103, 96);
+		border-top: 1px dashed #D87B29 ;
+		border-bottom: 1px dashed #D87B29;
 	}
 	
 	#topo-how-list li:hover {
@@ -551,7 +556,8 @@
 
 			.feature-list li 
 			{
-				color: #e97770 !important;
+				color: #D87B29
+ !important;
 			}
 			
 				.feature-list h3:before
@@ -638,14 +644,16 @@
 
 		.wrapper.style1
 		{
-			background: #e97770 url('images/overlay.png');
+			background: #D87B29
+ url('images/overlay.png');
 			color: #eee;
 			color: rgba(255,255,255,0.75);
 		}
 		
 			.wrapper.style1 .title
 			{
-				background: #e97770 url('images/overlay.png');
+				background: #D87B29
+ url('images/overlay.png');
 				color: #fff;
 			}
 		
@@ -693,7 +701,7 @@
 	{
 		background: url('../assets/rainier.jpg') center center;
 		background-size: cover;
-		background-position: 0% 30%;
+		background-position: 0% 50%;
 	}
 	
 		#header-wrapper:before
@@ -779,7 +787,7 @@
 			#footer-wrapper input[type="reset"].style2:active,
 			#footer-wrapper .button.style2:active
 			{
-				box-shadow: inset 0px 0px 2px 0px rgba(255,255,255,0.75);
+				bo#D87B29x-shadow: inset 0px 0px 2px 0px rgba(255,255,255,0.75);
 			}
 
 		#footer-wrapper .title
@@ -836,6 +844,31 @@
 	#team-caption {
 		padding: 10px;
 	}
+	
+	.how-bullet {
+		color: rgb(177, 180, 185);
+		font-weight: normal;
+		margin-right: .7em;
+
+
+	}
+	
+	#topo-intro {
+		/*width: 33em;*/
+		padding-left: 65px;
+		padding-right: 65px;
+		color: #282b34;
+		margin: 0px auto;
+		/*line-height: 1.4em; */
+		font-weight: 400;
+	}
+	
+	#trybutton {
+		position: relative;
+		display: block;
+		right: 0px;
+	}
+	
 		
 /*********************************************************************************/
 /* Logo                                                                          */
@@ -844,7 +877,8 @@
 	#logo
 	{
 			background-color: #aaa;
-			background-color: rgba(180,180,180,0.5);
+			/*background-color: rgba(180,180,180,0.5);*/
+			background-color: rgba(180,180,180,0.75);
 			text-align: left;
 			margin: 20px;
 	}
@@ -860,7 +894,14 @@
 		{
 			color: #000;
 			/*color: rgba(255,255,255,0.5);*/
-			text-transform: uppercase;
+			/*text-transform: uppercase;*/
+			/*font-size: 20px;*/
+			font-weight: bold;
+		}
+		
+		#logo a {
+			/*font-weight: bold;*/
+			/*color: #D87B29*/
 		}
 
 /*********************************************************************************/
@@ -908,7 +949,8 @@
 		
 			#highlights .highlight h3
 			{
-				color: #e97770;
+				color: #D87B29
+;
 			}
 
 /*********************************************************************************/
