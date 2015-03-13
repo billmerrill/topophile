@@ -518,14 +518,14 @@
 	}
 	
 	
-	#topo-how-list li.active {
+	#topo-how-list li.active,  {
 		/*background: black;*/
 		
 		border-top: 1px dashed #D87B29 ;
 		border-bottom: 1px dashed #D87B29;
 	}
 	
-	#topo-how-list li:hover {
+	#topo-how-list li:hover a, #topo-how-list li	 a:focus {
 		text-decoration: underline;
 	}
 	
@@ -867,6 +867,16 @@
 		position: relative;
 		display: block;
 		right: 0px;
+	}
+	
+	#makeone:hover, #makeone:active, #makeone:focus{
+		text-decoration: underline;
+		background-color: #8F4300;
+	}
+	
+	#startbuilding:hover, #startbuilding:active, #startbuilding:focus{
+		text-decoration: underline;
+		background-color: #8F4300;
 	}
 	
 	#topo-title {
