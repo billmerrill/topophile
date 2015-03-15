@@ -1,8 +1,9 @@
 topophile
 =========
-- abu: js app
+- abu: prototype js app
 - bam: model service
-- cay: elevation service
-- dana: shapeways service
+- cay: mapserver configuration
+- dana: shapeways tools
 - ebeko: one page user app
-- fayal: goe/map tools
+- fayal: gis/map tools - no data mask
+- gaua: landing page
