@@ -16,9 +16,10 @@ class ModelPricing(object):
         def topo_pricing(size, sw_pricing):
             sw_error_correction = 1.8
             topo_pricing = {}
+            markup = pricer.get_model_service_markup()
             for i in sw_pricing:
-                print 'PRICED: sw: ', sw_pricing[i], ' errcor: ', sw_error_correction, ' markup: ', pricer.get_markup_by_size(size) 
-                topo_pricing[i] = sw_pricing[i] * sw_error_correction + pricer.get_markup_by_size(size)
+                print 'PRICED: sw: ', sw_pricing[i], ' errcor: ', sw_error_correction, ' markup: ', markup 
+                topo_pricing[i] = sw_pricing[i] * sw_error_correction + markup
                 
             return topo_pricing
             
