@@ -253,6 +253,9 @@ class Mesh(GridShape):
 
     def get_high_z(self):
         return np.max(self.mesh[:,:,PZ])
+        
+    def get_features_height(self):
+        return self.get_high_z() - self.get_low_z()
     
     def rest_z_at_zero(self):
         self.mesh = np.subtract(self.mesh, [0,0,self.get_low_z()])
