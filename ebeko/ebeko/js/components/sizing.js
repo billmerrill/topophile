@@ -8,9 +8,7 @@ TOPO.BUILD1.Sizing = (function(){
                      'medium': 100,
                      'large': 200,
                      'custom': 250},
-        modelScaleMMisM = {'x_model_mm_is_m': 0,
-                       'y_model_mm_is_m': 0,
-                       'z_model_mm_is_m': 0},
+        modelScaleMMisM = [0,0,0],
         modelZExag = 1,
                        
         changePresetSize = function(newPreset) {
@@ -63,17 +61,17 @@ TOPO.BUILD1.Sizing = (function(){
         },
         
         makeDisplayScale = function(meters_to_mm) {
-            var meters_per_cm = (meters_to_mm * 10.0).toFixed(1);
-            var yards_per_inch = (meters_to_mm * 25.4 * 1.0936 ).toFixed(1);
-            return '<span class="size-cm">1 cm : '+ formatMeters(meters_per_cm) +
-                '</span><span class="size-in">1 in : ' + formatYards(yards_per_inch) +
+            var meters_per_cm = meters_to_mm * 10.0;
+            var yards_per_inch = meters_to_mm * 25.4 * 1.0936;
+            return '<span class="size-cm">1 cm = '+ formatMeters(meters_per_cm) +
+                '</span><span class="size-in">1 in = ' + formatYards(yards_per_inch) +
                 '<span>';
         },
         
         setScales = function(data) {
-            modelScaleMMisM = [data['x_mm_is_m'],
-                               data['y_mm_is_m'],
-                               data['z_mm_is_m']];
+            modelScaleMMisM = [Number(data['x_mm_is_m']),
+                               Number(data['y_mm_is_m']),
+                               Number(data['z_mm_is_m'])];
         },
         
         updateDisplay =  function() {
