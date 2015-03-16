@@ -60,10 +60,11 @@ class PreviewTerrainModel(Model):
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': top.get_high_z() - top.get_low_z(),
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
-        desc['x-mm-is-m'] = real_world_specs[PX] / desc['x-size-mm']
-        desc['y-mm-is-m'] = real_world_specs[PY] / desc['y-size-mm']
-        desc['z-mm-is-m'] = real_world_specs[PZ] / top.get_features_height()
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
 
         
         self._write_model_metadata(desc)
@@ -118,10 +119,11 @@ class SolidElevationModel(Model):
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich), 
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
-        desc['x-mm-is-m'] = real_world_specs[PX] / desc['x-size-mm']
-        desc['y-mm-is-m'] = real_world_specs[PY] / desc['y-size-mm']
-        desc['z-mm-is-m'] = real_world_specs[PZ] / top.get_features_height()
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
         
         self._write_model_metadata(desc)
                 
@@ -226,10 +228,11 @@ class HollowElevationModel(Model):
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich),
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
-        desc['x-mm-is-m'] = real_world_specs[PX] / desc['x-size-mm']
-        desc['y-mm-is-m'] = real_world_specs[PY] / desc['y-size-mm']
-        desc['z-mm-is-m'] = real_world_specs[PZ] / top.get_features_height()
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
         self._write_model_metadata(desc)
         
         elevation.close_dataset()

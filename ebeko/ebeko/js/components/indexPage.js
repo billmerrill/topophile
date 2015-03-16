@@ -88,7 +88,8 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         newModelHandler = function(modelData) {
-            sizing.setSize(modelData['x-size-mm'], modelData['y-size-mm'], modelData['z-size-mm']);
+            // sizing.setSize(modelData['x-size-mm'], modelData['y-size-mm'], modelData['z-size-mm']);
+            sizing.setNewModel(modelData)
             pricing.updatePrice(modelData['model_id']);
             currentModelId = modelData['model_id'];
             uploadButtonState(UPLOAD_ABLE);
@@ -116,7 +117,9 @@ TOPO.BUILD1.indexPage = (function() {
             geocoder.init(map.showSearchResult, "gc-search", "gc-search-button");
             exaggerater.init(newExagHandler, TOPO.BUILD1.getConfig('elExaggerate'), 'exag', 'height-factor', 'zfactor');
             pricing.init('white_plastic_price');
-            sizing.init(presetChangeHandler, '#x', '#y', '#z', '#small-size-preset',
+            sizing.init(presetChangeHandler, '#x', '#y', '#z',
+                        '#scale-xy', '#scale-z',
+                        '#small-size-preset',
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                         '#toggle-size-comparison');
             printer.init(printCompleteHandler);
