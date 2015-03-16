@@ -26,7 +26,9 @@ class ShapewaysService(object):
             'acceptTermsAndConditions': 1,
             'isPrivate': 1,
             'isForSale': 1,
-            'materials': {'6': {'isActive': 1, 'markup': 900.09, 'materialId': '6'}}}
+            'materials': {'6': {'isActive': 1, 
+                                'markup': model_pricing.get_model_service_markup(), 
+                                'materialId': '6'}}}
                        
         if include_file: 
             model_file = os.path.join(self.config['model_dir'], model)
@@ -42,7 +44,7 @@ class ShapewaysService(object):
             return False
     
         sw_markup = swdata['materials']['6']['markup']
-        tp_markup = model_pricing.get_markup_by_size(model_data['size'])
+        tp_markup = model_pricing.get_model_service_markup()
         if sw_markup != tp_markup:
             msg = self.build_model_message(tpid, include_file=False)
             msg['materials']['6']['markup'] = tp_markup
@@ -88,9 +90,11 @@ class ShapewaysService(object):
         active = model['materials']['6']['isActive'] == 1
         response = {'url': model['urls']['privateProductUrl']['address']}
         response['ready'] = printable and active
-        if response['ready']:
-            print "UPDATING PRICE"
-            response['ready'] = response['ready'] and self.set_price(swid, tpid, model)
+       
+        # setting a fixed markup - reenable if doing a percentage
+        # if response['ready']:
+        #    print "UPDATING PRICE"
+        #    response['ready'] = response['ready'] and self.set_price(swid, tpid, model)
         
         cherrypy.response.headers['Content-Type'] = "application/json"
         return json.dumps(response)

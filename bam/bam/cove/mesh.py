@@ -274,11 +274,6 @@ class Mesh(GridShape):
         self.ysize = len(src)
         self.xsize = len(src[0])
         
-    def scale_to_output_size(self, max_output_size):
-        input_max_data_size = max(self.get_data_x_size(), self.get_data_y_size())
-        output_ratio = max_output_size / input_max_data_size
-        self.transform([output_ratio, output_ratio, output_ratio], [0,0,0])
-     
     def finalize_form(self, max_output_size, min_elevation, z_factor):
         largest_data_dim = max(self.get_data_x_size(), self.get_data_y_size())     
         ratio = max_output_size / largest_data_dim
