@@ -2,10 +2,12 @@ import base64
 import datetime
 import json
 import os
+import traceback
 import cherrypy
 import shapeways_printer as printer
 import model_metadata as modelmd
 import model_pricing
+import model_serial
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
@@ -20,7 +22,16 @@ class ShapewaysService(object):
   
     def build_model_message(self, model, include_file = True):
         dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        m = {'fileName': 'Your New Model %s.stl' % dt_str,
+        sn = "5991"
+        try:
+            sn = model_serial.new_serial_number(self.config['serial_store'])
+        except Exception:
+                cherrypy.log("Serial Number Failure")
+                cherrypy.log(traceback.format_exc)
+                sn = "5991"
+
+            
+        m = {'fileName': 'Topophile Model #%s.stl' % sn,
             'description': 'Created on %s' % dt_str,
             'hasRightsToModel': 1,
             'acceptTermsAndConditions': 1,
