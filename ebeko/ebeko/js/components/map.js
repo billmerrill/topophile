@@ -99,7 +99,7 @@ TOPO.BUILD1.Map = (function() {
             if (data.length > 0) {
                 locationFilter.disable();
                 var latlng = L.latLng(data[0]['lat'], data[0]['lon']);
-                map.setView(latlng, 10);
+                map.setView(latlng, 13);
             } else {
                 alert("No place found.");
             }
