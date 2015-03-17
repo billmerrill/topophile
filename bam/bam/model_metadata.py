@@ -11,3 +11,8 @@ def get_model_metadata(model_dir, tpid):
         
     return model_data
 
+
+def write_model_metadata(dest, data):
+    jf = open(dest, 'wb')
+    json.dump(data,jf)
+    jf.close()

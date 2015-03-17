@@ -4,30 +4,34 @@ from stl_canvas import STLCanvas
 from builder import Builder
 from elevation import Elevation
 from indicies import *
+import numpy as np
 
 #TODO Organize model more, pull meta work into base class
 class Model(object):
-    
     def __init__(self, config):
         self.builder = Builder(config)
+        
+    def _get_real_world_specs(self, terrain):
+        x_meters = terrain[0][-1][PX] - terrain[0][0][PX]
+        y_meters = abs(terrain[-1][0][PY] - terrain[0][0][PY])
+        z_low_meters = np.min(terrain[:,:,PZ])
+        z_high_meters = np.max(terrain[:,:,PZ])
+        return [x_meters, y_meters, z_high_meters - z_low_meters]
+    
 
 class PreviewTerrainModel(Model):
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-            
+        
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
         if self.builder.get_resample_elevation():
-            print "%%%%%%%%resampling the elevation data"
             elevation_data = elevation.get_meters_ndarray()
         else:
-            print "%%%%%%%%letting mapserver do all the work"
             elevation_data = elevation.get_raw_meters()
+        
+        
+        real_world_specs = self._get_real_world_specs(elevation_data)
         
         top = Mesh()
         top.load_matrix(elevation_data) 
@@ -46,15 +50,16 @@ class PreviewTerrainModel(Model):
         model_area = canvas.compute_area()
         model_volume = 0
        
-        desc = {'filename': self.builder.get_output_file_name(),
-                'x-size-mm': top.get_data_x_size(),
+        desc = {'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': top.get_high_z() - top.get_low_z(),
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
         
-        self._write_model_metadata(desc)
-                
         elevation.close_dataset()
         
         return desc
@@ -67,17 +72,13 @@ class SolidElevationModel(Model):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
     
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-            
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
         elevation_data = elevation.get_meters_ndarray()
+        
+        real_world_specs = self._get_real_world_specs(elevation_data)
         
         top = Mesh()
         top.load_matrix(elevation_data) 
@@ -97,16 +98,17 @@ class SolidElevationModel(Model):
         
         canvas.write_stl(self.builder.get_output_file_name())
         
-        desc = {'filename': self.builder.get_output_file_name(),
-                'size': self.builder.get_physical_max(),
+        desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich), 
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
         
-        self._write_model_metadata(desc)
-                
         elevation.close_dataset()
         
         return desc
@@ -117,12 +119,6 @@ class HollowElevationModel(Model):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
     
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-
     def _compute_volume(self, outer, inner=None):
         volume = outer.compute_approx_volume('avg')
         if inner:
@@ -136,13 +132,14 @@ class HollowElevationModel(Model):
             volume = volume - inner.compute_volume()
             
         return volume
-
+        
     def build_stl(self):
         print "STARTING HOLLOW MODEL", self.builder
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
         elevation_data = elevation.get_meters_ndarray()
+        real_world_specs = self._get_real_world_specs(elevation_data)
         
         top = Mesh()
         top.load_matrix(elevation_data) 
@@ -182,7 +179,7 @@ class HollowElevationModel(Model):
             inner_sandwich = MeshSandwich(interior_ceiling, interior_floor, invert_normals=True)
             
         max_cube = (top.get_data_x_size(), top.get_data_y_size(), top.get_high_z())
-        print("Physical Size: %s x %s x %s" % max_cube)
+        # print("Physical Size: %s x %s x %s" % max_cube)
         
         canvas = STLCanvas()
         canvas.add_shape(sandwich)
@@ -200,16 +197,18 @@ class HollowElevationModel(Model):
         
         print("Starting tapeout")
         canvas.write_stl(self.builder.get_output_file_name())
-        # 
-        desc = {'filename': self.builder.get_output_file_name(),
-                'size': self.builder.get_physical_max(),
+        
+        desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich),
                 'area-mm2':  model_area,
-                'volume-mm3': model_volume}
-        self._write_model_metadata(desc)
-                
+                'volume-mm3': model_volume,
+                'z-exagg': self.builder.get_z_factor()}
+        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
+        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
+        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
+        
         elevation.close_dataset()
         
         return desc

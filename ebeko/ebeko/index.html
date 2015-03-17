@@ -161,7 +161,7 @@
                         </div>
                     </div>
                 </div>
-                <canvas id="model-canvas" width="825" height="400"></canvas>
+                <canvas id="model-canvas" width="825" height="500"></canvas>
             </div>
         </div>
     
@@ -197,6 +197,23 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="control-label">Model Scales</div>
+                <table id="scale-table">
+                    <tbody>
+                    <tr>
+                        <td style="width: 6em;">Horizontal:</td>
+                        <td><span id="scale-xy"><span class="size-cm">1 cm : ☃ m</span><span class="size-in">1 in : ☃ yd</span></span></td>
+                    </tr>
+                    <tr>
+                        <td>Vertical:</td>
+                        <td><span id="scale-z"><span class="size-cm">1 cm : ♫ m</span><span class="size-in">1 in : ♫ yd</span></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+                    
+                
                
 
                 
@@ -206,10 +223,12 @@
                 <span class="control-label">Price Guess: ~</span><span id="white_plastic_price">☘☼?</span>
                 </div>
             </li>
-            </ul>
+            <li>
                 <button type="button" class="btn btn-default btn-md " id="print-model">
                     Upload Model <span class="glyphicon glyphicon-menu-down"></span>
                 </button>
+            </li>
+            </ul>
             
         </div>
     </div>

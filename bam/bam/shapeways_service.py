@@ -16,11 +16,66 @@ class ShapewaysService(object):
         self.lookup = TemplateLookup(directories=['html'])
         self.config = config
 
+
     def render(self, template, params = {}):
         tmpl = self.lookup.get_template(template)
         return tmpl.render(**params)
+
+
+    def _format_scale(self, meters_per_mm):
+        # per cm
+        value = meters_per_mm * 10.0 
+        unit = 'm'
+        if value > 1500:
+            unit = 'km'
+            value = value / 1000.0
+           
+        value = round(value, 3)
+        return "1 cm = %s %s" % (value, unit)
+            
+ 
+    def _build_description(self, model_data):
+        center_lat = (model_data.get('nlat', 0) + model_data.get('slat', 0)) / 2.0
+        center_lon = (model_data.get('elon', 0) + model_data.get('wlon', 0)) / 2.0
+        
+        desc_values = {
+        'serial_number': model_data.get('sn', "42"),
+        'born_on': datetime.datetime.now().strftime("%d %B %Y"),
+        'topo_url': model_data.get('topo_url', 'http://topophile.com'),
+        'latitude': round(center_lat, 4),
+        'longitude': round(center_lon, 4),
+        'exag': model_data.get('z-exagg', "1"),
+        'h_scale': self._format_scale(model_data.get('x_mm_is_m', "unknown")),
+        'v_scale': self._format_scale(model_data.get('z_mm_is_m', "unknown"))}
+        
+        return '''
+<h3>Topophile Model #%(serial_number)s</h3>
+Created on %(born_on)s<br>
+<a href="%(topo_url)s">%(topo_url)s</a><br>
+<br>
+<table style="width: 30em;">
+<tbody>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Geographic Center</td>
+    <td>%(latitude)s N, %(longitude)s E</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Horizontal Scale</td>
+    <td>%(h_scale)s</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Vertical Scale</td>
+    <td>%(v_scale)s</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Elevation Exaggeration</td>
+    <td>%(exag)s x</td> 
+</tr>
+</tbody>
+</table>''' % (desc_values)
+        
   
-    def build_model_message(self, model, include_file = True):
+    def build_model_message(self, model_data, include_file = True):
         dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         sn = "5991"
         try:
@@ -30,9 +85,11 @@ class ShapewaysService(object):
                 cherrypy.log(traceback.format_exc)
                 sn = "5991"
 
+        model_data['sn'] = sn
+        desc = self._build_description(model_data)
             
         m = {'fileName': 'Topophile Model #%s.stl' % sn,
-            'description': 'Created on %s' % dt_str,
+            'description': desc,
             'hasRightsToModel': 1,
             'acceptTermsAndConditions': 1,
             'isPrivate': 1,
@@ -42,44 +99,27 @@ class ShapewaysService(object):
                                 'materialId': '6'}}}
                        
         if include_file: 
-            model_file = os.path.join(self.config['model_dir'], model)
+            model_file = os.path.join(self.config['model_dir'], model_data['model_id']) + '.stl'
             with open(model_file, 'rb') as f:
                 m['file'] = base64.b64encode(f.read())
             
         return m
         
-    def set_price(self, swid, tpid, swdata):
-        success = True
-        model_data = modelmd.get_model_metadata(self.config['model_dir'], tpid)
-        if not model_data:
-            return False
-    
-        sw_markup = swdata['materials']['6']['markup']
-        tp_markup = model_pricing.get_model_service_markup()
-        if sw_markup != tp_markup:
-            msg = self.build_model_message(tpid, include_file=False)
-            msg['materials']['6']['markup'] = tp_markup
-            
-            client = printer.new_shapeways_client()
-            response = client.update_model_info(swid, msg)
-       
-        return success
-    
+ 
     @cherrypy.expose
     def upload(self, model_id):
-        model = model_id + ".stl"
+        model_data = modelmd.get_model_metadata(self.config['model_dir'], model_id)
+        
         client = printer.new_shapeways_client()
-        # m = self.build_model_message(model)
-        # del(m['file'])
-        # pprint.pprint(m)
-        response = client.add_model(self.build_model_message(model))
+        response = client.add_model(self.build_model_message(model_data))
         cherrypy.response.headers['Content-Type'] = "application/json"
         return json.dumps(response)
       
     @cherrypy.expose    
-    def upload_to_store(self, model):
+    def upload_to_store(self, model_id):
+        model_data = modelmd.get_model_metadata(self.config['model_dir'], model_id)
         client = printer.new_shapeways_client()
-        response = client.add_model(self.build_model_message(model))
+        response = client.add_model(self.build_model_message(model_data))
         return self.render("buy.html", {'modelUrl': response['urls']['privateProductUrl']['address'],
                                         'modelId': response['modelId']})
        

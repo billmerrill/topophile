@@ -55,6 +55,7 @@ TOPO.BUILD1.Terrain = (function() {
             })
             .fail(function(data, stats, error) {
                 alert("Sorry, I couldn't build a model.")
+                boundsBuffer.completed();
             })
             .always(function(data) {
                 hideBusy();

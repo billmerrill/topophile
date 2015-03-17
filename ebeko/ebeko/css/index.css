@@ -30,7 +30,7 @@ body {
 /* page structure */
 
 #model-section {
-    height: 400px;
+    height: 500px;
 }
 
 
@@ -148,6 +148,11 @@ div#model-controls .control-label {
     font-size: 16px;
     margin: .5em;
 }
+
+#scale-table {
+    font-size: 14px;
+}
+
 
 /* section three */
 .state_disc {
