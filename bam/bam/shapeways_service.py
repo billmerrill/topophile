@@ -29,7 +29,8 @@ class ShapewaysService(object):
         if value > 1500:
             unit = 'km'
             value = value / 1000.0
-            
+           
+        value = round(value, 3)
         return "1 cm = %s %s" % (value, unit)
             
  
@@ -39,23 +40,39 @@ class ShapewaysService(object):
         
         desc_values = {
         'serial_number': model_data.get('sn', "42"),
-        'born_on': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        'born_on': datetime.datetime.now().strftime("%d %B %Y"),
         'topo_url': model_data.get('topo_url', 'http://topophile.com'),
-        'latitude': center_lat,
-        'longitude': center_lon,
+        'latitude': round(center_lat, 4),
+        'longitude': round(center_lon, 4),
         'exag': model_data.get('z-exagg', "1"),
         'h_scale': self._format_scale(model_data.get('x_mm_is_m', "unknown")),
         'v_scale': self._format_scale(model_data.get('z_mm_is_m', "unknown"))}
         
         return '''
-Topophile Model #%(serial_number)s<br>
+<h3>Topophile Model #%(serial_number)s</h3>
 Created on %(born_on)s<br>
-%(topo_url)s<br>
+<a href="%(topo_url)s">%(topo_url)s</a><br>
 <br>
-Model centered at %(latitude)s, %(longitude)s<br>
-Elevation is exaggerated by %(exag)s<br>
-Horizontal scale is %(h_scale)s<br>
-Vertical Features scale is %(v_scale)s''' % (desc_values)
+<table style="width: 30em;">
+<tbody>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Geographic Center</td>
+    <td>%(latitude)s N, %(longitude)s E</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Horizontal Scale</td>
+    <td>%(h_scale)s</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Vertical Scale</td>
+    <td>%(v_scale)s</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Elevation Exaggeration</td>
+    <td>%(exag)s x</td> 
+</tr>
+</tbody>
+</table>''' % (desc_values)
         
   
     def build_model_message(self, model_data, include_file = True):
