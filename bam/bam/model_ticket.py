@@ -90,3 +90,6 @@ class BBoxModelTicket(object):
     def get_elevation_dimensions(self):
         return {'x': self.inputs.elevation_width,
                 'y': self.inputs.elevation_height}
+    
+    def get_bbox(self):
+        return self.inputs.bbox

@@ -16,21 +16,36 @@ class ShapewaysService(object):
         self.lookup = TemplateLookup(directories=['html'])
         self.config = config
 
+
     def render(self, template, params = {}):
         tmpl = self.lookup.get_template(template)
         return tmpl.render(**params)
-  
+
+
+    def _format_scale(self, meters_per_mm):
+        # per cm
+        value = meters_per_mm * 10.0 
+        unit = 'm'
+        if value > 1500:
+            unit = 'km'
+            value = value / 1000.0
+            
+        return "1 cm = %s %s" % (value, unit)
+            
  
     def _build_description(self, model_data):
+        center_lat = (model_data.get('nlat', 0) + model_data.get('slat', 0)) / 2.0
+        center_lon = (model_data.get('elon', 0) + model_data.get('wlon', 0)) / 2.0
+        
         desc_values = {
         'serial_number': model_data.get('sn', "42"),
         'born_on': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         'topo_url': model_data.get('topo_url', 'http://topophile.com'),
-        'latitude': model_data.get('center_lat', "0"),
-        'longitude': model_data.get('center_lon', "0"),
-        'exag': model_data.get('z_exag', "1"),
-        'h_scale': model_data.get('h_scale', "unknown"),
-        'v_scale': model_data.get('vscale', "unknown")}
+        'latitude': center_lat,
+        'longitude': center_lon,
+        'exag': model_data.get('z-exagg', "1"),
+        'h_scale': self._format_scale(model_data.get('x_mm_is_m', "unknown")),
+        'v_scale': self._format_scale(model_data.get('z_mm_is_m', "unknown"))}
         
         return '''
 Topophile Model #%(serial_number)s<br>

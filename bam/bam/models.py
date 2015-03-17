@@ -29,9 +29,10 @@ class STLModelService(object):
         model = gig.run()
         if model is None:
             return "GB Error"
-        model['url'] = "http://127.0.0.1:9999/" + os.path.split(model['filename'])[1]
-        model['model_id'] = os.path.splitext(os.path.split(model['filename'])[1])[0]
-        del(model['filename'])
+            
+        model_id = ticket.get_model_name()
+        model['url'] = "http://127.0.0.1:9999/" + model_id + ".stl"
+        model['model_id'] = model_id
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):

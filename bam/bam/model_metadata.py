@@ -11,3 +11,9 @@ def get_model_metadata(model_dir, tpid):
         
     return model_data
 
+
+def write_model_metadata(m):
+    data_filename = m['filename'].replace('stl', 'json')
+    jf = open(data_filename, 'wb')
+    json.dump(m,jf)
+    jf.close()

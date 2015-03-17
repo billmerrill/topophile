@@ -47,13 +47,13 @@ class BoundingBoxJob(object):
         
         # self.ticket.set_elevation_filename(elevation_data['filename'])
             
-        model_filename = self.build_model()
+        model_data = self.build_model()
         
         t3 = time.time()
         # cherrypy.log("-Job: %s %s,%s-%s,%s" % (self.ticket.inputs.style, self.inputs.nwlat, self.nwlon, self.selat, self.selon))
         cherrypy.log("-Elevation Data:\t%s" % (t2-t1))
         cherrypy.log("-Model Build:\t%s" % (t3-t2))
-        return model_filename 
+        return model_data 
         
     def build_model(self):
         self.ticket.set_model_filepaths(self.app_config['model_dir'], ".stl")
@@ -75,6 +75,11 @@ class BoundingBoxJob(object):
                     model = cove.model.SolidElevationModel(model_config)
                 
             model_data = model.build_stl()
+            bbox = self.ticket.get_bbox()
+            model_data['nlat'] = bbox.north
+            model_data['slat'] = bbox.south
+            model_data['elon'] = bbox.east
+            model_data['wlon'] = bbox.west
         else:
             cherrypy.log("Model Cached!")
             with open(self.ticket.get_model_metadata_filepath()) as mjf:
