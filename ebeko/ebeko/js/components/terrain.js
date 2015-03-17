@@ -80,14 +80,11 @@ TOPO.BUILD1.Terrain = (function() {
         zoomIn = function() {
             viewer.zoomFactor *= 1.3;
             viewer.update();
-
-            console.log("zoom in");
         },
         
         zoomOut = function() {
             viewer.zoomFactor /= 1.3;
             viewer.update();
-            console.log("zoom out");
         },
        
         // a singleton to limit calls for terrain previews

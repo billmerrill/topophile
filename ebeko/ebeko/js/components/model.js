@@ -45,8 +45,17 @@ TOPO.BUILD1.Model = (function() {
             viewer.setParameter('InitRotationX',     '-80');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('CreaseAngle',       '25');
+            
+            viewer.mouseWheelHandler = function(e){return;};
             viewer.init();
             viewer.update();
+            
+            $('#model-zoomin').click(function(){
+                zoomIn();
+            });
+            $('#model-zoomout').click(function(){
+                zoomOut();
+            });
         },
         
         toggleSizeReference = function() {
@@ -116,8 +125,18 @@ TOPO.BUILD1.Model = (function() {
         resetScene = function() {
             viewer.resetScene();
             viewer.update();
-        } ,
+        },
+                
+        zoomIn = function() {
+            viewer.zoomFactor *= 1.3;
+            viewer.update();
+        },
         
+        zoomOut = function() {
+            viewer.zoomFactor /= 1.3;
+            viewer.update();
+        },
+       
         initReferences = function() {
             $('#compare-dollar').click(function(e) {
                 toggleComparison(COMPARE_DOLLAR);
