@@ -20,12 +20,7 @@ class Model(object):
     
 
 class PreviewTerrainModel(Model):
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-            
+        
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
@@ -65,10 +60,7 @@ class PreviewTerrainModel(Model):
         desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
         desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
         desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
-
         
-        self._write_model_metadata(desc)
-                
         elevation.close_dataset()
         
         return desc
@@ -81,12 +73,6 @@ class SolidElevationModel(Model):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
     
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-            
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
@@ -125,8 +111,6 @@ class SolidElevationModel(Model):
         desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
         desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
         
-        self._write_model_metadata(desc)
-                
         elevation.close_dataset()
         
         return desc
@@ -137,12 +121,6 @@ class HollowElevationModel(Model):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
     
-    def _write_model_metadata(self, m):
-        data_filename = m['filename'].replace('stl', 'json')
-        jf = open(data_filename, 'wb')
-        json.dump(m,jf)
-        jf.close()
-
     def _compute_volume(self, outer, inner=None):
         volume = outer.compute_approx_volume('avg')
         if inner:
@@ -233,8 +211,7 @@ class HollowElevationModel(Model):
         desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
         desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
         desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
-        self._write_model_metadata(desc)
-        
+    
         elevation.close_dataset()
         
         return desc
