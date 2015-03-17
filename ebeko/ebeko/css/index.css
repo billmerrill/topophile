@@ -60,6 +60,11 @@ body {
     width: 100%;
 }
 
+/* override lf */
+div.location-filter.button-container{
+    padding-top: 0px;
+}
+
 #terrain-progress, #model-progress {
     width: 550px;
     height: 400px;
@@ -89,6 +94,27 @@ body {
     margin: 10px;
     right: 0px;
     box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+
+.topo-3d-zoom {
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+
+.topo-3d-zoom button {
+    font-family: 'Lucida Console', Monaco, monospace;
+
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 18px;
+    padding: 4px 7.5px;
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    
 }
 
 /* section one controls */
