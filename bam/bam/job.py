@@ -50,6 +50,7 @@ class BoundingBoxJob(object):
             
         model_data = self.build_model()
         model_data['model_id'] = self.ticket.get_model_name()
+        model_data['topo_url'] = 'http://' + self.app_config['app_url'] + self.ticket.get_app_query_string()
         model_md.write_model_metadata(self.ticket.get_model_metadata_filepath(), model_data)
         
         t3 = time.time()
