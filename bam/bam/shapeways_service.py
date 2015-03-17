@@ -82,7 +82,7 @@ Vertical Features scale is %(v_scale)s''' % (desc_values)
                                 'materialId': '6'}}}
                        
         if include_file: 
-            model_file = os.path.join(self.config['model_dir'], model)
+            model_file = os.path.join(self.config['model_dir'], model_data['model_id']) + '.stl'
             with open(model_file, 'rb') as f:
                 m['file'] = base64.b64encode(f.read())
             

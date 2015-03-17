@@ -15,7 +15,8 @@ class STLModelService(object):
         return the stl file
         '''
         ticket = mt.get_ticket(style=model_style, 
-                                bbox = BoundingBox(nwlat, nwlon, selat, selon), 
+                                bbox = BoundingBox(float(nwlat), float(nwlon),
+                                                   float(selat), float(selon)), 
                                 size=int(size), 
                                 rez=int(rez), 
                                 zmult=float(zfactor), 
@@ -30,9 +31,7 @@ class STLModelService(object):
         if model is None:
             return "GB Error"
             
-        model_id = ticket.get_model_name()
-        model['url'] = "http://127.0.0.1:9999/" + model_id + ".stl"
-        model['model_id'] = model_id
+        model['url'] = "http://127.0.0.1:9999/" + model['model_id'] + ".stl"
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):

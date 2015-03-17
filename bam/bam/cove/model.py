@@ -50,9 +50,7 @@ class PreviewTerrainModel(Model):
         model_area = canvas.compute_area()
         model_volume = 0
        
-        # desc = {'filename': self.builder.get_output_file_name(),
-        desc = {
-                'x-size-mm': top.get_data_x_size(),
+        desc = {'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': top.get_high_z() - top.get_low_z(),
                 'area-mm2':  model_area,
@@ -100,8 +98,7 @@ class SolidElevationModel(Model):
         
         canvas.write_stl(self.builder.get_output_file_name())
         
-        # desc = {'filename': self.builder.get_output_file_name(),
-        desc = {        'size': self.builder.get_physical_max(),
+        desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich), 
@@ -200,9 +197,8 @@ class HollowElevationModel(Model):
         
         print("Starting tapeout")
         canvas.write_stl(self.builder.get_output_file_name())
-        # 
-        # desc = {'filename': self.builder.get_output_file_name(),
-        desc = {        'size': self.builder.get_physical_max(),
+        
+        desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': self._compute_model_z_size(sandwich),
@@ -212,7 +208,7 @@ class HollowElevationModel(Model):
         desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
         desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
         desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
-    
+        
         elevation.close_dataset()
         
         return desc

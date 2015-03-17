@@ -4,6 +4,7 @@ import os
 import time
 import cherrypy
 import json
+import model_metadata as model_md
 
 class BoundingBoxJob(object):
     
@@ -48,6 +49,8 @@ class BoundingBoxJob(object):
         # self.ticket.set_elevation_filename(elevation_data['filename'])
             
         model_data = self.build_model()
+        model_data['model_id'] = self.ticket.get_model_name()
+        model_md.write_model_metadata(self.ticket.get_model_metadata_filepath(), model_data)
         
         t3 = time.time()
         # cherrypy.log("-Job: %s %s,%s-%s,%s" % (self.ticket.inputs.style, self.inputs.nwlat, self.nwlon, self.selat, self.selon))
