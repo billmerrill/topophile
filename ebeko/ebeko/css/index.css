@@ -149,6 +149,11 @@ div#model-controls .control-label {
     margin: .5em;
 }
 
+#scale-table {
+    font-size: 14px;
+}
+
+
 /* section three */
 .state_disc {
     width: 175px;
