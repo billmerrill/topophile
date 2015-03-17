@@ -76,6 +76,19 @@ TOPO.BUILD1.Terrain = (function() {
             busyDisplay.hide();
             canvasJQ.show();
         },
+        
+        zoomIn = function() {
+            viewer.zoomFactor *= 1.3;
+            viewer.update();
+
+            console.log("zoom in");
+        },
+        
+        zoomOut = function() {
+            viewer.zoomFactor /= 1.3;
+            viewer.update();
+            console.log("zoom out");
+        },
        
         // a singleton to limit calls for terrain previews
         // ignore all but the last bounds requests while a preview is building
@@ -157,8 +170,16 @@ TOPO.BUILD1.Terrain = (function() {
                 }
             }
             
+            viewer.mouseWheelHandler = function(e){return;};
             viewer.init();
             viewer.update();
+            
+            $('#terrain-zoomin').click(function(){
+                zoomIn();
+            });
+            $('#terrain-zoomout').click(function(){
+                zoomOut();
+            });
         },
        
         updateZFactor: function(newZFactor) {
