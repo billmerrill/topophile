@@ -39,23 +39,23 @@ TOPO.BUILD1.Sizing = (function(){
         makeDisplayDimension = function(mmval) {
             var cmval = (mmval / 10.0).toPrecision(3);
             var inval = (mmval / 25.4).toPrecision(3);
-            return '<span class="size-cm">'+cmval+'</span><span class="size-in">'+inval+'<span>';
+            return '<span class="size-cm">'+cmval+' <span class="unit">cm</span></span><span class="size-in">'+inval+' <span class="unit">in</span><span>';
         },
         
         formatYards = function(y) {
             if (y > 1000) {
-                return (y/1760).toFixed(2) + " miles";
+                return (y/1760).toFixed(2) + ' <span class="unit">miles</span>';
             } else {
-                return y.toFixed(1) + " yards"
+                return y.toFixed(1) + ' <span class="unit">yards</span>'
             }
             
         },
         
         formatMeters = function(m) {
             if (m > 900) {
-                return (m/1000).toFixed(2) + " km";
+                return (m/1000).toFixed(2) + ' <span class="unit">km</span>';
             } else {
-                return m.toFixed(1) + " m"
+                return m.toFixed(1) + ' <span class="unit">m</span>';
             }
             
         },
@@ -65,7 +65,7 @@ TOPO.BUILD1.Sizing = (function(){
             var yards_per_inch = meters_to_mm * 25.4 * 1.0936;
             return '<span class="size-cm">1 cm = '+ formatMeters(meters_per_cm) +
                 '</span><span class="size-in">1 in = ' + formatYards(yards_per_inch) +
-                '<span>';
+                '</span>';
         },
         
         setScales = function(data) {
