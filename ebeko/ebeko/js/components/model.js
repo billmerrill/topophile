@@ -45,8 +45,17 @@ TOPO.BUILD1.Model = (function() {
             viewer.setParameter('InitRotationX',     '-80');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('CreaseAngle',       '25');
+            
+            viewer.mouseWheelHandler = function(e){return;};
             viewer.init();
             viewer.update();
+            
+            $('#model-zoomin').click(function(){
+                zoomIn();
+            });
+            $('#model-zoomout').click(function(){
+                zoomOut();
+            });
         },
         
         toggleSizeReference = function() {
@@ -116,15 +125,40 @@ TOPO.BUILD1.Model = (function() {
         resetScene = function() {
             viewer.resetScene();
             viewer.update();
-        } ,
+        },
+                
+        zoomIn = function() {
+            viewer.zoomFactor *= 1.3;
+            viewer.update();
+        },
         
+        zoomOut = function() {
+            viewer.zoomFactor /= 1.3;
+            viewer.update();
+        },
+        
+       
         initReferences = function() {
             $('#compare-dollar').click(function(e) {
+                $('#compare-dollar').toggleClass('active');
+                $('#compare-euro').removeClass('active');
                 toggleComparison(COMPARE_DOLLAR);
             });
             $('#compare-euro').click(function(e) {
+                $('#compare-euro').toggleClass('active');
+                $('#compare-dollar').removeClass('active');
                 toggleComparison(COMPARE_EURO);
             });
+        },
+        
+        enableReferences = function() {
+            $('#compare-dollar').prop('disabled', false);
+            $('#compare-euro').prop('disabled', false);
+        },
+        
+        disableReferences = function() {
+            $('#compare-dollar').prop('disabled', true);
+            $('#compare-euro').prop('disabled', true);
         };
  
     
@@ -148,6 +182,7 @@ TOPO.BUILD1.Model = (function() {
             jcanvas.hide();
             initViewer();
             initReferences();
+            disableReferences();
         },
         
   
@@ -191,6 +226,7 @@ TOPO.BUILD1.Model = (function() {
                     'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
                     'zfactor': modelSpec.zfactor,
                     'hollow': 1};
+                    
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
                 var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect, 
                                                     TOPO.BUILD1.getConfig('modelRez'));
@@ -205,13 +241,9 @@ TOPO.BUILD1.Model = (function() {
             })
             .done(function(data, status, jqxhr) {
                 thee.showModel(data['url'], data['x-size-mm']);
-                // sizeTools.setSize(data['x-size-mm'], data['y-size-mm'], data['z-size-mm']);
-                // sizeTools.initPresets();
                 thee.currentModelId = data['model_id'];
-                // setSendButton(data['model_id'] + ".stl");
-                // setPricing(data['model_id'])
+                enableReferences();
                 newModelCallback(data);
-
             })
             .fail(function(data, stats, error) {
                 alert("Sorry, I couldn't build a model.")

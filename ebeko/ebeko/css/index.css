@@ -1,5 +1,7 @@
 body {
     padding: 0; 
+    font-family: 'Karla', 'Helvetica Nue', sans-serif;
+    font-size: 16px;
 }
 
 #app, nav>div.container {
@@ -9,7 +11,7 @@ body {
 /* header */
 .navbar {background-color: inherit;
          border: inherit;
-         font-family: Nunito;
+         font-family: Karla;
          margin-bottom: 0;}
 .navbar, .navbar a { color: #000;}
 .navbar-brand:hover , #navbar:hover{
@@ -18,7 +20,7 @@ body {
 
 .footer {
     padding-top: 50px;
-    font-family: Nunito;
+    font-family: Karla;
     margin-bottom: 0;
     color: #000;
 }
@@ -39,13 +41,14 @@ body {
 .section-header {
     background-color: #000;
     color: #fff;
-    font-family: Nunito;
+    font-family: Karla;
     margin: .5em 0em;
+    margin-bottom: 1em;
 }
 
 .section-header:nth-of-type(1)  {
-    margin: 0em;
-    margin-bottom: .5em;
+    margin-top: 0em;
+    /*margin-bottom: .5em;*/
     
 }
 
@@ -58,6 +61,11 @@ body {
 #map {
     height: 400px;
     width: 100%;
+}
+
+/* override lf */
+div.location-filter.button-container{
+    padding-top: 0px;
 }
 
 #terrain-progress, #model-progress {
@@ -91,11 +99,31 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,.25);
 }
 
+.topo-3d-zoom {
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+
+.topo-3d-zoom button {
+    font-family: 'Lucida Console', Monaco, monospace;
+
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 18px;
+    padding: 4px 7.5px;
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    
+}
+
 /* section one controls */
 
-.control-row .col-header {
-    font-variant: small-caps;
-    font-size: 14px;
+.control-row {
+    margin: .3em 0em;
 }
 
 #zfactor {
@@ -111,6 +139,16 @@ body {
     box-shadow: 0 0px 5px 5px rgba(0,180,0,.4);
 }
 
+#build-model {
+    width: 200px;
+    font-weight: 700;
+}
+
+#print-model {
+    width: 200px;
+    font-weight: 700;
+}
+
 
 /* section two controls */
 #model-controls {
@@ -123,20 +161,26 @@ div#model-controls>ul{
 
 div#model-controls>ul>li{
     list-style-type: none;
-    margin-bottom: 1.2em;
+    margin-bottom: 1.5em;
     
 }
 
 div#model-controls .control-label {
-    margin-bottom: .5em;
+    margin-bottom: .2em;
 }
 
 .control-label {
     font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-    font-variant: small-caps;
+    font-weight: bold;
+    font-size: 14px;
+    color: #888;
+    
+    /*line-height: 1.1;*/
+    
+}
+
+#model-controls .control-label {
+    /*font-variant: inherit;*/
 }
 
 #print-model {
@@ -145,12 +189,21 @@ div#model-controls .control-label {
 }
 
 #model-controls .tooltip-inner {
-    font-size: 16px;
-    margin: .5em;
+    /*font-size: 16px;*/
+    padding: .6em;
+    padding-top: .4em;
 }
 
-#scale-table {
-    font-size: 14px;
+#scale-table, #dimension-table {
+    /*font-size: 14px;*/
+}
+
+#presets {
+    width: 200px;
+}
+#presets button {
+    width: 67px;
+    padding: 6px 0px;
 }
 
 
@@ -221,7 +274,7 @@ div.state.doing  div.dot {
     top: 70px;
     left: 0px;
     z-index: 10;
-    font-family: Nunito;
+    font-family: Karla;
     font-size: 18px;
     text-align:center;
     color: #bbb;
@@ -248,53 +301,21 @@ div.state.doing  div.dot {
     font-style: italic;
 }
 
+/* model data tables */
 
-/*  three dimensional decription */
-#threewrapper {
-    height: 125px;
-    width: 125px;
-}
-#threedim {
-    background-image: url('../assets/cluster.png');
-    background-repeat: no-repeat;
-    background-position: top left; 
-    width: 125px;
-    height: 125px;
-    padding: 0px;
-    margin: 0px;
-    position: absolute;
+.model-data-table {
+    width: 200px;
 }
 
-#threedim div {
-    position: absolute;
-    margin: 0px;
-    padding: 0px;
+.model-data-table td {
+    line-height: 20px;
+    /*font-size: 14px;*/
 }
-
-#threedim #x {
-    top: 45px;
-    left: 16px;
+.model-data-table td:last-child {
+    text-align: right;
 }
-#threedim #y {
-    top: 90px;
-    left: 55px;
-}
-#threedim #z {
-    top: 30px;
-    left: 78px;
-}
-
-#threedim #units {
-    top: 1px;
-    left: 1px;
-    color: #999;
-}
-
-#threedim .dimension-label {
-    display: none;
-}
-
-#threedim .current {
-    font-weight: bold;
-    color: #000;
+.model-data-table .unit {
+    width: 1.4em;
+    display: inline-block;
+    text-align: left;
 }
