@@ -1,5 +1,7 @@
 body {
     padding: 0; 
+    font-family: 'Karla', 'Helvetica Nue', sans-serif;
+    font-size: 16px;
 }
 
 #app, nav>div.container {
@@ -9,7 +11,7 @@ body {
 /* header */
 .navbar {background-color: inherit;
          border: inherit;
-         font-family: Nunito;
+         font-family: Karla;
          margin-bottom: 0;}
 .navbar, .navbar a { color: #000;}
 .navbar-brand:hover , #navbar:hover{
@@ -18,7 +20,7 @@ body {
 
 .footer {
     padding-top: 50px;
-    font-family: Nunito;
+    font-family: Karla;
     margin-bottom: 0;
     color: #000;
 }
@@ -39,7 +41,7 @@ body {
 .section-header {
     background-color: #000;
     color: #fff;
-    font-family: Nunito;
+    font-family: Karla;
     margin: .5em 0em;
     margin-bottom: 1em;
 }
@@ -120,9 +122,8 @@ div.location-filter.button-container{
 
 /* section one controls */
 
-.control-row .col-header {
-    font-variant: small-caps;
-    font-size: 14px;
+.control-row {
+    margin: .3em 0em;
 }
 
 #zfactor {
@@ -140,17 +141,18 @@ div.location-filter.button-container{
 
 #build-model {
     width: 200px;
+    font-weight: 700;
 }
 
 #print-model {
     width: 200px;
+    font-weight: 700;
 }
 
 
 /* section two controls */
 #model-controls {
     padding-left: 1em;
-    font-family: 'Railway', sans-serif;
 }
 
 div#model-controls>ul{ 
@@ -159,25 +161,26 @@ div#model-controls>ul{
 
 div#model-controls>ul>li{
     list-style-type: none;
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
     
 }
 
 div#model-controls .control-label {
-    margin-bottom: .5em;
+    margin-bottom: .2em;
 }
 
 .control-label {
     font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-    font-variant: small-caps;
+    font-weight: bold;
+    font-size: 14px;
+    color: #888;
+    
+    /*line-height: 1.1;*/
     
 }
 
 #model-controls .control-label {
-    font-variant: inherit;
+    /*font-variant: inherit;*/
 }
 
 #print-model {
@@ -186,13 +189,13 @@ div#model-controls .control-label {
 }
 
 #model-controls .tooltip-inner {
-    font-size: 16px;
+    /*font-size: 16px;*/
     padding: .6em;
     padding-top: .4em;
 }
 
 #scale-table, #dimension-table {
-    font-size: 14px;
+    /*font-size: 14px;*/
 }
 
 #presets {
@@ -271,7 +274,7 @@ div.state.doing  div.dot {
     top: 70px;
     left: 0px;
     z-index: 10;
-    font-family: Nunito;
+    font-family: Karla;
     font-size: 18px;
     text-align:center;
     color: #bbb;
@@ -306,6 +309,7 @@ div.state.doing  div.dot {
 
 .model-data-table td {
     line-height: 20px;
+    /*font-size: 14px;*/
 }
 .model-data-table td:last-child {
     text-align: right;
