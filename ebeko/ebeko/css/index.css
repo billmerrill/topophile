@@ -302,6 +302,10 @@ div.state.doing  div.dot {
 .model-data-table {
     width: 200px;
 }
+
+.model-data-table td {
+    line-height: 20px;
+}
 .model-data-table td:last-child {
     text-align: right;
 }
