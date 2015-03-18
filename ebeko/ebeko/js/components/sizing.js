@@ -44,9 +44,9 @@ TOPO.BUILD1.Sizing = (function(){
         
         formatYards = function(y) {
             if (y > 1000) {
-                return (y/1760).toFixed(2) + ' <span class="unit">miles</span>';
+                return (y/1760).toFixed(2) + ' <span class="unit">mi</span>';
             } else {
-                return y.toFixed(1) + ' <span class="unit">yards</span>'
+                return y.toFixed(1) + ' <span class="unit">yd</span>'
             }
             
         },
@@ -120,7 +120,7 @@ TOPO.BUILD1.Sizing = (function(){
                 smallButton.click(function(e) { presetClick('small',e);});
                 mediumButton.click(function(e) { presetClick('medium',e);});
                 largeButton.click(function(e) { presetClick('large',e);});
-                customButton.click(function(e) { presetClick('custom',e);});
+                // customButton.click(function(e) { presetClick('custom',e);});
             },
             
             setSize: function(x,y,z) {

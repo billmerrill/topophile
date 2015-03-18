@@ -60,12 +60,12 @@ Created on %(born_on)s<br>
     <td>%(latitude)s N, %(longitude)s E</td>
 </tr>
 <tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
-    <td>Horizontal Scale</td>
-    <td>%(h_scale)s</td>
-</tr>
-<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
     <td>Vertical Scale</td>
     <td>%(v_scale)s</td>
+</tr>
+<tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
+    <td>Horizontal Scale</td>
+    <td>%(h_scale)s</td>
 </tr>
 <tr style="border-bottom: 1px dashed #ccc; margin-bottom: .5em;">
     <td>Elevation Exaggeration</td>

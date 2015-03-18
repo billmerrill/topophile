@@ -135,7 +135,7 @@ TOPO.BUILD1.indexPage = (function() {
                 scrollToElement($('#print-section'), 40);
             });
             
-            $('#threewrapper').click(function() {
+            $('.model-data-table').click(function() {
                 sizing.toggleUnits();
             });
             
