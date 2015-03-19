@@ -54,7 +54,7 @@
     },
     
     endPrintChecks = function() {
-        if (currentTimeoutIntervale != null) {
+        if (currentTimeoutInterval != null) {
             clearTimeout(currentTimeoutInterval);
         }
     },
