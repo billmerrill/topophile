@@ -65,7 +65,9 @@ body {
 
 /* override lf */
 div.location-filter.button-container{
-    padding-top: 0px;
+    padding: 0px;
+    background: inherit;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
 }
 
 #terrain-progress, #model-progress {
