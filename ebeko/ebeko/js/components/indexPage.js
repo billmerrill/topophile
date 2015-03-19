@@ -49,18 +49,19 @@ TOPO.BUILD1.indexPage = (function() {
         buildButtonState = function(state) {
             switch(state) {
                 case MODEL_DISABLE:
-                    $('#build-model').prop('disabled', true);
+                    $('#build-model').prop('disabled', true).removeClass('rtg');
+
                     break;
                 case MODEL_NEW:
                     $('#build-model')
                         .prop('disabled', false)
-                        .addClass('ready-to-build');
+                        .addClass('rtg');
                     
                     break;
                 case MODEL_ABLE:
                     $('#build-model')
                         .prop('disabled', false)
-                        .removeClass('ready-to-build');
+                        .removeClass('rtg');
                         
                     break;
                 default:
@@ -74,10 +75,10 @@ TOPO.BUILD1.indexPage = (function() {
         uploadButtonState = function(state) {
             switch(state) {
                 case UPLOAD_ABLE:
-                    $('#print-model').prop('disabled', false);
+                    $('#print-model').prop('disabled', false).addClass('rtg');
                     break;
                 case UPLOAD_UNABLE:
-                    $('#print-model').prop('disabled', true);
+                    $('#print-model').prop('disabled', true).removeClass('rtg');
                     break;
                 default:
                     console.log("Upload Button Error");
@@ -101,7 +102,7 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         printCompleteHandler = function() {
-            uploadButtonState(UPLOAD_ABLE);
+            // pass
         },
         
         scrollToElement = function(ele, fudge) {

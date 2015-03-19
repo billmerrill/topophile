@@ -137,18 +137,31 @@ div.location-filter.button-container{
     margin-left: 1em;
 }
 
-.ready-to-build {
-    box-shadow: 0 0px 5px 5px rgba(0,180,0,.4);
+button.rtg {
+    background-color: rgba(216, 123, 41, .9);
+    color: #fff;
+    font-weight: bold;
+    
 }
+button.rtg:active, button.rtg:hover, button.rtg:focus {
+    background-color: #8F4300;
+    color: #fff;
+    font-weight: bold;
+}
+
 
 #build-model {
     width: 220px;
     font-weight: 700;
+    font-size: 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 #print-model {
     width: 220px;
     font-weight: 700;
+    font-size: 16px;
 }
 
 
@@ -230,6 +243,16 @@ div.state.done .state_disc {
 div.state.doing .state_disc {
     color: #fff;
     background-color: #86AC98;
+}
+
+#print_ready.doing .state_disc {
+    background-color: rgba(216, 123, 41, .9);
+}
+
+#print_ready.doing .state_disc:hover, 
+#print_ready.doing .state_disc:focus,
+#print_ready.doing .state_disc:active {
+    background-color: #8F4300;
 }
 
 div.state.done .state_label {

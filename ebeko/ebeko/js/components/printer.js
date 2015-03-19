@@ -88,23 +88,27 @@
                 $('#delay-row').hide();
                 $('#error-row').hide();
                 break;
+                
             case PRINT_UPLOAD:
                 stateDisplays[PRINT_UPLOAD].addClass("doing");
                 spin(stateDisplays[PRINT_UPLOAD]);
                 break;
+                
             case PRINT_PROCESS:
                 stateDisplays[PRINT_UPLOAD].removeClass("doing").addClass("done");
                 nospin(stateDisplays[PRINT_UPLOAD])
                 stateDisplays[PRINT_PROCESS].addClass("doing");
                 spin(stateDisplays[PRINT_PROCESS]);
                 break;
+                
             case PRINT_READY:
                 stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
                 nospin(stateDisplays[PRINT_PROCESS]);
+                stateDisplays[PRINT_READY].click(function(){window.open(swModelUrl)});
                 stateDisplays[PRINT_READY].addClass("doing").children('.state_label')
-                    .html('<span class="gotoprint">Go See<br>Your Model</span>')
-                    .click(function(){window.open(swModelUrl)});
+                    .html('<span class="gotoprint">Go See<br>Your Model</span>');
                 break;
+                
             case PRINT_DELAY:
                 $('#delay-sw-url').html('<a href="' + swModelUrl +'" target="sw">Shapeways Model Page</a>');
                 $('#delay-return-url').html(document.location.href);
@@ -114,6 +118,7 @@
                 nospin(stateDisplays[PRINT_PROCESS]);
                 $('#delay-row').show();
                 break;
+                
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
                 $('#error-row').show();
@@ -123,7 +128,6 @@
                 nospin(stateDisplays[PRINT_PROCESS]);
                 processingCompleteCallback();
                 printingState(PRINT_INIT);
-                
                 break;
             default:
                 console.log("Build Button Error");
