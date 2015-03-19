@@ -25,7 +25,9 @@ TOPO.BUILD1.indexPage = (function() {
                         + "?b=" 
                         + geohash.encode(newBounds['nwlat'], newBounds['nwlon'])  
                         + '-'
-                        + geohash.encode(newBounds['selat'], newBounds['selon']);
+                        + geohash.encode(newBounds['selat'], newBounds['selon'])
+                        + '&e='
+                        + exaggerater.getFactorUrlData();
             history.pushState(null, null, newurl);
         },
                      
@@ -35,7 +37,6 @@ TOPO.BUILD1.indexPage = (function() {
                 $("#terrain-instructions").hide();        
             }
             terrain.renderBounds(newBounds, selectSize);
-            setUrl(newBounds);  
         },
         
         presetChangeHandler = function(data) {
@@ -133,6 +134,8 @@ TOPO.BUILD1.indexPage = (function() {
                 model.renderModel(getModelSpec());
                 buildButtonState(MODEL_DISABLE);
                 scrollToElement($('#print-section'), 40);
+                setUrl(terrain.getBounds());
+
             });
             
             $('.model-data-table').click(function() {
@@ -181,13 +184,14 @@ TOPO.BUILD1.indexPage = (function() {
                 return result;
             };
             
-            var params = getParams()
+            var params = getParams();
+            if ('e' in params) {
+                exaggerater.setUrlZFactor(params['e']);
+            }
             if ('b' in params) {
                 map.setUrlBbox(params['b']);
             }
-            if ('e' in params) {
-                exaggerater.setUrlZFactor(params['e'])
-            }
+
         }
         
     
