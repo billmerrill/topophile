@@ -153,6 +153,11 @@ div.location-filter.button-container{
 
 
 /* section two controls */
+
+#model-instructions {
+    padding-top: 50px;
+}
+
 #model-controls {
     padding-left: 44px;
 }
