@@ -57,13 +57,10 @@ body {
     padding: .25em .5em;
 }
 
-
 #map {
     height: 400px;
     width: 100%;
 }
-
-/* override lf */
 
 #terrain-progress, #model-progress {
     width: 550px;
