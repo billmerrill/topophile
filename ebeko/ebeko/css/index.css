@@ -175,6 +175,12 @@ button.rtg:active, button.rtg:hover, button.rtg:focus {
     padding-left: 44px;
 }
 
+#model-controls .active {
+    background-color: #149bdf;
+    background-color: rgba(20, 155, 233, .4);
+
+}
+
 div#model-controls>ul{ 
     padding: 0px;
 }
