@@ -185,6 +185,9 @@ TOPO.BUILD1.indexPage = (function() {
             if ('b' in params) {
                 map.setUrlBbox(params['b']);
             }
+            if ('e' in params) {
+                exaggerater.setUrlZFactor(params['e'])
+            }
         }
         
     

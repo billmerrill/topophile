@@ -33,6 +33,16 @@ TOPO.BUILD1.Exaggerater =  (function(){
         
         getFactor: function() {
             return exagValue.val();
-        }
+        },
+        
+        setFactor: function(newVal) {
+            exagValue.val(newVal);
+        },
+        
+        setUrlZFactor: function(newz) {
+            newz = parseInt(newz, 36) / 10.0;
+            newz = newz.toFixed(1);
+            exagValue.val(newz);
+        },
     }
 }());
