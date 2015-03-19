@@ -142,19 +142,19 @@ div.location-filter.button-container{
 }
 
 #build-model {
-    width: 200px;
+    width: 220px;
     font-weight: 700;
 }
 
 #print-model {
-    width: 200px;
+    width: 220px;
     font-weight: 700;
 }
 
 
 /* section two controls */
 #model-controls {
-    padding-left: 1em;
+    padding-left: 44px;
 }
 
 div#model-controls>ul{ 
@@ -200,11 +200,8 @@ div#model-controls .control-label {
     /*font-size: 14px;*/
 }
 
-#presets {
-    width: 200px;
-}
 #presets button {
-    width: 67.3px;
+    width: 74px;
     padding: 6px 0px;
 }
 
@@ -304,6 +301,11 @@ div.state.doing  div.dot {
     padding: 10px;
     margin: 10px;
 }
+
+#delay-sw-url {
+    text-decoration: underline;
+}
+
 .doh {
     font-weight: bold;
     font-style: italic;
@@ -312,7 +314,7 @@ div.state.doing  div.dot {
 /* model data tables */
 
 .model-data-table {
-    width: 200px;
+    width: 220px;
 }
 
 .model-data-table td {

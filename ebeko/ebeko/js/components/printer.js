@@ -55,6 +55,7 @@
     
     endPrintChecks = function() {
         if (currentTimeoutInterval != null) {
+            printingState(PRINT_DELAY);
             clearTimeout(currentTimeoutInterval);
         }
     },
@@ -84,6 +85,8 @@
                     nospin(stateDisplays[x]);
                 }
                 stateDisplays[PRINT_READY].children('.state_label').html("Ready!");
+                $('#delay-row').hide();
+                $('#error-row').hide();
                 break;
             case PRINT_UPLOAD:
                 stateDisplays[PRINT_UPLOAD].addClass("doing");
@@ -103,13 +106,21 @@
                     .click(function(){window.open(swModelUrl)});
                 break;
             case PRINT_DELAY:
-                $('#delay-sw-url').html('<a href="' + swModelUrl +'">Shapewawys Model Page</a>');
+                $('#delay-sw-url').html('<a href="' + swModelUrl +'" target="sw">Shapeways Model Page</a>');
                 $('#delay-return-url').html(document.location.href);
+                stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
+                stateDisplays[PRINT_UPLOAD].removeClass("doing").addClass("done");
+                nospin(stateDisplays[PRINT_UPLOAD]);
+                nospin(stateDisplays[PRINT_PROCESS]);
                 $('#delay-row').show();
                 break;
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
                 $('#error-row').show();
+                stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
+                stateDisplays[PRINT_UPLOAD].removeClass("doing").addClass("done");
+                nospin(stateDisplays[PRINT_UPLOAD]);
+                nospin(stateDisplays[PRINT_PROCESS]);
                 processingCompleteCallback();
                 printingState(PRINT_INIT);
                 
