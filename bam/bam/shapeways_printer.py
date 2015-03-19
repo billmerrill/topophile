@@ -1,6 +1,6 @@
 from shapeways.client import Client
 
-def new_shapeways_client():
+def new_shapeways_client(ring='model'):
     return Client(
         consumer_key="1694232fb1ee4d3441d0970934f994885409c9e2",
         consumer_secret="06e28ec74812adf61bb582e0ec218aede5fe3420",

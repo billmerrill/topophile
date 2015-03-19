@@ -1,4 +1,4 @@
-TOPO.BUILD1.Printer = (function() {
+    TOPO.BUILD1.Printer = (function() {
     "use strict";
    
     var topoModelId,
@@ -7,6 +7,7 @@ TOPO.BUILD1.Printer = (function() {
         stateDisplays,
         newModelName = null,
         processingCompleteCallback,
+        currentTimeoutInterval = null,
   
     uploadComplete = function(data) {
         printingState(PRINT_PROCESS);
@@ -46,9 +47,20 @@ TOPO.BUILD1.Printer = (function() {
         if (data['ready']) {
             printingState(PRINT_READY);
             processingCompleteCallback();
+            currentTimeoutInterval = null;
         } else {
-            setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
+            currentTimeoutInterval = setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
+    },
+    
+    endPrintChecks = function() {
+        if (currentTimeoutIntervale != null) {
+            clearTimeout(currentTimeoutInterval);
+        }
+    },
+    
+    startFinalTimer = function() {
+        setTimeout(endPrintChecks, TOPO.BUILD1.getConfig('totalUploadInterval'));
     },
     
     PRINT_INIT = 'init',
@@ -56,6 +68,7 @@ TOPO.BUILD1.Printer = (function() {
     PRINT_PROCESS = 'process',
     PRINT_READY = 'ready',
     PRINT_ERROR = 'error',
+    PRINT_DELAY = 'delay',
     printingState = function(newState) {
         var x, 
             spin = function(s) {
@@ -89,6 +102,11 @@ TOPO.BUILD1.Printer = (function() {
                     .html('<span class="gotoprint">Go See<br>Your Model</span>')
                     .click(function(){window.open(swModelUrl)});
                 break;
+            case PRINT_DELAY:
+                $('#delay-sw-url').html('<a href="' + swModelUrl +'">Shapewawys Model Page</a>');
+                $('#delay-return-url').html(document.location.href);
+                $('#delay-row').show();
+                break;
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
                 $('#error-row').show();
@@ -107,6 +125,7 @@ TOPO.BUILD1.Printer = (function() {
         init: function(processingCompleteCb) {
             processingCompleteCallback = processingCompleteCb;
             $('#error-row').hide();
+            $('#delay-row').hide();
             stateDisplays = {};
             stateDisplays[PRINT_UPLOAD] = $('#print_uploading'); 
             stateDisplays[PRINT_PROCESS] =  $('#print_processing');
@@ -118,6 +137,7 @@ TOPO.BUILD1.Printer = (function() {
             printingState(PRINT_INIT);
             topoModelId = modelName
             printingState(PRINT_UPLOAD);
+            startFinalTimer();
             $.ajax({
                 type: "GET",
                 url: TOPO.BUILD1.getConfig('uploadService'),
