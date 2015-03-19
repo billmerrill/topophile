@@ -64,11 +64,6 @@ body {
 }
 
 /* override lf */
-div.location-filter.button-container{
-    padding: 0px;
-    background: inherit;
-    box-shadow: 0 1px 3px rgba(0,0,0,.25);
-}
 
 #terrain-progress, #model-progress {
     width: 550px;
@@ -95,7 +90,7 @@ div.location-filter.button-container{
 #model-reset, #terrain-reset {
     position: absolute;
     background-color: #fff;
-    border: 1px solid #999;
+    border: 1px solid rgb(204,204,204);
     margin: 10px;
     right: 0px;
     box-shadow: 0 1px 3px rgba(0,0,0,.25);
