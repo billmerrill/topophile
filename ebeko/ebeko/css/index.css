@@ -42,8 +42,8 @@ body {
     background-color: #000;
     color: #fff;
     font-family: Karla;
-    margin: .5em 0em;
-    margin-bottom: 1em;
+    margin: 1em 0em;
+    /*margin-bottom: 1em;*/
 }
 
 .section-header:nth-of-type(1)  {
@@ -156,6 +156,10 @@ button.rtg:active, button.rtg:hover, button.rtg:focus {
     font-size: 16px;
 }
 
+form#exag {
+    margin-bottom: 0px;
+}
+
 
 /* section two controls */
 
@@ -164,7 +168,7 @@ button.rtg:active, button.rtg:hover, button.rtg:focus {
 }
 
 #model-controls {
-    padding-left: 44px;
+    padding-left: 29px;
 }
 
 #model-controls .active {

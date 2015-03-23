@@ -139,9 +139,9 @@ TOPO.BUILD1.Terrain = (function() {
             
             canvasJQ.hide();
             viewer.setParameter('ModelColor',       '#aaaaaa');
-            viewer.setParameter('Background',       'off');
-            viewer.setParameter('BackgroundColor1', '#DDDDDD');
-            viewer.setParameter('BackgroundColor2', '#DDDDDD');
+            viewer.setParameter('Background',       'on');
+            viewer.setParameter('BackgroundColor1', '#d4e1ff');
+            viewer.setParameter('BackgroundColor2', '#d4e1ff');
             viewer.setParameter('RenderMode',       'flat');
             viewer.setParameter('Renderer',         'webgl');
             viewer.setParameter('InitRotationX',     '-60');
