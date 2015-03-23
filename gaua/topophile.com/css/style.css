@@ -1,5 +1,5 @@
 @charset 'UTF-8';
-@import url('http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,900');
+/*@import url('http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,900');*/
 @import url('font-awesome.min.css');
 
 /*
@@ -14,7 +14,8 @@
 
 	body, input, textarea, select
 	{
-		font-family: 'Source Sans Pro', sans-serif;
+		/*font-family: 'Source Sans Pro', sans-serif;*/
+		font-family: 'Karla', sans-serif;
 		font-weight: 400;
 		color: #919499;
 	}
