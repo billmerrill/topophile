@@ -84,6 +84,7 @@ class BoundingBoxJob(object):
             model_data['slat'] = bbox.south
             model_data['elon'] = bbox.east
             model_data['wlon'] = bbox.west
+            model_data['size'] = self.ticket.get_size()
         else:
             cherrypy.log("Model Cached!")
             with open(self.ticket.get_model_metadata_filepath()) as mjf:

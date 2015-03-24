@@ -96,3 +96,6 @@ class BBoxModelTicket(object):
         
     def get_app_query_string(self):
         return "?b=%s" % self.inputs.bbox.get_geohash()
+        
+    def get_size(self):
+        return self.inputs.size
