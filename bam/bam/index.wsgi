@@ -68,12 +68,7 @@ def application(environ, start_response):
          'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
          'tools.response_headers.on': True,
          'tools.response_headers.headers': [('Content-Type', 'application/json')],
-        },
-        '/static': {
-        'tools.staticdir.on' : True,
-        'tools.staticdir.dir' : "/Users/bill/topo/bam/bam/static"
-        }
-    }
+        }}
     # cherrypy.quickstart(RootClass(), '/', conf)
     return cherrypy.Application(RootClass(), '/', conf)
 
