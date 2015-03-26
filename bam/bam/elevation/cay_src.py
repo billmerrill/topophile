@@ -52,7 +52,7 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
         if True:
             srtm_params = {
                 # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
-                'map':      os.path.join(app_config['map_file_dir'], 'new-srtm-wcs.map'),
+                'map':      app_config['map_file'],
                 'SERVICE':  'WCS',
                 'VERSION':  '1.0.0',
                 'REQUEST':  'GetCoverage',
@@ -65,7 +65,7 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
         else:
             srtm_params = {
                 # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
-                'map':      os.path.join(app_config['map_file_dir'], 'new-srtm-wcs.map'),
+                'map':      app_config['map_file'],
                 'SERVICE':  'WCS',
                 'VERSION':  '1.0.0',
                 'REQUEST':  'GetCoverage',
