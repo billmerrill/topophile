@@ -6,7 +6,8 @@ setup
 	1.
 	** use:
 
-	WSGIScriptAlias / /home/billmerrill/webapps/test_wsgi/htdocs/index.wsgi
+	WSGIScriptAlias / /home/billmerrill/dev/topophile/bam/bam/index.wsgi
+
 
 	** not (comment this out):
 

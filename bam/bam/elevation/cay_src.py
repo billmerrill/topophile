@@ -51,7 +51,8 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
         # turns out about the same
         if True:
             srtm_params = {
-                'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                'map':      os.path.join(app_config['map_file_dir'], 'new-srtm-wcs.map'),
                 'SERVICE':  'WCS',
                 'VERSION':  '1.0.0',
                 'REQUEST':  'GetCoverage',
@@ -63,7 +64,8 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
                 'FORMAT':   'image/tiff' }
         else:
             srtm_params = {
-                'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                'map':      os.path.join(app_config['map_file_dir'], 'new-srtm-wcs.map'),
                 'SERVICE':  'WCS',
                 'VERSION':  '1.0.0',
                 'REQUEST':  'GetCoverage',
@@ -76,7 +78,8 @@ def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=F
     else:
         bbox = "%s,%s,%s,%s"% (nwlon, selat, selon, nwlat) #-90,38,-89,39
         srtm_params = {
-            'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
+            # 'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
+            'map':      os.path.join(app_config['map_file_dir'], 'wcs-srtm.map'),
             'SERVICE':  'WCS',
             'VERSION':  '1.0.0',
             'REQUEST':  'GetCoverage',
