@@ -31,7 +31,7 @@ class STLModelService(object):
         if model is None:
             return "GB Error"
             
-        model['url'] = "http://127.0.0.1:9999/" + model['model_id'] + ".stl"
+        model['url'] = app_config['model_home_url'] + model['model_id'] + ".stl"
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):
