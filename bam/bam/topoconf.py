@@ -13,7 +13,7 @@ prod_home_dir = '/home/billmerrill/webapps/ebeko'
 prod_app_config = {'home_dir': prod_home_dir,
         'model_dir': os.path.join(prod_home_dir,  "app/model_cache"),
                 'elevation_dir': os.path.join(prod_home_dir, "app/elevation_cache"),
-                'elevation_server': 'http://billmerrill.webfactional.com/mapserver/mapserv?',
+                'elevation_server': 'http://billmerrill.webfactional.com/mapserver/mapserv.cgi?',
                 'map_file_dir': '/home/billmerrill/dev/topophile/cay',
                 'ms_scaling': True,
                 'serial_store': os.path.join(prod_home_dir, "app/serial.no"),
