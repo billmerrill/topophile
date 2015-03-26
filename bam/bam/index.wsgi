@@ -23,12 +23,16 @@ local_app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache"),
               'serial_store': os.path.join(os.getcwd(), "app/serial.no"),
               'app_url': "topophile.com/build1/" }
               
-prod_app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache"),
-              'elevation_dir': os.path.join(os.getcwd(), "app/elevation_cache"),
-              'elevation_server': 'http://billmerrill.webfactional.com/mapserver/mapserv?',
-              'ms_scaling': True,
-              'serial_store': os.path.join(os.getcwd(), "app/serial.no"),
-              'app_url': "topophile.com/build1/" }
+          
+prod_home_dir = '/home/billmerrill/webapps/test_wsgi/htdocs'
+prod_app_config = {'home_dir': prod_home_dir,
+        'model_dir': os.path.join(prod_home_dir,  "app/model_cache"),
+                'elevation_dir': os.path.join(prod_home_dir, "app/elevation_cache"),
+                'elevation_server': 'http://billmerrill.webfactional.com/mapserver/mapserv?',
+                'ms_scaling': True,
+                'serial_store': os.path.join(prod_home_dir, "app/serial.no"),
+                'app_url': "topophile.com/build/" }
+              
               
 app_config = prod_app_config
         
@@ -52,12 +56,11 @@ def CORS():
 
 
 def application(environ, start_response):
-    if __name__ == '__main__':
-    cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
+    # cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
     conf = {
         '/': {
-         'tools.sessions.on': True,
-         'tools.CORS.on': True
+         'tools.sessions.on': True
+        #  'tools.CORS.on': True
         },
         '/build': {
          'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
@@ -69,6 +72,9 @@ def application(environ, start_response):
          'tools.response_headers.on': True,
          'tools.response_headers.headers': [('Content-Type', 'application/json')],
         }}
-    # cherrypy.quickstart(RootClass(), '/', conf)
-    return cherrypy.Application(RootClass(), '/', conf)
+        
+    cherrypy.config.update({'environment': 'embedded'})
+    cherrypy.tree.mount(RootClass(), script_name='/', config=conf)
+    return cherrypy.tree(environ, start_response)
+        
 
