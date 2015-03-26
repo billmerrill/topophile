@@ -21,5 +21,5 @@ prod_app_config = {'home_dir': prod_home_dir,
                 'ms_scaling': True,
                 'serial_store': os.path.join(prod_home_dir, "app/serial.no"),
                 'app_url': "topophile.com/build/",
-                'model_home_url', 'http://billmerrill.webfactional.com/build/app/model_cache/' }
+                'model_home_url': 'http://billmerrill.webfactional.com/build/app/model_cache/' }
               
