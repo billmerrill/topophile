@@ -29,7 +29,7 @@ TOPO.BUILD1.Map = (function() {
     loadGeoJson = function() {
         $.ajax({
             type: 'GET',
-            url: "/assets/data-mask.json"
+            url: "assets/data-mask.json"
         })
         .done(function(data, status, ctx) {
             L.geoJson(data, {
