@@ -1,0 +1,19 @@
+26 March 2015
+
+setup
+- Modify Apache 'start' binary to include '/home/billmerrill/lib' in the LD_LIBRARY_PATH
+- Modify httpd.conf:
+	1.
+	** use:
+
+	WSGIScriptAlias / /home/billmerrill/webapps/test_wsgi/htdocs/index.wsgi
+
+	** not (comment this out):
+
+	<Directory /home/billmerrill/webapps/test_wsgi/htdocs>
+	    AddHandler wsgi-script .py
+	</Directory>
+
+	2.
+	Include python sources in the python-path, like:
+	WSGIDaemonProcess test_wsgi processes=5 python-path=/home/billmerrill/webapps/test_wsgi/htdocs:/home/billmerrill/venv/topo-bam/lib/python2.7:/home/billmerrill/venv/topo-bam/lib/python2.7/site-packages threads=1
