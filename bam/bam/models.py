@@ -30,8 +30,8 @@ class STLModelService(object):
         model = gig.run()
         if model is None:
             return "GB Error"
-            
-        model['url'] = app_config['model_home_url'] + model['model_id'] + ".stl"
+        
+        model['url'] = self.app_config['model_home_url'] + model['model_id'] + ".stl"
         return json.dumps(model)
         
     def POST(self, elevation, size=200, rez=50):
