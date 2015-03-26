@@ -1,0 +1,79 @@
+MAP
+    NAME Shiny
+   
+    STATUS ON
+    #EXTENT 20037492.980699513, -7558443.307192808, 20037492.880511973, 18807066.17436876
+    EXTENT 20037492.880511973 -7558443.307192808  20037492.980699513 18807066.17436876
+    UNITS METERS
+    MAXSIZE 999999
+
+    
+    OUTPUTFORMAT
+        NAME GEOTIFF_16
+        DRIVER "GDAL/GTiff"
+        MIMETYPE "image/tiff"
+        IMAGEMODE INT16
+        EXTENSION "tif"   
+    END
+
+    WEB
+        METADATA
+          "wcs_label"               "QGIS WCS Test"
+          "wcs_description"         "Test server to be used by QGIS test suite"
+          #"wcs_onlineresource"      "http://127.0.0.1/cgi-bin/mapserv?" ### recommended
+          "wcs_crs"                 "EPSG:3857"
+          "wcs_fees"                "none"
+          "wcs_accessconstraints"   "none"
+          "wcs_keywordlist"         "qgis,wcs,test"
+          "wcs_metadatalink_type"   "TC211"
+          "wcs_metadatalink_format"  "text/plain"
+          "wcs_metadatalink_href"    "http://someurl.com"
+          "wcs_address"              "none"
+          "wcs_city"                 "none"
+          "wcs_stateorprovince"      "none"
+          "wcs_postcode"             "none"
+          "wcs_country"              "none"
+          "wcs_contactelectronicmailaddress" "blah@blah"
+          "wcs_contactperson"            "none"
+          "wcs_contactorganization"      "none"
+          "wcs_contactposition"          "none"
+          "wcs_contactvoicetelephone"    "none"
+          "wcs_contactfacimiletelephone" "613-555-1235"
+          "wcs_enable_request"            "*"
+        END
+    END
+
+    PROJECTION
+        "init=epsg:3857"
+    END
+    
+    
+    LAYER
+        DEBUG 5 
+
+        NAME "srtmgl1"
+        TYPE raster
+        STATUS ON
+        TILEINDEX "/home/billmerrill/mapdata/srtm/srtmgl1.shp"
+        TILEITEM "LOCATION"
+
+        PROJECTION
+            "init=epsg:4236"
+        END
+        
+        PROCESSING "OVERSAMPLE_RATIO=4.0"
+        PROCESSING "RESAMPLE=BILINEAR"
+
+        METADATA
+            "wcs_label"           "Elevation"  ### required
+            "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
+            "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
+            "wcs_extent"          "-180, -56, 180, 60"
+            "ows_srs"             "init=epsg:4236"
+            "wcs_resolution"      "0.000277777777778 -0.000277777777778"
+        END
+    END
+    
+END
+    
+    
