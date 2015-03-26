@@ -14,7 +14,7 @@ TOPO.BUILD1.getConfig = function(key) {
     }
 }
 
-TOPO.BUILD1.setConfig({
+var devConfig = {
     'mapStartPoint': [46.852947, -121.760424],
     'elExaggerate': 1.5,
     'terrainSize': 100,
@@ -27,4 +27,25 @@ TOPO.BUILD1.setConfig({
     'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
     'printablePause': 20000,
     'totalUploadInterval': 180000,
-    'enableMsScaling': true});
+    'enableMsScaling': true};
+    
+var prodConfig = {
+    'mapStartPoint': [46.852947, -121.760424],
+    'elExaggerate': 1.5,
+    'terrainSize': 100,
+    'terrainRez': 75,
+    'modelSize': 100,
+    'modelRez': 200,
+    'bamService': "api/build",
+    'pricingService': "api/price",
+    'uploadService': "api/printer/upload",
+    'modelPrintableService': "api/printer/is_printable",
+    'printablePause': 20000,
+    'totalUploadInterval': 180000,
+    'enableMsScaling': true};
+
+if (location.host.startsWith('127.0.0.1')) {
+    TOPO.BUILD1.setConfig(devConfig);
+} else {
+    TOPO.BUILD1.setConfig(prodConfig);
+}
