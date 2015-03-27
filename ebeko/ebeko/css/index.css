@@ -173,6 +173,12 @@ form#exag {
     padding-top: 50px;
 }
 
+#model-container {
+    height: 500px;
+    width: 825px;
+    background-color: #d4e1ff;
+}
+
 #model-controls {
     padding-left: 29px;
 }
