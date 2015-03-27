@@ -10,6 +10,7 @@ TOPO.BUILD1.Terrain = (function() {
         resetAABB = false,
         terrainBounds = {},
         terrainRect,
+        backgroundColor = '#d4e1ff',
         
         resetScene =  function() {
             viewer.resetScene();
@@ -140,8 +141,8 @@ TOPO.BUILD1.Terrain = (function() {
             canvasJQ.hide();
             viewer.setParameter('ModelColor',       '#aaaaaa');
             viewer.setParameter('Background',       'on');
-            viewer.setParameter('BackgroundColor1', '#d4e1ff');
-            viewer.setParameter('BackgroundColor2', '#d4e1ff');
+            viewer.setParameter('BackgroundColor1', backgroundColor);
+            viewer.setParameter('BackgroundColor2', backgroundColor);
             viewer.setParameter('RenderMode',       'flat');
             viewer.setParameter('Renderer',         'webgl');
             viewer.setParameter('InitRotationX',     '-60');
