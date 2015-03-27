@@ -68,11 +68,17 @@ body {
     padding-left: 58px;
     padding-top: 220px;
     background-image: url('../assets/the-brothers-fill.png');
+    background-color: #d4e1ff;
     margin: 0 auto;
 }
 
 #terrain-progress .progress, #model-progress .progress {
     width: 431px;
+}
+
+#terrain-container {
+    height: 400px;
+    background-color: #d4e1ff;
 }
 
 .building-status {
