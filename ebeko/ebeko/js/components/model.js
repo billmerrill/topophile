@@ -187,6 +187,7 @@ TOPO.BUILD1.Model = (function() {
         
   
         showModel: function(modelUrl, width) {
+            var thee = this;
             modelWidth = width
             buildComparison([1,1,1]);
             var loader = new JSC3D.StlLoader;
@@ -199,6 +200,7 @@ TOPO.BUILD1.Model = (function() {
                 }
                 viewer.replaceScene(scene);
                 viewer.zoomFactor *= 1.5;
+                thee.hideBusy();
             };
             loader.loadFromUrl(modelUrl);
         },
@@ -247,8 +249,6 @@ TOPO.BUILD1.Model = (function() {
             })
             .fail(function(data, stats, error) {
                 alert("Sorry, I couldn't build a model.")
-            })
-            .always(function(data) {
                 thee.hideBusy();
             });
         },

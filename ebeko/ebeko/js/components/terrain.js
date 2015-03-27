@@ -57,16 +57,20 @@ TOPO.BUILD1.Terrain = (function() {
             .fail(function(data, stats, error) {
                 alert("Sorry, I couldn't build a model.")
                 boundsBuffer.completed();
-            })
-            .always(function(data) {
                 hideBusy();
             });
         },
         
         showModel = function(modelUrl) {
             resetAABB = true;
-            viewer.replaceSceneFromUrl(modelUrl);
-        },
+            var loader = new JSC3D.StlLoader;
+            loader.onload = function(scene) {
+                viewer.replaceScene(scene);
+                hideBusy();
+            };
+            loader.loadFromUrl(modelUrl);
+        },    
+        
         
         showBusy = function() {
             busyDisplay.show();
