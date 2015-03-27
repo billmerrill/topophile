@@ -44,7 +44,7 @@ var prodConfig = {
     'totalUploadInterval': 180000,
     'enableMsScaling': true};
 
-if (location.host.startsWith('127.0.0.1')) {
+if (location.host.search('127.0.0.1') == 0) {
     TOPO.BUILD1.setConfig(devConfig);
 } else {
     TOPO.BUILD1.setConfig(prodConfig);
