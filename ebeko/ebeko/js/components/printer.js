@@ -85,6 +85,7 @@
                     nospin(stateDisplays[x]);
                 }
                 stateDisplays[PRINT_READY].children('.state_label').html("Ready!");
+                stateDisplays[PRINT_READY].unbind('click');
                 $('#delay-row').hide();
                 $('#error-row').hide();
                 break;
@@ -106,7 +107,7 @@
                 nospin(stateDisplays[PRINT_PROCESS]);
                 stateDisplays[PRINT_READY].click(function(){window.open(swModelUrl)});
                 stateDisplays[PRINT_READY].addClass("doing").children('.state_label')
-                    .html('<span class="gotoprint">Go See<br>Your Model</span>');
+                    .html('Go See<br>Your Model');
                 break;
                 
             case PRINT_DELAY:

@@ -263,10 +263,17 @@ div.state.doing .state_disc {
     background-color: rgba(216, 123, 41, .9);
 }
 
-#print_ready.doing .state_disc:hover, 
-#print_ready.doing .state_disc:focus,
-#print_ready.doing .state_disc:active {
+#print_ready.doing {
+    cursor: pointer;
+}
+
+#print_ready.doing .state_disc:hover {
     background-color: #8F4300;
+}
+
+
+#print_ready.doing .state_label{
+    text-decoration: underline;
 }
 
 div.state.done .state_label {
@@ -300,6 +307,7 @@ div.state.doing  div.dot {
     background-color: #fff;
 }
 
+
 .spinz {
     -webkit-animation:spin 60s linear infinite;
     -moz-animation:spin 60s linear infinite;
@@ -325,9 +333,11 @@ div.state.doing  div.dot {
     top: 60px;
 }
 
-.gotoprint {
-    text-decoration: underline;
+
+#print_ready.doing div.state_label:hover +  div.state_disc {
+    background-color: #8F4300;
 }
+
 
 #upload-error-msg {
     border: 2px solid #000;
