@@ -11,6 +11,9 @@ TOPO.BUILD1.Map = (function() {
                          "selat": alterBounds.getSouth(),
                          "selon": alterBounds.getEast()};
             var selectionSize = computeSelectionSize(bounds);
+            // hacking the location filter:
+            // this sets the size move-marker, the grabbalbe area in the location filter.
+            $('#map div.move-marker').width(selectionSize['x']).height(selectionSize['y']);
             newBoundsCallback(bounds, selectionSize);
         }  
     }, 

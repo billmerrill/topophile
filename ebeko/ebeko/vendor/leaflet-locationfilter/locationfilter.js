@@ -217,9 +217,11 @@ L.LocationFilter = L.Class.extend({
     },
 
     /* Draw a resize marker */
-    _drawResizeMarker: function(point, latFollower, lngFollower, otherPos) {
+    // WLM this signature makes no sense, nuking it for something i want
+    // _drawResizeMarker: function(point, latFollower, lngFollower, otherPos) {
+    _drawResizeMarker: function(point, pointClass) {
         return this._drawImageMarker(point, {
-            "className": "location-filter resize-marker",
+            "className": "location-filter resize-marker " + pointClass, 
             "anchor": [7, 6],
             "size": [13, 12] 
         });
@@ -314,10 +316,10 @@ L.LocationFilter = L.Class.extend({
         });
 
         // Create resize markers
-        this._nwMarker = this._drawResizeMarker(this._nw);
-        this._neMarker = this._drawResizeMarker(this._ne);
-        this._swMarker = this._drawResizeMarker(this._sw);
-        this._seMarker = this._drawResizeMarker(this._se);
+        this._nwMarker = this._drawResizeMarker(this._nw, 'nw-handle');
+        this._neMarker = this._drawResizeMarker(this._ne, 'ne-handle');
+        this._swMarker = this._drawResizeMarker(this._sw, 'sw-handle');
+        this._seMarker = this._drawResizeMarker(this._se, 'se-handle');
 
         // Setup tracking of resize markers. Each marker has pair of
         // follower markers that must be moved whenever the marker is
@@ -359,6 +361,11 @@ L.LocationFilter = L.Class.extend({
 
         // Reposition the move marker
         this._moveMarker.setLatLng(this._nw);
+       
+        // WLM -  resize move marker?
+        // XXX right now this is being handled in ebeko/js/maps.js
+        // should be pulled in here 
+        
     }, 
 
     /* Adjust the location filter to the current map bounds */

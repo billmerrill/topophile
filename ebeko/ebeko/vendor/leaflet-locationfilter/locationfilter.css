@@ -2,6 +2,21 @@ div.leaflet-marker-icon.location-filter.resize-marker {
     background: url( img/resize-handle.png ) no-repeat;  
     cursor: move;
 }
+
+/* WLM correct cursors */
+div.leaflet-marker-icon.location-filter.resize-marker.ne-handle {
+    cursor: nesw-resize;
+}
+div.leaflet-marker-icon.location-filter.resize-marker.nw-handle {
+    cursor: nwse-resize;
+}
+div.leaflet-marker-icon.location-filter.resize-marker.se-handle {
+    cursor: nwse-resize;
+}
+div.leaflet-marker-icon.location-filter.resize-marker.sw-handle {
+    cursor: nesw-resize;
+}
+    
 div.leaflet-marker-icon.location-filter.move-marker {
     background: url( img/move-handle.png ) no-repeat;  
     cursor: move;
