@@ -17,8 +17,8 @@ prod_app_config = {
                 'model_dir':        '/home/billmerrill/webapps/model_cache',
                 'elevation_dir':    '/home/billmerrill/topo-cache/b1/elevation_cache',
                 'serial_store':     '/home/billmerrill/topo-cache/b1/serial.no',
-                'map_file_dir':     '/home/billmerrill/releases/vsc/topophile/cay',
-                'map_file':         '/home/billmerrill/releases/vsc/topophile/cay/prod-srtm-wcs.map',
+                'map_file_dir':     '/home/billmerrill/releases/vcs/topophile/cay',
+                'map_file':         '/home/billmerrill/releases/vcs/topophile/cay/prod-srtm-wcs.map',
                 'ms_scaling':       True,
                 'app_url':          'topophile.com/build/'}
               
