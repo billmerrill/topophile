@@ -80,13 +80,13 @@ def deploy_static_app(app):
     with cd(topo_root):
         run('cp -r %s/* %s/' % (apps[app]['git_files'], apps[app]['root']))
     
-def restart_wgsi_app(app):
+def restart_wsgi_app(app):
     cmd = apps[app]['restart']
     if len(cmd) > 20:
         run(cmd)
 
 @task
-def deploy(tag=None):
+def deploy_all(tag=None, static_only=False):
     '''
     deploy topophile.com, ebeko, and bam
     
@@ -98,6 +98,9 @@ def deploy(tag=None):
     pre_deploy()
     get_version(tag)
     deploy_static_app('dotcom')
-    return
     deploy_static_app('ebeko')
-    retart_wsgi_app('bam')
+    restart_wsgi_app('bam')
+
+@task
+def deploy_static(tag=None):
+    deploy_all(tag, static_only=True)
