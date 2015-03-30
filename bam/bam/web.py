@@ -24,7 +24,8 @@ from mako.lookup import TemplateLookup
 #               'serial_store': os.path.join(os.getcwd(), "app/serial.no"),
 #               'app_url': "topophile.com/build1/" }
               
-app_config = topoconf.local_app_config
+# app_config = topoconf.local_app_config
+app_config = topoconf.new_local_app_config
     
 class TestyClass(object):
     exposed = True

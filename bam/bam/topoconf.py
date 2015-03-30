@@ -22,3 +22,15 @@ prod_app_config = {
                 'ms_scaling':       True,
                 'app_url':          'topophile.com/build/'}
               
+
+new_local_app_config = {
+                'elevation_server': 'http://127.0.0.1/cgi-bin/mapserv?',
+                'model_home_url':   'http://127.0.0.1:9999/',
+                'model_dir':        os.path.join(os.getcwd(), "apptest/model_cache"),
+                'elevation_dir':    os.path.join(os.getcwd(), "apptest/elevation_cache"),
+                'serial_store':     os.path.join(os.getcwd(), "apptest/serial.no"),
+                'map_file_dir':     '/Library/WebServer/Documents/cay/',
+                'map_file':         '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+                'ms_scaling':       True,
+                'app_url':          'topophile.com/build/'}
+              
