@@ -1,0 +1,33 @@
+ServerRoot "/home/billmerrill/webapps/scotch_wsgi/apache2"
+
+LoadModule dir_module        modules/mod_dir.so
+LoadModule env_module        modules/mod_env.so
+LoadModule log_config_module modules/mod_log_config.so
+LoadModule mime_module       modules/mod_mime.so
+LoadModule rewrite_module    modules/mod_rewrite.so
+LoadModule setenvif_module   modules/mod_setenvif.so
+LoadModule wsgi_module       modules/mod_wsgi.so
+
+LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+CustomLog /home/billmerrill/logs/user/access_scotch_wsgi.log combined
+DirectoryIndex index.py
+DocumentRoot /home/billmerrill/webapps/scotch_wsgi/htdocs
+#DocumentRoot /home/billmerrill/dev/topophile/bam/bam
+ErrorLog /home/billmerrill/logs/user/error_scotch_wsgi.log
+KeepAlive Off
+Listen 18926
+MaxSpareThreads 3
+MinSpareThreads 1
+ServerLimit 1
+SetEnvIf X-Forwarded-SSL on HTTPS=1
+ThreadsPerChild 5
+WSGIDaemonProcess scotch_wsgi processes=5 python-path=/home/billmerrill/webapps/scotch_wsgi/lib/python2.7:/home/billmerrill/venv/topo-bam/lib/python2.7:/home/billmerrill/venv/topo-bam/lib/python2.7/site-packages:/home/billmerrill/releases/vcs/topophile/bam/bam threads=1
+WSGIProcessGroup scotch_wsgi
+WSGIRestrictEmbedded On
+WSGILazyInitialization On
+
+WSGIScriptAlias / /home/billmerrill/releases/vcs/topophile/bam/bam/index.wsgi
+
+
+<Directory /home/billmerrill/webapps/scotch_wsgi/htdocs>
+</Directory>
