@@ -104,3 +104,9 @@ def deploy_all(tag=None, static_only=False):
 @task
 def deploy_static(tag=None):
     deploy_all(tag, static_only=True)
+
+@task
+def deploy_bam(tag=None):
+    pre_deploy()
+    get_version(tag)
+    restart_wsgi_app('bam')
