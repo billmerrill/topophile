@@ -34,24 +34,3 @@ class STLModelService(object):
         model['url'] = self.app_config['model_home_url'] + model['model_id'] + ".stl"
         return json.dumps(model)
         
-    def POST(self, elevation, size=200, rez=50):
-        '''
-        accept an uploaded geotiff, return an stl model
-        '''
-        elevation_data = tempfile.NamedTemporaryFile(delete=False)
-        try:
-            while True:
-                data = elevation.file.read(1024)
-                if not data:
-                    break
-                elevation_data.write(data)
-                
-            elevation_data.seek(0)
-            elevation_data.flush()
-            
-            gig = job.GeoTiffJob(elevation_data.name, size, rez)
-            model_fn = gig.run()
-        finally:
-            elevation_data.close()
-            
-        return model_fn
