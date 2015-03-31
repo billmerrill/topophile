@@ -381,3 +381,30 @@ div.state.doing  div.dot {
     display: inline-block;
     text-align: left;
 }
+
+/* modal dialog */
+
+.modal-header {
+    height: 200px;
+    background: url('../assets/hill-fire.jpg') center center;
+    background-size: cover;
+    background-position: 0% 80%;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+h4.modal-title {
+    font-size: 48px;
+    color: #fff;
+    letter-spacing: 40px;
+}
+
+#modal-tweet {
+    font-size: 14px;
+    text-align: left; 
+    padding-top: 7px;
+}

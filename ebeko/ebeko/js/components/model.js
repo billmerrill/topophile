@@ -35,7 +35,6 @@ TOPO.BUILD1.Model = (function() {
         
         initViewer = function() {
             viewer = new JSC3D.Viewer(canvas);
-            // viewer.setParameter('ModelColor',       '#9999FF');
             viewer.setParameter('ModelColor',       '#EEEEEE');
             viewer.setParameter('Background',       'on');
             viewer.setParameter('BackgroundColor1', '#d4e1ff');
@@ -159,6 +158,11 @@ TOPO.BUILD1.Model = (function() {
         disableReferences = function() {
             $('#compare-dollar').prop('disabled', true);
             $('#compare-euro').prop('disabled', true);
+        },
+        
+        showModal = function(msg) {
+            $('#modal-message').html(msg);
+            $('.modal').modal({keyboard: true});
         };
  
     
@@ -181,9 +185,10 @@ TOPO.BUILD1.Model = (function() {
             jcanvas = $(canvas);
             jcanvas.hide();
             initViewer();
-            initReferences();
+            initReferences();   
             disableReferences();
         },
+        
         
   
         showModel: function(modelUrl, width) {
@@ -248,7 +253,8 @@ TOPO.BUILD1.Model = (function() {
                 newModelCallback(data);
             })
             .fail(function(data, stats, error) {
-                alert("Sorry, I couldn't build a model.")
+                showModal("The model engine is having problems, please try again later.");
+                
                 thee.hideBusy();
             });
         },
