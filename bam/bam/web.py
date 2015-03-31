@@ -17,15 +17,9 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 
 
-# app_config = {'model_dir': os.path.join(os.getcwd(), "app/model_cache"),
-#               'elevation_dir': os.path.join(os.getcwd(), "app/elevation_cache"),
-#               'elevation_server': 'http://127.0.0.1/cgi-bin/mapserv?',
-#               'ms_scaling': True,
-#               'serial_store': os.path.join(os.getcwd(), "app/serial.no"),
-#               'app_url': "topophile.com/build1/" }
-              
-# app_config = topoconf.local_app_config
-app_config = topoconf.new_local_app_config
+# web.py runs the cherrypy server for local dev
+# index.wsgi runs in prod and uses the prod config
+app_config = topoconf.local_app_config
     
 class TestyClass(object):
     exposed = True

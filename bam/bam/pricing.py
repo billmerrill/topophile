@@ -37,7 +37,7 @@ class ModelPricing(object):
         with open("%s/%s.json" % (self.config['model_dir'], model_id), 'rb') as mjf:
             model_data = json.load(mjf)
             
-        pricing = topo_pricing(model_data['size'], printer.price_model(model_data))
+        pricing = topo_pricing(model_data['size'], printer.price_model(model_data, self.config['env'], printer.ALT))
         pricing = approx_price(pricing)
 
         return json.dumps(pricing)
