@@ -110,7 +110,7 @@ Created on %(born_on)s<br>
     def upload(self, model_id):
         model_data = modelmd.get_model_metadata(self.config['model_dir'], model_id)
         
-        client = printer.new_shapeways_client()
+        client = printer.new_shapeways_client(env=self.config['env'], key=printer.MODEL)
         response = client.add_model(self.build_model_message(model_data))
         cherrypy.response.headers['Content-Type'] = "application/json"
         return json.dumps(response)
@@ -118,7 +118,7 @@ Created on %(born_on)s<br>
     @cherrypy.expose    
     def upload_to_store(self, model_id):
         model_data = modelmd.get_model_metadata(self.config['model_dir'], model_id)
-        client = printer.new_shapeways_client()
+        client = printer.new_shapeways_client(env=self.config['env'], key=printer.MODEL)
         response = client.add_model(self.build_model_message(model_data))
         return self.render("buy.html", {'modelUrl': response['urls']['privateProductUrl']['address'],
                                         'modelId': response['modelId']})
@@ -126,7 +126,7 @@ Created on %(born_on)s<br>
     @cherrypy.expose    
     def is_printable(self, swid, tpid, name=""):
         response = {'url': '', 'ready': False}
-        client = printer.new_shapeways_client()
+        client = printer.new_shapeways_client(env=self.config['env'], key=printer.ALT)
         if name:
             model = client.update_model_info(int(swid), {'title': name})
         else:
