@@ -3,8 +3,8 @@ import json
 from shapeways.client import Client
 
 client = Client(
-    consumer_key="ea29837886ad7e769872dd86e02e0bba50fcf02d",
-    consumer_secret="7627ff80f3668369c02bb286fe31956d5b9d9dff",
+    consumer_key="fa206ebf6c8e642d3ed0e4ee7be72e1ba4266f37",
+    consumer_secret="06db7be844acc56473ac6ca8998cc2e50656e019",
     callback_url="http://localhost:3000/callback"
 )
 
