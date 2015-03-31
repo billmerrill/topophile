@@ -16,10 +16,7 @@ from shapeways_service import ShapewaysService
 from mako.template import Template
 from mako.lookup import TemplateLookup
 
-
-
 app_config = topoconf.prod_app_config
-        
     
 class TestyClass(object):
     exposed = True
