@@ -334,6 +334,7 @@ L.LocationFilter = L.Class.extend({
 
         // Create move marker
         this._moveMarker = this._drawMoveMarker(this._nw);
+        this._resizeMoveMarker();
 
         this._initialDrawCalled = true;
     },
@@ -364,15 +365,20 @@ L.LocationFilter = L.Class.extend({
         this._moveMarker.setLatLng(this._nw);
 
         // WLM make the grabbable area as large as the filter.
+        this._resizeMoveMarker();
+    
+    }, 
+
+        // WLM make the grabbable area as large as the filter.
+    _resizeMoveMarker: function() {
         if (this._enabled) {
             var bounds = this.getBounds();
             var mmSize = this._map.project(bounds.getNorthEast())
                 .subtract( this._map.project(bounds.getSouthWest()));
             this._moveMarker._icon.style.width = String(Math.abs(mmSize.x))+"px";
             this._moveMarker._icon.style.height = String(Math.abs(mmSize.y))+"px";
-        }
-    
-    }, 
+        }    
+    },
 
     /* Adjust the location filter to the current map bounds */
     _adjustToMap: function() {
