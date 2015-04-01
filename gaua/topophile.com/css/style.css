@@ -719,8 +719,8 @@
 	#footer-wrapper
 	{
 		background: #282b34 url('images/overlay.png');
-		color: #eee;
-		color: rgba(255,255,255,0.5);
+		color: #ccc;
+		/*color: rgba(255,255,255,0.5);*/
 	}
 
 		#footer-wrapper h1,

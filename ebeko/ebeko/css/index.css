@@ -9,17 +9,24 @@ body {
 }
 
 /* header */
-.navbar {background-color: inherit;
-         border: inherit;
-         font-family: Karla;
-         margin-bottom: 0;}
+.navbar {
+    background-color: inherit;
+     border: inherit;
+     font-family: Karla;
+     margin-bottom: 0;
+ }
 .navbar, .navbar a { color: #000;}
 .navbar-brand:hover , #navbar:hover{
         color: #000;
 }   
 
+.navbar-brand {
+    font-size: 2em;
+}
+
 .footer {
     padding-top: 50px;
+    padding-bottom: 20px;
     font-family: Karla;
     margin-bottom: 0;
     color: #000;
@@ -27,6 +34,10 @@ body {
 
 .footer a {
     color: #000;
+}
+
+.linky {
+    text-decoration: underline;
 }
 
 /* page structure */
@@ -39,22 +50,30 @@ body {
 
 /* sections */
 .section-header {
-    background-color: #000;
-    color: #fff;
-    font-family: Karla;
-    margin: 1em 0em;
-    /*margin-bottom: 1em;*/
+    color: #282b34;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 0px;
+    margin-left: 0px;
+    margin-top: 2.0em;
 }
 
 .section-header:nth-of-type(1)  {
-    margin-top: 0em;
-    /*margin-bottom: .5em;*/
-    
+    margin-top: .5em;
 }
 
 .section-header > div {
     margin: .25em 0em;
     padding: .25em .5em;
+    
+}
+
+.section-header .bigdata {
+    color: #fff;
+    color: rgba(216, 123, 41, .9);
+    font-weight: bold;
+    font-size: 24px;
+    padding-right: 8px;
 }
 
 #map {
@@ -208,14 +227,8 @@ div#model-controls .control-label {
     font-weight: bold;
     font-size: 14px;
     color: #888;
-    
-    /*line-height: 1.1;*/
-    
 }
 
-#model-controls .control-label {
-    /*font-variant: inherit;*/
-}
 
 #print-model {
     position: absolute:
@@ -223,7 +236,6 @@ div#model-controls .control-label {
 }
 
 #model-controls .tooltip-inner {
-    /*font-size: 16px;*/
     padding: .6em;
     padding-top: .4em;
 }
@@ -239,6 +251,18 @@ div#model-controls .control-label {
 
 
 /* section three */
+.upload-info {
+    margin: 10px;
+}
+
+.upload-dots {
+    margin: 10px 0px;
+}
+
+#print-model-2 {
+    margin-top: 67px;
+}
+
 .state_disc {
     width: 175px;
     height: 175px;
