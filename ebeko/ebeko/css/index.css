@@ -181,6 +181,10 @@ button.rtg:active, button.rtg:hover, button.rtg:focus {
     font-size: 16px;
 }
 
+#waiting-for-upload {
+    display:none;
+}
+
 form#exag {
     margin-bottom: 0px;
 }

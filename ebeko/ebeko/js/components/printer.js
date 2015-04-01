@@ -7,6 +7,7 @@
         stateDisplays,
         newModelName = null,
         processingCompleteCallback,
+        currentState,
         currentTimeoutInterval = null,
   
     uploadComplete = function(data) {
@@ -67,7 +68,7 @@
     PRINT_INIT = 'init',
     PRINT_UPLOAD = 'upload',
     PRINT_PROCESS = 'process',
-    PRINT_READY = 'ready',
+    PRINT_READY = 'ready', //ready to buy!
     PRINT_ERROR = 'error',
     PRINT_DELAY = 'delay',
     printingState = function(newState) {
@@ -133,6 +134,7 @@
             default:
                 console.log("Build Button Error");
         }
+        currentState = newState;
         
     }
     
@@ -171,6 +173,11 @@
         
         setModelName: function(name) { 
             newModelName = name;
+        },
+        
+        isBusy: function(name) {
+            return currentState == PRINT_UPLOAD ||
+                   currentState == PRINT_PROCESS
         }
         
         
