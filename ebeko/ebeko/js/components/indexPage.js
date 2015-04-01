@@ -38,6 +38,7 @@ TOPO.BUILD1.indexPage = (function() {
                 $("#terrain-instructions").hide();        
             }
             terrain.renderBounds(newBounds, selectSize);
+            exaggerater.enable();
         },
         
         presetChangeHandler = function(data) {

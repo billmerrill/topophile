@@ -1,12 +1,26 @@
 TOPO.BUILD1.Exaggerater =  (function(){
     "use strict";
     
-    var exagValue, newValueCallback;
+    var exagValue, newValueCallback, slider,
+    
+        enable = function() {
+            slider.slider('enable');
+            exagValue.enable();
+            exagValue.prop('disabled', false);
+            
+        }, 
+        
+        disable = function() {
+            slider.slider('disable');
+            exagValue.prop('disabled', true);
+        };
     
     return {
+        
         init: function(newValueCb, startExag, exagContainerId, exagSliderId, exagValueId) {
-            var terrain = TOPO.BUILD1.Terrain,
-                slider = $('#' + exagSliderId);
+            var terrain = TOPO.BUILD1.Terrain;
+            
+            slider = $('#' + exagSliderId);
                
             newValueCallback = newValueCb;
             exagValue = $("#" + exagValueId);
@@ -29,6 +43,7 @@ TOPO.BUILD1.Exaggerater =  (function(){
                 }
             });
             
+            disable();
         }, 
         
         getFactor: function() {
@@ -46,5 +61,16 @@ TOPO.BUILD1.Exaggerater =  (function(){
             exagValue.trigger('change');
             
         },
+        
+        enable: function() {
+            enable();
+        },
+        
+        disable: function() {
+            disable();
+        }
+        
+        
+        
     }
 }());
