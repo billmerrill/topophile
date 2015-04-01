@@ -123,7 +123,7 @@
         </div>
         
         <div class="col-xs-2">
-            <button type="button" class="btn btn-default btn-md center-block" id="build-model">
+            <button type="button" class="btn btn-default btn-md " id="build-model">
                 Build Model <span class="glyphicon glyphicon-menu-down"></span>
             </button>
         </div>
@@ -242,6 +242,7 @@
                 </div>
             </li>
             <li>
+                <span id="waiting-for-upload" class="building-status">waiting for upload to finish</span>
                 <button type="button" class="btn btn-default btn-md " id="print-model">
                     Upload Model <span class="glyphicon glyphicon-menu-down"></span>
                 </button>
@@ -267,11 +268,11 @@
     <div class="row upload-dots">
         
         <div class="col-xs-2">
-            <!--
+            
             <button type="button" class="btn btn-default btn-md " id="print-model-2">
                 Start Upload <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
-        -->
+    
         </div>
         <div class="col-xs-2">
             <div id="print_uploading" class="state">

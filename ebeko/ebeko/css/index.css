@@ -168,17 +168,19 @@ button.rtg:active, button.rtg:hover, button.rtg:focus {
 
 
 #build-model {
-    width: 220px;
     font-weight: 700;
     font-size: 16px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 5px 38px;
 }
 
 #print-model {
     width: 220px;
     font-weight: 700;
     font-size: 16px;
+}
+
+#waiting-for-upload {
+    display:none;
 }
 
 form#exag {

@@ -10,6 +10,7 @@ TOPO.BUILD1.indexPage = (function() {
         sizing = TOPO.BUILD1.Sizing,
         printer = TOPO.BUILD1.Printer,
         firstBounds = true,
+        modelReadyAndWaiting = false,
         currentModelId,
         
         getModelSpec = function () {
@@ -37,6 +38,8 @@ TOPO.BUILD1.indexPage = (function() {
                 $("#terrain-instructions").hide();        
             }
             terrain.renderBounds(newBounds, selectSize);
+            exaggerater.enable();
+            sizing.enable();
         },
         
         presetChangeHandler = function(data) {
@@ -75,10 +78,17 @@ TOPO.BUILD1.indexPage = (function() {
         uploadButtonState = function(state) {
             switch(state) {
                 case UPLOAD_ABLE:
-                    $('#print-model').prop('disabled', false).addClass('rtg');
+                    if (printer.isBusy()) {
+                        modelReadyAndWaiting = true;
+                        $('#waiting-for-upload').show();
+                    } else {
+                        $('#print-model').prop('disabled', false).addClass('rtg');
+                        $('#print-model-2').show().addClass('rtg');
+                    }
                     break;
                 case UPLOAD_UNABLE:
                     $('#print-model').prop('disabled', true).removeClass('rtg');
+                    $('#print-model-2').hide();
                     break;
                 default:
                     console.log("Upload Button Error");
@@ -102,6 +112,11 @@ TOPO.BUILD1.indexPage = (function() {
         },
         
         printCompleteHandler = function() {
+            if (modelReadyAndWaiting) {
+                modelReadyAndWaiting = false;
+                uploadButtonState(UPLOAD_ABLE);
+                $('#waiting-for-upload').hide();
+            }
             // pass
         },
         
@@ -142,12 +157,16 @@ TOPO.BUILD1.indexPage = (function() {
             $('.model-data-table').click(function() {
                 sizing.toggleUnits();
             });
-            
-            $('#print-model').click(function() {
+           
+            var printAction = function() {
                 printer.upload(currentModelId);
                 scrollToElement($('.footer'), 100);
                 uploadButtonState(UPLOAD_UNABLE);
-            });
+            }
+            
+            $('#print-model').click(printAction);
+            $('#print-model-2').click(printAction);
+            
             uploadButtonState(UPLOAD_UNABLE);
             
             // init bootstrap tooltips
