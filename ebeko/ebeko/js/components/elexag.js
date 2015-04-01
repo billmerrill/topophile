@@ -5,7 +5,6 @@ TOPO.BUILD1.Exaggerater =  (function(){
     
         enable = function() {
             slider.slider('enable');
-            exagValue.enable();
             exagValue.prop('disabled', false);
             
         }, 

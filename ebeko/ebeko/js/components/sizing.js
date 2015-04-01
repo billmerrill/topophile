@@ -83,6 +83,18 @@ TOPO.BUILD1.Sizing = (function(){
             showCurrentDimensions();
         },
         
+        enable = function() {
+            smallButton.prop('disabled', false);
+            mediumButton.prop('disabled', false);
+            largeButton.prop('disabled', false);
+        },
+        
+        disable = function() {
+            smallButton.prop('disabled', true);
+            mediumButton.prop('disabled', true);
+            largeButton.prop('disabled', true);
+        },
+        
         xDisplay, yDisplay, zDisplay, 
         xScaleDisplay, yScaleDisplay, zScaleDisplay,
         smallButton, mediumButton,
@@ -121,6 +133,8 @@ TOPO.BUILD1.Sizing = (function(){
                 mediumButton.click(function(e) { presetClick('medium',e);});
                 largeButton.click(function(e) { presetClick('large',e);});
                 // customButton.click(function(e) { presetClick('custom',e);});
+                
+                disable();
             },
             
             setSize: function(x,y,z) {
@@ -147,8 +161,14 @@ TOPO.BUILD1.Sizing = (function(){
                 
                 $("#threedim #units span").toggleClass("current");
                 showCurrentDimensions();
-            }
+            },
             
-
+            enable: function() {
+                enable();
+            },
+            
+            disable: function() {
+                disable();
+            }
     }
 }());
