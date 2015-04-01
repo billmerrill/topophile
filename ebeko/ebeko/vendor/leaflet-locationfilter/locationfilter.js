@@ -445,6 +445,7 @@ L.LocationFilter = L.Class.extend({
         this._enabled = true;
         
         // Fire the enabled event
+        // XXX WLM just need another draw, thanks, resize move marker was not working without it
         this._draw();
         this.fire("enabled");
     },
