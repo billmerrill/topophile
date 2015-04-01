@@ -445,6 +445,7 @@ L.LocationFilter = L.Class.extend({
         this._enabled = true;
         
         // Fire the enabled event
+        this._draw();
         this.fire("enabled");
     },
 
