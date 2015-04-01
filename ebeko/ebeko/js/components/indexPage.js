@@ -76,9 +76,11 @@ TOPO.BUILD1.indexPage = (function() {
             switch(state) {
                 case UPLOAD_ABLE:
                     $('#print-model').prop('disabled', false).addClass('rtg');
+                    $('#print-model-2').show().addClass('rtg');
                     break;
                 case UPLOAD_UNABLE:
                     $('#print-model').prop('disabled', true).removeClass('rtg');
+                    $('#print-model-2').hide();
                     break;
                 default:
                     console.log("Upload Button Error");
@@ -142,12 +144,16 @@ TOPO.BUILD1.indexPage = (function() {
             $('.model-data-table').click(function() {
                 sizing.toggleUnits();
             });
-            
-            $('#print-model').click(function() {
+           
+            var printAction = function() {
                 printer.upload(currentModelId);
                 scrollToElement($('.footer'), 100);
                 uploadButtonState(UPLOAD_UNABLE);
-            });
+            }
+            
+            $('#print-model').click(printAction);
+            $('#print-model-2').click(printAction);
+            
             uploadButtonState(UPLOAD_UNABLE);
             
             // init bootstrap tooltips
