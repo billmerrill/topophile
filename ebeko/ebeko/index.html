@@ -91,6 +91,7 @@
                     <button title="Zoom Out" id="terrain-zoomout" type="button" class="btn btn-sm btn-default">-</button>
                 </div>
                 <button title="Reset View" type="button" class="btn-sm bn-defaault" id="terrain-reset"><span class="glyphicon glyphicon-repeat"></span></button>
+                
 
                 <img src="assets/the-brothers-fill.png" id="terrain-instructions">
                 <div id="terrain-progress">
@@ -135,7 +136,7 @@
             <form class="form-inline pull-right" id="exag">
                 <input id="height-factor" data-slider-id='height-factor-slider' type="text" data-slider-tooltip="hide"
                 data-slider-min="0.1" data-slider-max="10.0" data-slider-step="0.1" data-slider-value="1.5"/>
-                <input type="number" id="zfactor" name="zfactor" class="form-control"/>&nbsp;<span class="val-suffix">X</span>
+                <input type="number" id="zfactor" name="zfactor" class="form-control"/>&nbsp;<span class="val-suffix">&times;</span>
             </form>
         </div>
     </div>
@@ -360,11 +361,45 @@
         </div>
     </div>
     
+    <div class="modal fade" role="dialog" aria-labelledby="gridSystemModalLabel" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">Sorry</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8" id="modal-message">Topophile is having some problems.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div id="modal-tweet" class="col-xs-6">
+                                <a target="tweet" href="https://twitter.com/intent/tweet?screen_name=TopophileModels&text=Something%20went%20wrong!%20" class="twitter-mention-button" data-size="large" data-related="TopophileModels">Tweet to @TopophileModels</a>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
     
 </div>
 
 
-</div>
 </body>
 </html>
 

@@ -55,7 +55,7 @@ TOPO.BUILD1.Terrain = (function() {
                 boundsBuffer.completed();
             })
             .fail(function(data, stats, error) {
-                alert("Sorry, I couldn't build a model.")
+                showModal("The model engine is having trouble right now.  Please try again later.")
                 boundsBuffer.completed();
                 hideBusy();
             });
@@ -90,6 +90,11 @@ TOPO.BUILD1.Terrain = (function() {
         zoomOut = function() {
             viewer.zoomFactor /= 1.3;
             viewer.update();
+        },
+        
+        showModal = function(msg) {
+            $('#modal-message').html(msg);
+            $('.modal').modal({keyboard: true});
         },
        
         // a singleton to limit calls for terrain previews
