@@ -1,4 +1,5 @@
 $(document).ready( function() {
+    /*
     $("#topo-walkthru").easytabs(
         {
             tabs: "ul#topo-walkthru-list > li",
@@ -12,4 +13,5 @@ $(document).ready( function() {
             $("#topo-walkthru").easytabs('select', $(e.target).find("a").attr("href"));
         }
     });
+    */
 });
