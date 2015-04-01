@@ -19,6 +19,7 @@ div.leaflet-marker-icon.location-filter.resize-marker.sw-handle {
     
 div.leaflet-marker-icon.location-filter.move-marker {
     background: url( img/move-handle.png ) no-repeat;  
+    background-position: 10px 10px;
     cursor: move;
 }
 

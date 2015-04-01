@@ -197,9 +197,10 @@ L.LocationFilter = L.Class.extend({
        moved */
     _drawMoveMarker: function(point) {
         var that = this;
+        // WLM adjust anchor, from 10, 10 to 0,0
         this._moveMarker = this._drawImageMarker(point, {
             "className": "location-filter move-marker",
-            "anchor": [-10, -10],
+            "anchor": [0, 0],
             "size": [13,13]
         });
         this._moveMarker.on('drag', function(e) {
@@ -361,11 +362,16 @@ L.LocationFilter = L.Class.extend({
 
         // Reposition the move marker
         this._moveMarker.setLatLng(this._nw);
-       
-        // WLM -  resize move marker?
-        // XXX right now this is being handled in ebeko/js/maps.js
-        // should be pulled in here 
-        
+
+        // WLM make the grabbable area as large as the filter.
+        if (this._enabled) {
+            var bounds = this.getBounds();
+            var mmSize = this._map.project(bounds.getNorthEast())
+                .subtract( this._map.project(bounds.getSouthWest()));
+            this._moveMarker._icon.style.width = String(Math.abs(mmSize.x))+"px";
+            this._moveMarker._icon.style.height = String(Math.abs(mmSize.y))+"px";
+        }
+    
     }, 
 
     /* Adjust the location filter to the current map bounds */
