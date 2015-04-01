@@ -1,5 +1,6 @@
 import UserDict
 import os
+from basethirtysix import to_base36
 
 
 BBOX = 'cube'
@@ -95,7 +96,7 @@ class BBoxModelTicket(object):
         return self.inputs.bbox
         
     def get_app_query_string(self):
-        return "?b=%s" % self.inputs.bbox.get_geohash()
+        return "?b=%s&e=%s" % (self.inputs.bbox.get_geohash(), to_base36(int(self.inputs.zmult * 10)))
         
     def get_size(self):
         return self.inputs.size
