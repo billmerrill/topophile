@@ -40,7 +40,7 @@ def application(environ, start_response):
     cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
     conf = {
         '/': {
-         'tools.sessions.on': True
+        #  'tools.sessions.on': True
          'tools.CORS.on': True
         },
         '/build': {
