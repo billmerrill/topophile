@@ -706,7 +706,7 @@
 	
 		#header-wrapper:before
 		{
-			content: '';
+			/*content: '	';*/
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -868,6 +868,11 @@
 		display: block;
 		right: 0px;
 	}
+
+	.toptry {
+	height: 4em;
+	line-height: 2.5em;
+}
 	
 	#makeone:hover, #makeone:active, #makeone:focus{
 		text-decoration: underline;
