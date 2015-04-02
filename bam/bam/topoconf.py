@@ -5,8 +5,8 @@ DEV = 'dev'
 
 prod_app_config = {
                 'env':      PROD,
-                'elevation_server': 'http://billmerrill.webfactional.com/mapserver/mapserv.cgi?',
-                'model_home_url':   'http://billmerrill.webfactional.com/1/',
+                'elevation_server': 'http://topophile.com/mapserver/mapserv.cgi?',
+                'model_home_url':   'http://topophile.com/1/',
                 'model_dir':        '/home/billmerrill/webapps/model_cache',
                 'elevation_dir':    '/home/billmerrill/topo-cache/b1/elevation_cache',
                 'serial_store':     '/home/billmerrill/topo-cache/b1/serial.no',
