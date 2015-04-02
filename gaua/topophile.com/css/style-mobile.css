@@ -76,6 +76,7 @@
 			padding: 1em 0 1em 0;
 			max-width: 30em;
 			margin: 0 auto;
+			letter-spacing: 2px;
 		}
 
 	/* List */
@@ -428,4 +429,20 @@
 	font-size: 14px;
 	
 	color: #00f;
+}
+
+figure img {
+	width: 300px;
+}
+#topo-walkthru-list li, #topo-walkthru-list ul {
+	width: 300px;
+}
+
+#topo-walkthru-list {
+	width: 300px;
+}
+
+#topo-intro {
+	padding-left: 30px;
+	padding-right: 30px;
 }
