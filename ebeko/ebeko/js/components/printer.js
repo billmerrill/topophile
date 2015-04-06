@@ -52,6 +52,14 @@
         } else {
             currentTimeoutInterval = setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
+        
+        if (data['url']) {
+            if (data['url'] != swModelUrl) {
+                swModelUrl = data['url'];
+                console.log("The model web page has changed: ", swModelUrl);
+
+            }
+        }
     },
     
     endPrintChecks = function() {
