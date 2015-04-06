@@ -1,0 +1,131 @@
+TOPOPHILE ON WEBFACTION install notes
+
+# website overview
+
+Domains:
+www.topofile.com
+www.topophile.com
+topofile.com
+topophile.com
+
+Apps:
+
+/ : static, topophile_com -- files for /index
+/mapserver : static/cgi/php-5.5 -- mapserver cgi
+/api : mod_wsgi 4.2.8 / Python 2.7 -- bam
+/1 : static/cgi/php-5.5 -- model cache
+/build : static only, files for build js app
+
+
+# c-based gid tools install
+
+Install tools in user homedir
+
+install gdal
+	- download gdal
+	- read http://trac.osgeo.org/gdal/wiki/BuildingOnUnix
+	- export environemnt variables for $HOME
+	- ./configure --prefix=$HOME --with-python
+	- make; make install
+	- easy_install-2.7 pip
+	- pip install GDAL
+	- DING gdallin
+
+install proj
+	- ./configure --without-jni --prefix=$HOME
+	 * jni causes a failure
+	- make 
+	- make install
+
+started mapserver, now backup
+
+install cmake
+	-http://www.cmake.org/download/
+	- ./bootsrap --prefix=$HOME
+	- make
+	- make install
+
+install libcurl
+
+install fcgi
+	-   252  ./configure --prefix=$HOME
+	- build error in source:
+		  255  find . -name "fcgio.cpp"
+		  256  cd libfcgi/
+		  257  ls
+		  258  vi fcgio.cpp 
+	  soln: add #include <stdio.h> to the file
+	
+
+install mapserver
+	- upload some data
+	- download mapserver
+	- read http://mapserver.org/installation/unix.html
+	- because the webfaction server proj and gdal pre-installed, I had to teach CMAKE to look for
+		my versions.  the make install prefix was no enough, need the make_prefix_path as suggested (but not described)
+		
+		from 
+		http://stackoverflow.com/questions/1487752/how-do-i-instruct-cmake-to-look-for-libraries-installed-by-macports
+
+	- in the mkdir'd 'build' dir, run this
+		cmake -DCMAKE_INSTALL_PREFIX=$HOME -DCMAKE_PREFIX_PATH=$HOME -DWITH_FRIBIDI=0 -DWITH_GIF=0 .. >../configure.out.txt
+		-DCMAKE_INSTALL_PATH -- destination
+		-DCMAKE_PREFIX_PATH -- search path for local libraries
+		
+	- then make and make install	
+
+# Setup environment
+
+export PATH=$PATH:$HOME/bin
+export LD_LIBRARY_PATH=/home/billmerrill/lib
+
+
+# Control mapserver
+
+Mapserver is installed as a Static/CGI/PHP-5.5 webapp
+
+
+Mapserver needs to be limited to local requests only, currently doing that with mod-rewrite in .htaccess
+
+RewriteEngine on
+RewriteCond %{REMOTE_ADDR} !75.126.183.211$
+RewriteRule ^(.*)$ - [F,L]
+
+The IP address may be IPv4 or v6, and may change.  When switching from a test website to the Topophile wesite, the IP address changed.
+
+The LIMIT directive did not work last I tried.
+
+
+# Create a python environment for BAM
+
+mkdir -p venv
+cd venv
+virtualenv topo-bam
+src bin/activate
+pip installl -r ~/releases/current/bam/deployment-info/pip-requirements.txt 
+
+# Create a mod_wsgi app in the webfaction ui
+
+# Configure the mod_wsgi apache for bam
+
+## python path
+Make sure to include the virtualenv python and site-packages directories, as well as the bam python directory in the python-path attribute of the WSGIDaemonProcess directive.  ex:
+
+WSGIDaemonProcess scotch_wsgi processes=5 python-path=/home/billmerrill/webapps/scotch_wsgi/lib/python2.7:/home/billmerrill/venv/topo-bam/lib/python2.7:/home/billmerrill/venv/topo-bam/lib/python2.7/site-packages:/home/billmerrill/releases/vcs/topophile/bam/bam threads=1
+
+## point at the wsgi app
+
+Don't use the handler directive prefered by WebFaction, set up a WSGIScriptAliasinstead, ex:
+
+WSGIScriptAlias / /home/billmerrill/releases/vcs/topophile/bam/bam/index.wsgi
+
+# Include LD_LIBRARY_PATH for mod_wsgi:
+
+Edit the start binary, webapps/scotch_wsgi/apache2/bin/start
+
+include the path: 
+
+#!/bin/bash
+
+LD_LIBRARY_PATH=/home/billmerrill/webapps/scotch_wsgi/apache2/lib:/home/billmerrill/lib /home/billmerrill/webapps/scotch_wsgi/apache2/bin/httpd.worker -f /home/billmerrill/webapps/scotch_wsgi/apache2/conf/httpd.conf -k start
+
