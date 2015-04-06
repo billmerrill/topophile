@@ -117,7 +117,6 @@ TOPO.BUILD1.indexPage = (function() {
                 uploadButtonState(UPLOAD_ABLE);
                 $('#waiting-for-upload').hide();
             }
-            // pass
         },
         
         scrollToElement = function(ele, fudge) {
