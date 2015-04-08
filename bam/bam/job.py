@@ -68,15 +68,18 @@ class BoundingBoxJob(object):
             if self.ticket.inputs.style == "preview":
                 model = cove.model.PreviewTerrainModel(model_config)
             else:
-                if self.ticket.get_hollow():
-                    try:
-                        model = cove.model.HollowElevationModel(model_config)
-                    except Exception:
-                        cherrypy.log("ALERT: Hollow Build failed, reverting to Solid")
-                        cherrypy.log(str(model_config))
-                        model = cove.model.SolidElevationModel(model_config)
+                if True:
+                    model = cove.model.FourWallsModel(model_config)
                 else:
-                    model = cove.model.SolidElevationModel(model_config)
+                    if self.ticket.get_hollow():
+                        try:
+                            model = cove.model.HollowElevationModel(model_config)
+                        except Exception:
+                            cherrypy.log("ALERT: Hollow Build failed, reverting to Solid")
+                            cherrypy.log(str(model_config))
+                            model = cove.model.SolidElevationModel(model_config)
+                    else:
+                        model = cove.model.SolidElevationModel(model_config)
                 
             model_data = model.build_stl()
             bbox = self.ticket.get_bbox()
