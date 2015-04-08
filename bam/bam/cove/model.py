@@ -116,6 +116,19 @@ class SolidElevationModel(Model):
 
 
 class FourWallsModel(Model):
+
+    def _is_buildable(self, top):
+        # don't bother making it hollow if the piece is too narrow in a dimension
+        x_min_thick = self.builder.get_min_thickness()[1]
+        y_min_thick = self.builder.get_min_thickness()[0]
+        if ((top.get_data_x_size() <= (3 * x_min_thick)) or \
+           (top.get_data_y_size() <= (3 * y_min_thick))):
+            print "Make Solid: too narrow: %s %s" % (top.get_data_x_size(), top.get_data_y_size())
+            return False
+            
+        return True
+        
+
     
     def build_stl(self):
         print "STARTING FOUR WALLS MODEL", self.builder
@@ -130,6 +143,10 @@ class FourWallsModel(Model):
         top.finalize_form(self.builder.get_physical_max(), 
                             self.builder.get_min_thickness()[PZ],
                             self.builder.get_z_factor())
+
+        if not self._is_buildable(top):
+            raise ValueError("Model is too narrow for 4 walls style")
+
 
                         
         

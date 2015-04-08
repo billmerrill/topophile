@@ -58,6 +58,21 @@ class BoundingBoxJob(object):
         cherrypy.log("-Elevation Data:\t%s" % (t2-t1))
         cherrypy.log("-Model Build:\t%s" % (t3-t2))
         return model_data 
+
+    def pick_model(self, model_config):
+        model = None
+        if self.ticket.inputs.style == "preview":
+            model = cove.model.PreviewTerrainModel(model_config)
+        else:
+            model = cove.model.FourWallsModel(model_config)
+                    
+                # if self.ticket.get_hollow():
+                #     model = cove.model.HollowElevationModel(model_config)
+                # else:
+                #     model = cove.model.SolidElevationModel(model_config)
+
+        return model
+
         
     def build_model(self):
         self.ticket.set_model_filepaths(self.app_config['model_dir'], ".stl")
@@ -65,29 +80,25 @@ class BoundingBoxJob(object):
         model_config = self.ticket.get_builder_config()
         if not os.path.exists(self.ticket.get_model_filepath()) or \
            not os.path.exists(self.ticket.get_model_metadata_filepath()):
-            if self.ticket.inputs.style == "preview":
-                model = cove.model.PreviewTerrainModel(model_config)
-            else:
-                if True:
-                    model = cove.model.FourWallsModel(model_config)
-                else:
-                    if self.ticket.get_hollow():
-                        try:
-                            model = cove.model.HollowElevationModel(model_config)
-                        except Exception:
-                            cherrypy.log("ALERT: Hollow Build failed, reverting to Solid")
-                            cherrypy.log(str(model_config))
-                            model = cove.model.SolidElevationModel(model_config)
-                    else:
-                        model = cove.model.SolidElevationModel(model_config)
-                
-            model_data = model.build_stl()
+           
+            model = self.pick_model(model_config)
+            
+            
+            try:
+                model_data = model.build_stl()
+            except Exception:
+                cherrypy.log("ALERT: Hollow Build failed, reverting to Solid")
+                cherrypy.log(str(model_config))
+                model = cove.model.SolidElevationModel(model_config)
+                model_data = model.build_stl()
+            
             bbox = self.ticket.get_bbox()
             model_data['nlat'] = bbox.north
             model_data['slat'] = bbox.south
             model_data['elon'] = bbox.east
             model_data['wlon'] = bbox.west
             model_data['size'] = self.ticket.get_size()
+            
         else:
             cherrypy.log("Model Cached!")
             with open(self.ticket.get_model_metadata_filepath()) as mjf:
