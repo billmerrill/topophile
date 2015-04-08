@@ -10,7 +10,7 @@ import cove.model
 import job
 import topoconf
 
-from models import STLModelService
+from model_service import STLModelService
 from pricing import ModelPricing
 from shapeways_service import ShapewaysService
 from mako.template import Template

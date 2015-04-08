@@ -4,6 +4,8 @@ import numpy as np
 from numpy.linalg import norm
 import copy
 from pprint import pprint
+from mesh_volume import compute_elevation_facet_volume, compute_approx_square_vol, \
+    compute_approx_square_min_vol, compute_approx_square_max_vol
 
 class CanvasShape(object):
     
@@ -89,7 +91,7 @@ class MeshSandwich(GridShape):
     def compute_approx_volume(self, val='avg'):
         '''
         NOTE: This methods only work for gridded trianlges.  They won't work 
-            for the freely decimated interoirs
+            for the freely decimated interiors
         '''
         volume = 0.0
         meth = None
@@ -107,94 +109,6 @@ class MeshSandwich(GridShape):
                      self.top.get(sx+1, sy+1)], self.bottom.elevation)
         return volume
 
-def compute_approx_square_vol(q, bottom_height):   
-    q = np.array(q)
-    avg_height = np.mean(q[:,PZ])
-    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
-    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
-    # print area, avg_height
-    return area * (avg_height - bottom_height)
-    
-def compute_approx_square_min_vol(q, bottom_height):
-    q = np.array(q)
-    height = np.min(q[:,PZ])
-    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
-    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
-    # print area, avg_height
-    return area * (height - bottom_height)
-    
-def compute_approx_square_max_vol(q, bottom_height):
-    q = np.array(q)
-    height = np.max(q[:,PZ])
-    area = abs((q[3][PX] - q[0][PX]) * (q[3][PY] - q[0][PY]))
-    # print (q[3][PX] - q[0][PX]), (q[3][PY] - q[0][PY])
-    # print area, avg_height
-    return area * (height - bottom_height)
-    
-       
-def compute_polyhedron_volume(t):
-    a,b,c,d = t
-    return (1.0/6.0) * norm( 
-        np.dot(np.subtract(a,d), 
-            np.cross(
-                np.subtract(b,d), 
-                np.subtract(c,d))))
-        
-def compute_elevation_facet_volume(ele, floor):
-    '''
-    compute the volume under the elevation triangle facet, down to zero.
-    assumes elevation is positive.
-    
-    The elevation triangle is described by the points Ea, Eb, Ec.
-    
-    break volume into two parts.
-    1.
-    A base triange at Z=0, described by points Ba, Bb, Bc.
-    A triangular prism has triange B as a based, and rises to meet
-    the lowest z value in the E.
-    
-    A divider triangle is created, Ea, Pb, Pc, this is the top of the 
-    prism
-    
-    2.  
-    The remainder of the volume is a pyramid defined by 
-    EaEbEc and EaPbPc
-    
-    Divide that 5-sided poly into 2 tetrahedrons, compute their volume.
-    
-    '''
-    
-    # find the lowest point in the elevation triangle
-    # axis[0] is the lowest
-    E = np.array(ele)
-    # print 'E', E
-    minarg = np.argmin(E[:,PZ])
-    axis = (minarg, (minarg+1)%3, (minarg+2)%3)
-
-    base = E.copy()
-    base[:,PZ] = floor 
-    # print 'B', base
-    
-    base_area = .5 * norm(np.cross(
-        np.subtract(base[TB], base[TA]), 
-        np.subtract(base[TB], base[TC])))
-    # print 'Base Area', base_area, base[axis[0]][PZ]
-    prism_volume = base_area * (E[axis[0]][PZ] - floor)
- 
-    # pyramid triangle is the top of the prism, a side of the pyramid with E,
-    # joined with E triangle at its lowest point, E[axis[0]]
-    pyramid = E.copy()
-    pyramid[axis[1]][PZ] = pyramid[axis[0]][PZ]
-    pyramid[axis[2]][PZ] = pyramid[axis[0]][PZ]
-    
-    t1 = [E[axis[0]], E[axis[1]], E[axis[2]], pyramid[axis[1]]]
-    t2 = [E[axis[0]], E[axis[2]], pyramid[axis[1]], pyramid[axis[2]]]
-    
-    t1_vol = compute_polyhedron_volume(t1)
-    t2_vol = compute_polyhedron_volume(t2)
-   
-    # print "%s, %s, %s" % (prism_volume, t1_vol, t2_vol)
-    return prism_volume + t1_vol + t2_vol
 
 class Mesh(GridShape):
     
@@ -247,6 +161,15 @@ class Mesh(GridShape):
         
     def get_max_corner(self):
         return self.mesh[self.y_max()][self.x_max()]
+        
+    def get_corners(self):
+        '''
+        starting at nw and going around counter-clockwise
+        '''
+        return [self.mesh[0,0],
+                self.mesh[-1,0],
+                self.mesh[-1,-1],
+                self.mesh[0,-1]]
         
     def get_low_z(self):
         return np.min(self.mesh[:,:,PZ])
@@ -663,20 +586,4 @@ class MeshBasePlate(object):
             
         return triangles
     
-class TopoBasePlate(object):
     
-    def __init__(self, top, levation, hollow=False, invert_normals=False):
-        self.top = top
-        self.el = elevation
-        self.invert_normals = invert_normals
-        self.hollow = hollow
-        # a T, described from the upper left point, counter clockwise
-        self.tee = [ [0.,  0., self.el],
-                     [0., -2., self.el],
-                     [3., -2., self.el],
-                     [3., -7., self.el],
-                     [5., -7., self.el],
-                     [5., -2., self.el],
-                     [11., -2., self.el],
-                     [11., 0., self.el]]
-        
