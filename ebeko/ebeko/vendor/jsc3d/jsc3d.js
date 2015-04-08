@@ -536,6 +536,18 @@ JSC3D.Viewer.prototype.resetScene = function() {
 	this.rotMatrix.rotateAboutZAxis(this.initRotZ);
 };
 
+
+/**
+  like resetScene, but don't reset rotations
+  XXX WLM 2015-04-08
+ */
+JSC3D.Viewer.prototype.zoomToFit = function() {
+	var d = (!this.scene || this.scene.isEmpty()) ? 0 : this.scene.aabb.lengthOfDiagonal();
+	this.zoomFactor = (d == 0) ? 1 : (this.frameWidth < this.frameHeight ? this.frameWidth : this.frameHeight) / d;
+	this.panning = [0, 0];
+};
+	
+
 /**
 	Get the current scene.
 	@returns {JSC3D.Scene} the current scene.
