@@ -96,7 +96,6 @@ TOPO.BUILD1.ModelReferenceObjects = (function() {
         return GenericCube(62, 120, .11, transform, 
                 "assets/textures/five-euro-front.jpg",
                  "assets/textures/five-euro-back.jpg");
-        return GenericCub
     },
     
     getUSQuarterChip = function(transform) {
