@@ -10,11 +10,19 @@ TOPO.BUILD1.Model = (function() {
         modelWidth = 100,
         busyDisplay,
         resetButton,
-        compareButton,
         newModelCallback,
         COMPARE_DOLLAR = 'dollar',
         COMPARE_EURO = 'euro',
-        currentComp = COMPARE_DOLLAR,
+        currentComp = null,
+        referenceParts = {COMPARE_DOLLAR: null, COMPARE_EURO: null}, 
+        referenceState,
+    
+        initReferenceParts = function() {
+            var scale = [1,1,1];
+            var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
+            referenceParts[COMPARE_DOLLAR] = TOPO.BUILD1.ModelReferenceObjects.dollar(xform);
+            referenceParts[COMPARE_EURO] = TOPO.BUILD1.ModelReferenceObjects.euro(xform);
+        },
         
         buildComparison = function(scale) {
             if (!scale) {
@@ -23,10 +31,10 @@ TOPO.BUILD1.Model = (function() {
             var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
             switch (currentComp) {
                 case COMPARE_DOLLAR:
-                    comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.dollar(xform);
+                    comparisonMeshParts = referenceParts[COMPARE_DOLLAR]
                     break;
                 case COMPARE_EURO:
-                    comparisonMeshParts = TOPO.BUILD1.ModelReferenceObjects.euro(xform);
+                    comparisonMeshParts = referenceParts[COMPARE_EURO]
                     break;
                 default:
                     console.log('buildComparison Error');
@@ -41,7 +49,7 @@ TOPO.BUILD1.Model = (function() {
             viewer.setParameter('BackgroundColor2', '#d4e1ff');
             viewer.setParameter('RenderMode',       'texturesmooth');
             viewer.setParameter('Renderer',         'webgl');
-            viewer.setParameter('InitRotationX',     '-80');
+            viewer.setParameter('InitRotationX',     '-60');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('CreaseAngle',       '25');
             
@@ -117,13 +125,21 @@ TOPO.BUILD1.Model = (function() {
                     }
                 }    
                 currScene.calcAABB();
-                viewer.update();
+                viewer.zoomToFit();
+                updateViewer()
+
             }
+        },
+       
+        updateViewer = function() {
+            viewer.update();
+            viewer.zoomFactor *= 1.5;
         },
         
         resetScene = function() {
             viewer.resetScene();
-            viewer.update();
+            updateViewer();
+
         },
                 
         zoomIn = function() {
@@ -168,19 +184,17 @@ TOPO.BUILD1.Model = (function() {
     
     return {
     
-        init: function(newModelCb, displayCanvasId, progressDisplayId, compareButtonId, resetButtonId) {
+        init: function(newModelCb, displayCanvasId, progressDisplayId, resetButtonId) {
             newModelCallback = newModelCb;
-            compareButton = $('#'+compareButtonId);
-            compareButton.click(function() {
-                toggleSizeReference();
-                resetScene();
-            })
             resetButton = $('#'+resetButtonId);
             resetButton.click(function() {
                 resetScene();
             })
             busyDisplay = $('#'+progressDisplayId);
             busyDisplay.hide();
+            
+            initReferenceParts();
+            
             canvas = document.getElementById(displayCanvasId);
             jcanvas = $(canvas);
             jcanvas.hide();
@@ -194,7 +208,6 @@ TOPO.BUILD1.Model = (function() {
         showModel: function(modelUrl, width) {
             var thee = this;
             modelWidth = width
-            buildComparison([1,1,1]);
             var loader = new JSC3D.StlLoader;
             loader.onload = function(scene) {
                 if (showSizeReference) {

@@ -139,7 +139,7 @@ TOPO.BUILD1.indexPage = (function() {
                         '#medium-size-preset', '#large-size-preset', '#custom-size-preset', 
                         '#toggle-size-comparison');
             printer.init(printCompleteHandler);
-            model.init(newModelHandler, 'model-canvas', 'model-progress', 'toggle-size-comparison', 'model-reset');
+            model.init(newModelHandler, 'model-canvas', 'model-progress', 'model-reset');
         },
         
         initElements = function() {
