@@ -3,4 +3,6 @@ def get_markup_by_size(model_size):
     return markup_table.get(model_size, 25.88)
 
 def get_model_service_markup():
-    return 20.73
+    # going on sale, half off april 11
+    # return 20.73
+    return 10.37
