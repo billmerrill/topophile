@@ -26,7 +26,7 @@ var devConfig = {
     'uploadService': "http://127.0.0.1:8080/printer/upload",
     'modelPrintableService': "http://127.0.0.1:8080/printer/is_printable",
     'printablePause': 20000,
-    'totalUploadInterval': 180000,
+    'totalUploadInterval': 90000,
     'enableMsScaling': true};
     
 var prodConfig = {
@@ -41,7 +41,7 @@ var prodConfig = {
     'uploadService': "/api/printer/upload",
     'modelPrintableService': "/api/printer/is_printable",
     'printablePause': 20000,
-    'totalUploadInterval': 180000,
+    'totalUploadInterval': 150000,
     'enableMsScaling': true};
 
 if (location.host.search('127.0.0.1') == 0) {
