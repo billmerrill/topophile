@@ -7,7 +7,7 @@ TOPO.BUILD1.Model = (function() {
         showSizeReference = false, 
         comparisonMeshParts,
         deleteMeshParts,
-        modelWidth = 100,
+        modelWidth = 200,
         busyDisplay,
         resetButton,
         newModelCallback,
@@ -19,7 +19,8 @@ TOPO.BUILD1.Model = (function() {
     
         initReferenceParts = function() {
             var scale = [1,1,1];
-            var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
+            // var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
+            var xform = {scale: scale, translate: [-75 ,0,1]};
             referenceParts[COMPARE_DOLLAR] = TOPO.BUILD1.ModelReferenceObjects.dollar(xform);
             referenceParts[COMPARE_EURO] = TOPO.BUILD1.ModelReferenceObjects.euro(xform);
         },
