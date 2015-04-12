@@ -4,7 +4,7 @@ TOPO.BUILD1.Pricing = (function(){
     var priceSpan, 
     
         displayPrice = function(price) {
-            price = price.toFixed(2);
+            price = price.toFixed(0);
             priceSpan.html('$' + price);
         },
         
