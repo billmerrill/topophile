@@ -14,7 +14,7 @@ class ModelPricing(object):
     exposed = True
     def GET(self, model_id):
         def topo_pricing(size, sw_pricing):
-            sw_error_correction = 1.8
+            sw_error_correction = 1.4
             topo_pricing = {}
             markup = pricer.get_model_service_markup()
             for i in sw_pricing:
