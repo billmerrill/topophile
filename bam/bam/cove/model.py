@@ -48,18 +48,17 @@ class PreviewTerrainModel(Model):
         canvas.add_shape(top)
         canvas.write_stl(self.builder.get_output_file_name(), make_positive=False)
         
-        model_area = canvas.compute_area()
-        model_volume = 0
-       
         desc = {'x-size-mm': top.get_data_x_size(),
                 'y-size-mm': top.get_data_y_size(),
                 'z-size-mm': top.get_high_z() - top.get_low_z(),
-                'area-mm2':  model_area,
-                'volume-mm3': model_volume,
+                'area-mm2':  0, # unneeded
+                'volume-mm3': 0, 
                 'z-exagg': self.builder.get_z_factor()}
-        desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
-        desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
-        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
+                
+        # Scales are not needed foer the preview, don't compute them.k
+        desc['x_mm_is_m'] = 1
+        desc['y_mm_is_m'] = 1
+        desc['z_mm_is_m'] = 1
         
         elevation.close_dataset()
         
@@ -180,7 +179,12 @@ class FourWallsModel(Model):
                 'z-exagg': self.builder.get_z_factor()}
         desc['x_mm_is_m'] = real_world_specs[PX] / desc['x-size-mm']
         desc['y_mm_is_m'] = real_world_specs[PY] / desc['y-size-mm']
-        desc['z_mm_is_m'] = real_world_specs[PZ] / top.get_features_height()
+        
+        z_scale = 1
+        feature_height = top.get_features_height()
+        if feature_height > 0:
+            z_scale = real_world_specs[PZ] / feature_height
+        desc['z_mm_is_m'] = z_scale
         
         elevation.close_dataset()
         

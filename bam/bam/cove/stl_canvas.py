@@ -14,6 +14,10 @@ class STLCanvas:
         Nraw = np.cross( np.subtract(triangle[TA], triangle[TB]),
                                    np.subtract(triangle[TA], triangle[TC]) )
         hypo = math.sqrt(Nraw[PX]**2 + Nraw[PY]**2 + Nraw[PZ]**2)
+        if hypo == 0:
+            print "WARNING: divide by zero implies busted model"
+            print triangle
+            
         N = (Nraw[PX] / hypo,
              Nraw[PY] / hypo,
              Nraw[PZ] / hypo)

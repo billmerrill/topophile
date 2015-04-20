@@ -135,8 +135,13 @@ class FourWallsCreator(object):
                 2  3
             '''
             if invert:
-                return [[square[0], square[1], square[3]],
-                       [square[0], square[3], square[2]]]
+                sqtr = []
+                # don't produce non-triangles, the inner wall might not be needed
+                if square[3][PZ] != square[1][PZ]:
+                    sqtr.append([square[0], square[1], square[3]])
+                if square[0][PZ] != square[2][PZ]:
+                    sqtr.append([square[0], square[3], square[2]])
+                return sqtr 
             else:
                 return [[square[0], square[3], square[1]],
                        [square[0], square[2], square[3]]]   
