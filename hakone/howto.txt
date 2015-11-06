@@ -1,0 +1,5 @@
+When it is time to deploy, just use the fab command.
+
+fab uptime
+
+for example, to check the uptime on the machine.
