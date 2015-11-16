@@ -1,10 +1,11 @@
 import geohash
 
+
 class LatLon(object):
     def __init__(self, lat, lon):
         self.lat = lat
         self.lon = lon
-    
+
     def get_geohash(self):
         return geohash.encode(float(self.lat), float(self.lon))
 
@@ -15,13 +16,12 @@ class BoundingBox(object):
         self.west = west
         self.south = south
         self.east = east
-    
+
     def get_nw_corner(self):
         return LatLon(self.north, self.west)
-        
+
     def get_se_corner(self):
         return LatLon(self.south, self.east)
-        
+
     def get_geohash(self):
         return "%s-%s" % (self.get_nw_corner().get_geohash(), self.get_se_corner().get_geohash())
-    

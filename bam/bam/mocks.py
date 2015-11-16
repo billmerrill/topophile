@@ -1,5 +1,6 @@
 import json
 
+
 class ModelStub(object):
     exposed = True
 

@@ -32,4 +32,3 @@ def haversine(point1, point2, miles=False):
         return h * 0.6214  # in miles
     else:
         return h  # in kilometers
-
