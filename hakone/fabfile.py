@@ -112,7 +112,7 @@ def deploy_bam(tag=None):
     restart_wsgi_app('bam')
 
 @task
-def deploy_ebecko(tag=None)
+def deploy_ebeko():
     pre_deploy()
-    get_version(branch=)
+    get_version(branch="hack-download-url")
     deploy_static_app('ebeko')

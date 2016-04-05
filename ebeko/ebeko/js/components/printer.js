@@ -167,7 +167,7 @@
         upload: function(modelName) {
             printingState(PRINT_INIT);
             topoModelId = modelName;
-            setupDownloadUrl(modelName);
+            // setupDownloadUrl(modelName);
 
 
             printingState(PRINT_UPLOAD);
