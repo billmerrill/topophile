@@ -73,11 +73,6 @@
         setTimeout(endPrintChecks, TOPO.BUILD1.getConfig('totalUploadInterval'));
     },
 
-    setupDownloadUrl = function(modelName) {
-        modelFileUrl = "http://topophile.com/1/" + modelName + ".stl";
-        link = $('#download_stl').attr('href', modelFileUrl);
-    },
-
     PRINT_INIT = 'init',
     PRINT_UPLOAD = 'upload',
     PRINT_PROCESS = 'process',
@@ -167,8 +162,6 @@
         upload: function(modelName) {
             printingState(PRINT_INIT);
             topoModelId = modelName;
-            // setupDownloadUrl(modelName);
-
 
             printingState(PRINT_UPLOAD);
             startFinalTimer();
