@@ -1,6 +1,6 @@
     TOPO.BUILD1.Printer = (function() {
     "use strict";
-   
+
     var topoModelId,
         swModelId,
         swModelUrl,
@@ -9,19 +9,19 @@
         processingCompleteCallback,
         currentState,
         currentTimeoutInterval = null,
-  
+
     uploadComplete = function(data) {
         printingState(PRINT_PROCESS);
         scheduleCheck();
         swModelId = data['modelId'];
         swModelUrl = data['urls']['privateProductUrl']['address'];
         console.log("You'll be able to see your model here, but it's not ready yet: ", swModelUrl);
-    }, 
-    
+    },
+
     scheduleCheck = function() {
         setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
     },
-   
+
     isModelReady = function() {
         var data = {'swid': swModelId,
                     'tpid': topoModelId};
@@ -29,7 +29,7 @@
             data['name'] = newModelName;
             newModelName = null;
         }
-        
+
         $.ajax({
             type: "GET",
             url: TOPO.BUILD1.getConfig('modelPrintableService'),
@@ -43,7 +43,7 @@
             checkPrinterProcessingComplete(data);
         });
     },
-    
+
     checkPrinterProcessingComplete = function(data) {
         if (data['ready']) {
             printingState(PRINT_READY);
@@ -52,7 +52,7 @@
         } else {
             currentTimeoutInterval = setTimeout(isModelReady, TOPO.BUILD1.getConfig('printablePause'))
         }
-        
+
         if (data['url']) {
             if (data['url'] != swModelUrl) {
                 swModelUrl = data['url'];
@@ -61,18 +61,18 @@
             }
         }
     },
-    
+
     endPrintChecks = function() {
         if (currentTimeoutInterval != null) {
             printingState(PRINT_DELAY);
             clearTimeout(currentTimeoutInterval);
         }
     },
-    
+
     startFinalTimer = function() {
         setTimeout(endPrintChecks, TOPO.BUILD1.getConfig('totalUploadInterval'));
     },
-    
+
     PRINT_INIT = 'init',
     PRINT_UPLOAD = 'upload',
     PRINT_PROCESS = 'process',
@@ -80,7 +80,7 @@
     PRINT_ERROR = 'error',
     PRINT_DELAY = 'delay',
     printingState = function(newState) {
-        var x, 
+        var x,
             spin = function(s) {
                 s.children('.state_disc').addClass("spinz");
             },
@@ -98,19 +98,19 @@
                 $('#delay-row').hide();
                 $('#error-row').hide();
                 break;
-                
+
             case PRINT_UPLOAD:
                 stateDisplays[PRINT_UPLOAD].addClass("doing");
                 spin(stateDisplays[PRINT_UPLOAD]);
                 break;
-                
+
             case PRINT_PROCESS:
                 stateDisplays[PRINT_UPLOAD].removeClass("doing").addClass("done");
                 nospin(stateDisplays[PRINT_UPLOAD])
                 stateDisplays[PRINT_PROCESS].addClass("doing");
                 spin(stateDisplays[PRINT_PROCESS]);
                 break;
-                
+
             case PRINT_READY:
                 stateDisplays[PRINT_PROCESS].removeClass("doing").addClass("done");
                 nospin(stateDisplays[PRINT_PROCESS]);
@@ -118,7 +118,7 @@
                 stateDisplays[PRINT_READY].addClass("doing").children('.state_label')
                     .html('Go See<br>Your Model');
                 break;
-                
+
             case PRINT_DELAY:
                 $('#delay-sw-url').html('<a href="' + swModelUrl +'" target="sw">Shapeways Model Page</a>');
                 $('#delay-return-url').html(document.location.href);
@@ -128,7 +128,7 @@
                 nospin(stateDisplays[PRINT_PROCESS]);
                 $('#delay-row').show();
                 break;
-                
+
             case PRINT_ERROR:
                 $('#return-url').html(document.location.href);
                 $('#error-row').show();
@@ -143,9 +143,9 @@
                 console.log("Build Button Error");
         }
         currentState = newState;
-        
+
     }
-    
+
 
     return {
         init: function(processingCompleteCb) {
@@ -153,15 +153,16 @@
             $('#error-row').hide();
             $('#delay-row').hide();
             stateDisplays = {};
-            stateDisplays[PRINT_UPLOAD] = $('#print_uploading'); 
+            stateDisplays[PRINT_UPLOAD] = $('#print_uploading');
             stateDisplays[PRINT_PROCESS] =  $('#print_processing');
             stateDisplays[PRINT_READY] = $('#print_ready');
             printingState(PRINT_INIT);
         },
-        
+
         upload: function(modelName) {
             printingState(PRINT_INIT);
-            topoModelId = modelName
+            topoModelId = modelName;
+
             printingState(PRINT_UPLOAD);
             startFinalTimer();
             $.ajax({
@@ -176,19 +177,19 @@
                 uploadComplete(data);
             })
             .always(function(data){
-            });    
+            });
         },
-        
-        setModelName: function(name) { 
+
+        setModelName: function(name) {
             newModelName = name;
         },
-        
+
         isBusy: function(name) {
             return currentState == PRINT_UPLOAD ||
                    currentState == PRINT_PROCESS
         }
-        
-        
+
+
     }
-    
+
 }());

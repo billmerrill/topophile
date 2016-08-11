@@ -2,9 +2,9 @@ TOPO.BUILD1.Model = (function() {
     "use strict";
 
     var canvas, jcanvas,
-        viewer, 
-        references = TOPO.BUILD1.ModelReferenceObjects, 
-        showSizeReference = false, 
+        viewer,
+        references = TOPO.BUILD1.ModelReferenceObjects,
+        showSizeReference = false,
         comparisonMeshParts,
         deleteMeshParts,
         modelWidth = 200,
@@ -14,9 +14,9 @@ TOPO.BUILD1.Model = (function() {
         COMPARE_DOLLAR = 'dollar',
         COMPARE_EURO = 'euro',
         currentComp = null,
-        referenceParts = {COMPARE_DOLLAR: null, COMPARE_EURO: null}, 
+        referenceParts = {COMPARE_DOLLAR: null, COMPARE_EURO: null},
         referenceState,
-    
+
         initReferenceParts = function() {
             var scale = [1,1,1];
             // var xform = {scale: scale, translate: [modelWidth + 10 ,0,1]};
@@ -24,7 +24,7 @@ TOPO.BUILD1.Model = (function() {
             referenceParts[COMPARE_DOLLAR] = TOPO.BUILD1.ModelReferenceObjects.dollar(xform);
             referenceParts[COMPARE_EURO] = TOPO.BUILD1.ModelReferenceObjects.euro(xform);
         },
-        
+
         buildComparison = function(scale) {
             if (!scale) {
                 scale = [1,1,1]
@@ -41,7 +41,7 @@ TOPO.BUILD1.Model = (function() {
                     console.log('buildComparison Error');
             }
         },
-        
+
         initViewer = function() {
             viewer = new JSC3D.Viewer(canvas);
             viewer.setParameter('ModelColor',       '#EEEEEE');
@@ -53,11 +53,11 @@ TOPO.BUILD1.Model = (function() {
             viewer.setParameter('InitRotationX',     '-60');
             viewer.setParameter('InitRotationY' ,    '30');
             viewer.setParameter('CreaseAngle',       '25');
-            
+
             viewer.mouseWheelHandler = function(e){return;};
             viewer.init();
             viewer.update();
-            
+
             $('#model-zoomin').click(function(){
                 zoomIn();
             });
@@ -65,9 +65,9 @@ TOPO.BUILD1.Model = (function() {
                 zoomOut();
             });
         },
-        
+
         toggleSizeReference = function() {
-            showSizeReference = !showSizeReference; 
+            showSizeReference = !showSizeReference;
             if (comparisonMeshParts) {
                 var i;
                 var currScene = viewer.getScene();
@@ -79,12 +79,12 @@ TOPO.BUILD1.Model = (function() {
                     for (i in comparisonMeshParts) {
                         currScene.removeChild(comparisonMeshParts[i]);
                     }
-                }    
+                }
                 currScene.calcAABB();
                 viewer.update();
             }
         },
-        
+
         toggleComparison = function(comp) {
             if (showSizeReference) {
                 if (comp == currentComp) {
@@ -102,10 +102,10 @@ TOPO.BUILD1.Model = (function() {
                     buildComparison([1,1,1]);
                 }
             }
-        
+
             updateComparisonScene();
         },
-        
+
         updateComparisonScene = function() {
             if (comparisonMeshParts) {
                 var i;
@@ -124,36 +124,36 @@ TOPO.BUILD1.Model = (function() {
                     for (i in comparisonMeshParts) {
                         currScene.removeChild(comparisonMeshParts[i]);
                     }
-                }    
+                }
                 currScene.calcAABB();
                 viewer.zoomToFit();
                 updateViewer()
 
             }
         },
-       
+
         updateViewer = function() {
             viewer.update();
             viewer.zoomFactor *= 1.5;
         },
-        
+
         resetScene = function() {
             viewer.resetScene();
             updateViewer();
 
         },
-                
+
         zoomIn = function() {
             viewer.zoomFactor *= 1.3;
             viewer.update();
         },
-        
+
         zoomOut = function() {
             viewer.zoomFactor /= 1.3;
             viewer.update();
         },
-        
-       
+
+
         initReferences = function() {
             $('#compare-dollar').click(function(e) {
                 $('#compare-dollar').toggleClass('active');
@@ -166,25 +166,25 @@ TOPO.BUILD1.Model = (function() {
                 toggleComparison(COMPARE_EURO);
             });
         },
-        
+
         enableReferences = function() {
             $('#compare-dollar').prop('disabled', false);
             $('#compare-euro').prop('disabled', false);
         },
-        
+
         disableReferences = function() {
             $('#compare-dollar').prop('disabled', true);
             $('#compare-euro').prop('disabled', true);
         },
-        
+
         showModal = function(msg) {
             $('#modal-message').html(msg);
             $('.modal').modal({keyboard: true});
         };
- 
-    
+
+
     return {
-    
+
         init: function(newModelCb, displayCanvasId, progressDisplayId, resetButtonId) {
             newModelCallback = newModelCb;
             resetButton = $('#'+resetButtonId);
@@ -193,19 +193,19 @@ TOPO.BUILD1.Model = (function() {
             })
             busyDisplay = $('#'+progressDisplayId);
             busyDisplay.hide();
-            
+
             initReferenceParts();
-            
+
             canvas = document.getElementById(displayCanvasId);
             jcanvas = $(canvas);
             jcanvas.hide();
             initViewer();
-            initReferences();   
+            initReferences();
             disableReferences();
         },
-        
-        
-  
+
+
+
         showModel: function(modelUrl, width) {
             var thee = this;
             modelWidth = width
@@ -223,33 +223,33 @@ TOPO.BUILD1.Model = (function() {
             };
             loader.loadFromUrl(modelUrl);
         },
-        
+
         showBusy: function() {
-            $("#model-instructions").hide();        
+            $("#model-instructions").hide();
             jcanvas.hide();
             busyDisplay.show();
         },
-        
+
         hideBusy: function() {
             jcanvas.show();
             busyDisplay.hide();
         },
-        
+
         renderModel: function(modelSpec) {
             var thee = this;
             this.showBusy();
-            
+
             var requestData = { 'nwlat': modelSpec.nwlat,
                     'nwlon': modelSpec.nwlon,
                     'selat': modelSpec.selat,
                     'selon': modelSpec.selon,
-                    'size': modelSpec.modelSize, 
+                    'size': modelSpec.modelSize,
                     'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
                     'zfactor': modelSpec.zfactor,
                     'hollow': 1};
-                    
+
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
-                var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect, 
+                var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect,
                                                     TOPO.BUILD1.getConfig('modelRez'));
                 requestData['width'] = imageSize.x;
                 requestData['height'] = imageSize.y ;
@@ -262,24 +262,25 @@ TOPO.BUILD1.Model = (function() {
             })
             .done(function(data, status, jqxhr) {
                 thee.showModel(data['url'], data['x-size-mm']);
+                $('#download_stl').attr('href', data['url']);
                 thee.currentModelId = data['model_id'];
                 enableReferences();
                 newModelCallback(data);
             })
             .fail(function(data, stats, error) {
                 showModal("The model engine is having problems, please try again later.");
-                
+
                 thee.hideBusy();
             });
         },
-        
+
         resizeModel: function(modelSpec) {
             viewer.replaceScene(new JSC3D.Scene());
             viewer.update();
 
             this.renderModel(modelSpec);
-        }, 
-        
-    } 
-    
+        },
+
+    }
+
 }());

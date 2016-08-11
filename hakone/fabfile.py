@@ -42,9 +42,9 @@ def pre_deploy():
             run('git clone git@github.com:billmerrill/topophile.git')
 
 
-def get_version(tag=None):
+def get_version(tag=None, branch='master'):
     with cd(topo_root):
-        run('git checkout master')
+        run('git checkout ' + branch)
         run('git pull')
         if tag:
             run('git checkout tags/%s' % tag)
@@ -110,3 +110,9 @@ def deploy_bam(tag=None):
     pre_deploy()
     get_version(tag)
     restart_wsgi_app('bam')
+
+@task
+def deploy_ebeko():
+    pre_deploy()
+    get_version(branch="hack-download-url")
+    deploy_static_app('ebeko')
