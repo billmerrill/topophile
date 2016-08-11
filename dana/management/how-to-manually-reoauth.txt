@@ -1,0 +1,91 @@
+topophile oauth keys
+
+Consumer Key:b4770a75e98c30105f29182b702c7de234bf3c3f
+Consumer Secret:bef6b19aac4e78dd7fe1f34b5c389fh5d51154176
+OAuth Token: 51de6ae650bb5dcf21dbf25cc496ff130dc44791
+OAuth Secret: 57ada1580d53d39f09a7b82da62932584e4f0e4b
+
+Basic steps for manually oauthing
+
+0. get new consumer values from shapeways
+1. from shapeways.client import Client
+2. client = Client(consumer_key="", consumer_secret="")
+3. connect_url = client.connect()
+   url contains oauth_token
+4. load_url in browser, authorize for correct account, read verifier pin
+5. client.verify(oauth_token, verifier_pin)
+6. gather client.oauth_token, client.oauth_secret
+
+
+topophile:
+
+consumer_key="80a769f7e26672fd6e1489c256edcf5cc6187259"
+consumer_secret="df85f5od585929f4ec48c9fb19a9b251ca79767f6"
+connect_url="http://api.shapeways.com/login?oauth_token=b7e3f2782dc917149e85b4c0a43ac9a687368ba7"
+verifier="e5bf34"
+
+>>> client.consumer_key
+'80a769f7e26672fd6e1489c256edcf5cc6187259'
+>>> client.consumer_secret
+'df85f5d585929f4ec48c9fb19a9b251ca79767f6'
+>>> client.oauth_token
+u'97cc59d7c01cf0cc7ec328bec6641c1af8c7f19b'
+>>> client.oauth_secret
+u'b867c8067b583c9aeb159d3fcf449b81d6a55227'
+
+client = Client(consumer_key='80a769f7e26672fd6e1489c256edcf5cc6187259',
+    consumer_secret='df85f5d585929f4ec48c9fb19a9b251ca79767f6',
+    oauth_token='97cc59d7c01cf0cc7ec328bec6641c1af8c7f19b',
+    oauth_secret='b867c8067b583c9aeb159d3fcf449b81d6a55227')
+
+
+topophile alt helper
+--------------------
+
+client = Client(consumer_key="45af704eeb304045413c1c40838dba815e7dd000",consumer_secret="2ddb324f36d88372cccea673966d6619be3ab4ad")
+u'http://api.shapeways.com/login?oauth_token=8547639c4c3d9cff883e4112499d1dc3d0b788ed'
+be1756
+
+client.verify('8547639c4c3d9cff883e4112499d1dc3d0b788ed', 'be1756')
+
+>>> client.consumer_key
+'45af704eeb304045413c1c40838dba815e7dd000'
+>>> client.consumer_secret
+'2ddb324f36d88372cccea673966d6619be3ab4ad'
+>>> client.oauth_token
+u'fa219dd901f47f78b7403b4008599fe708c3d9d8'
+>>> client.oauth_secret
+u'8b7ef6b94a034f34be0c2e900f69b60bffee8c3e'
+    
+ALT = {
+    'consumer_key':     "45af704eeb304045413c1c40838dba815e7dd000",
+    'consumer_secret':  "2ddb324f36d88372cccea673966d6619be3ab4ad",
+    'oauth_token':     "fa219dd901f47f78b7403b4008599fe708c3d9d8",
+    'oauth_secret':      "8b7ef6b94a034f34be0c2e900f69b60bffee8c3e"
+}
+client = Client(**ALT)    
+    
+topophilelabs
+-------------
+
+client = Client(consumer_key='eebd23897cf4eb1b47f6edadd186291a6acea654', consumer_secret='7c0883ed2c8105b710ed07cf0b76dd63e95b81bc')
+
+http://api.shapeways.com/login?oauth_token=f2bbd6cd438cfaaac10f9f88b4a108138a389cdc
+6f8eac
+
+client.verify('f2bbd6cd438cfaaac10f9f88b4a108138a389cdc', '6f8eac')
+
+>>> client.consumer_key
+'eebd23897cf4eb1b47f6edadd186291a6acea654'
+>>> client.consumer_secret
+'7c0883ed2c8105b710ed07cf0b76dd63e95b81bc'
+>>> client.oauth_token
+u'562ef407136345dd61dcd602de4a7d079319f425'
+>>> client.oauth_secret
+u'dd4e2d8aaf28a6c9d55b00ccdc0b47761902f8b0'
+
+client = Client(consumer_key='eebd23897cf4eb1b47f6edadd186291a6acea654',
+    consumer_secret='7c0883ed2c8105b710ed07cf0b76dd63e95b81bc',
+    oauth_token='562ef407136345dd61dcd602de4a7d079319f425',
+    oauth_secret='dd4e2d8aaf28a6c9d55b00ccdc0b47761902f8b0')
+
