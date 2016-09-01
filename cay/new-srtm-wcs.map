@@ -2,16 +2,16 @@ MAP
     NAME Shiny
     CONFIG "MS_ERRORFILE" "/tmp/new_ms_error.txt"
     DEBUG 5
-   
+
     STATUS ON
     #EXTENT 20037492.980699513, -7558443.307192808, 20037492.880511973, 18807066.17436876
     EXTENT 20037492.880511973 -7558443.307192808  20037492.980699513 18807066.17436876
     UNITS METERS
     MAXSIZE 999999
 
-    
+
 #    OUTPUTFORMAT
-#        NAME "GEOTIFFINT16" 
+#        NAME "GEOTIFFINT16"
 #        DRIVER "GDAL/GTiff"
 #        MIMETYPE "image/x-tiff-int16"
 #        IMAGEMODE "INT16"
@@ -22,7 +22,7 @@ MAP
         DRIVER "GDAL/GTiff"
         MIMETYPE "image/tiff"
         IMAGEMODE INT16
-        EXTENSION "tif"   
+        EXTENSION "tif"
     END
 
     WEB
@@ -55,10 +55,10 @@ MAP
     PROJECTION
         "init=epsg:3857"
     END
-    
-    
+
+
     LAYER
-        DEBUG 5 
+        DEBUG 5
 
         NAME "srtmgl1"
         TYPE raster
@@ -67,9 +67,9 @@ MAP
         TILEITEM "LOCATION"
 
         PROJECTION
-            "init=epsg:4236"
+            "init=epsg:4326"
         END
-        
+
         PROCESSING "OVERSAMPLE_RATIO=4.0"
         PROCESSING "RESAMPLE=BILINEAR"
 
@@ -78,11 +78,9 @@ MAP
             "wcs_rangeset_name"   "Layer Name"  ### required to support DescribeCoverage request
             "wcs_rangeset_label"  "Layer Label" ### required to support DescribeCoverage request
             "wcs_extent"          "-180, -56, 180, 60"
-            "ows_srs"             "init=epsg:4236"
+            "ows_srs"             "init=epsg:4326"
             "wcs_resolution"      "0.000277777777778 -0.000277777777778"
         END
     END
-    
+
 END
-    
-    
