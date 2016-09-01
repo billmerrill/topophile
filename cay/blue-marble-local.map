@@ -1,0 +1,52 @@
+MAP
+    NAME WMS_server
+    STATUS ON
+    EXTENT -180 -90 180 90  # Cover the entire globe
+    UNITS DD
+    CONFIG "MS_ERRORFILE" "/tmp/ms_error.txt"  # For Debugging
+    DEBUG 5  # Debug level
+
+    #
+    # Start of web interface definition
+    #
+    WEB
+        METADATA
+            "wms_title"                  "WMS Demo Server"
+            "wms_onlineresource"         "http://localhost/wms?"
+            "wms_srs"                     "EPSG:4326"
+            "wms_feature_info_mime_type" "text/html"
+            "wms_abstract"               "This demonstration server showcases MapServer (www.mapserver.org) and its OGC support"
+            "wms_enable_request"         "*"
+        END # Metadata
+    END # Web
+
+    PROJECTION
+        "init=epsg:4326"
+    END # Projection
+
+    #
+    # Start of layer definitions
+    #
+
+    ##################
+    # Blue Marble Image
+    ##################
+    LAYER
+        NAME "bluemarble"
+        STATUS ON
+        TYPE RASTER
+        METADATA
+            "wms_title"             "Blue Marble World Elevation and Bathymetry Raster"
+            "wms_attribution_title" "NASA Blue Marble"
+            "wms_srs"               "EPSG:4326"
+        END # Metadata
+
+        TILEINDEX "data/blue-marble/june/bluemarble-index.shp"
+    TILEITEM "LOCATION"
+
+        PROJECTION
+            "init=epsg:4326"
+        END # Projection
+    END # Layer
+
+END # Map
