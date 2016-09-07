@@ -77,6 +77,12 @@ class BBoxModelTicket(object):
     def get_elevation_filepath(self):
         return self.outputs.elevation_filename
 
+    def get_image_filepath(self):
+        return self.outputs.image_filename
+
+    def set_image_filepath(self, dst_dir, image_ext="png"):
+        self.outputs.image_filename = os.path.join(dst_dir, self.get_model_name() + '.' + image_ext)
+
     def set_model_filepaths(self, dst_dir, model_ext):
         self.outputs.model_filename = os.path.join(dst_dir, self.get_model_name() + model_ext)
         self.outputs.model_metadata = os.path.join(dst_dir, self.get_model_name() + ".json")

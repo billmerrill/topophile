@@ -23,12 +23,11 @@ class BoundingBoxJob(object):
         self.app_config = app_config
         self.ticket = ticket
 
-    def run(self):
-        t1 = time.time()
-
+    def _query_elevation_data(self):
         self.ticket.set_elevation_filepath(
             self.app_config['elevation_dir'], ".tif")
 
+        elevation_data = {}
         if not os.path.exists(self.ticket.get_elevation_filepath()):
             bbox = self.ticket.inputs.bbox
 
@@ -41,14 +40,22 @@ class BoundingBoxJob(object):
                 elevation_data = el_src.get_elevation(self.app_config, self.ticket.get_elevation_filepath(
                 ), bbox.north, bbox.west, bbox.south, bbox.east)
 
-            if elevation_data is None:
-                return None
         else:
             cherrypy.log("Elevation Cached!")
 
+        return elevation_data
+
+    def run(self):
+        t1 = time.time()
+        elevation_data = self._query_elevation_data()
         t2 = time.time()
 
-        # self.ticket.set_elevation_filename(elevation_data['filename'])
+        self.ticket.set_image_filepath(self.app_config['image_dir'])
+        bbox = self.ticket.inputs.bbox
+        image_data = el_src.get_bluemarble(self.app_config,
+                                           self.ticket.get_image_filepath(),
+                                           bbox.north, bbox.west, bbox.south, bbox.east,
+                                           self.ticket.get_elevation_dimensions())
 
         model_data = self.build_model()
         model_data['model_id'] = self.ticket.get_model_name()

@@ -5,6 +5,7 @@ MAP
     UNITS DD
     CONFIG "MS_ERRORFILE" "/tmp/ms_error.txt"  # For Debugging
     DEBUG 5  # Debug level
+    CONFIG "PROJ_DEBUG" "ON"
 
     #
     # Start of web interface definition
@@ -42,7 +43,7 @@ MAP
         END # Metadata
 
         TILEINDEX "data/blue-marble/june/bluemarble-index.shp"
-    TILEITEM "LOCATION"
+        TILEITEM "LOCATION"
 
         PROJECTION
             "init=epsg:4326"
