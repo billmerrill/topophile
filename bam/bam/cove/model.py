@@ -29,6 +29,9 @@ class Model(object):
 
 class PreviewTerrainModel(Model):
 
+    def build(self, style):
+        return self.build_stl()
+
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
@@ -78,6 +81,10 @@ class SolidElevationModel(Model):
     def _compute_model_z_size(self, sandwich):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
+
+    def build(self, style):
+        print "\n****\nWarning: ignoring style\n*****\n"
+        return self.build_stl()
 
     def build_stl(self):
         elevation = Elevation(self.builder)
@@ -135,6 +142,12 @@ class FourWallsModel(Model):
             return False
 
         return True
+
+    def build(self, style):
+        if style == 'frosted':
+            return self.build_vrml()
+        else:
+            return self.build_stl()
 
     def build_vrml(self):
         print "STARTING FOUR WALLS VRML MODEL", self.builder
