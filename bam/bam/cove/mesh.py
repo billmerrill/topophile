@@ -182,7 +182,7 @@ class Mesh(GridShape):
         x_dim = self.x_max() + 1
         z_dim = self.y_max() + 1
         x_spacing = self.get(1, 0)[PX] - self.get(0, 0)[PX]
-        z_spacing = self.get(0, 1)[PY] - self.get(0, 0)[PY]
+        z_spacing = abs(self.get(0, 1)[PY] - self.get(0, 0)[PY])
 
         height_scalar = textwrap.fill(" ".join(
             [str(x) for x in self.mesh[:, :, PZ].flatten().tolist()]), 80)

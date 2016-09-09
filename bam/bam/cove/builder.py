@@ -54,7 +54,11 @@ class Builder(object):
         return self.z_factor
 
     def get_min_thickness(self):
-        return self.min_model_thickness
+        # scale z thickness by the vertical exageration
+        mt = [self.min_model_thickness[0], self.min_model_thickness[1], 0]
+        zt = self.min_model_thickness[2]
+        mt[2] = zt + zt * 0.1 * self.z_factor
+        return mt
 
     def get_ceiling_decimation_factor(self):
         return self.ceiling_decimation_factor

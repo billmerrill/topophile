@@ -101,7 +101,8 @@ class FourWallsBase(object):
         '''Draw four trapezoids to cover the base'''
 
         def get_point_list(pts):
-            return "\n".join(" ".join([str(p[PX]), str(self.floor_height), str(p[PY])]) for p in pts)
+            # handles the Z to Y conversion for vrml
+            return "\n".join(" ".join([str(p[PX]), str(self.floor_height), str(-1*p[PY])]) for p in pts)
 
         coords = [self.outer_corners[0],  # 0
                   self.outer_corners[1],  # 1
