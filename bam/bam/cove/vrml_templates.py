@@ -18,8 +18,13 @@ BasicAppearance = '''
 
 TerrainAppearance = '''
     appearance Appearance {
-		material Material { }
 		texture ImageTexture { url "terrain.png" }
+        textureTransform TextureTransform{
+            scale 1 -1
+            rotation 0
+            center 0 0
+            translation 0 0
+        }
     }'''
 
 ElevationGrid = '''Shape {
