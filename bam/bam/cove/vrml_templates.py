@@ -28,9 +28,10 @@ TerrainAppearance = '''
     }'''
 
 ElevationGrid = '''Shape {
+    # $comment
 	$appearance
 	geometry ElevationGrid {
-		solid FALSE
+		solid TRUE
 		xDimension $x_dimension
 		zDimension $z_dimension
 		xSpacing $x_spacing
@@ -42,13 +43,15 @@ ElevationGrid = '''Shape {
 }'''
 
 IndexedFaceSet =''' Shape {
+    # $comment
 	appearance Appearance {
 		material Material { }
 	}
 
 	geometry IndexedFaceSet {
 		convex $convex
-		solid FALSE
+		solid $solid
+        ccw $ccw
 		coord Coordinate { point [ $points ] }
 		coordIndex [ $coordinates ]
 	}

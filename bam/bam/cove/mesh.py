@@ -172,6 +172,9 @@ class Mesh(GridShape):
                                                            (sy + 1) * (x_max+1) + sx + 1]))
 
         grid_vrml = Template(vrml_templates.IndexedFaceSet).substitute(
+                    comment='Ceiling',
+                    solid='TRUE',
+                    ccw='FALSE',
                     points=points_to_text(coords),
                     coordinates=(", ".join([str(x) for x in faces])),
                     convex='FALSE')
@@ -198,7 +201,8 @@ class Mesh(GridShape):
                 x_spacing=x_spacing,
                 z_spacing=z_spacing,
                 height_scalar=height_scalar,
-                appearance=app
+                appearance=app,
+                comment="Elevation Top"
             )
 
         return elevation_grid_shape

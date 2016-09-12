@@ -102,7 +102,7 @@ class FourWallsBase(object):
 
         def get_point_list(pts):
             # handles the Z to Y conversion for vrml
-            return "\n".join(" ".join([str(p[PX]), str(self.floor_height), str(-1*p[PY])]) for p in pts)
+            return '\n'.join(' '.join([str(p[PX]), str(self.floor_height), str(-1*p[PY])]) for p in pts)
 
         coords = [self.outer_corners[0],  # 0
                   self.outer_corners[1],  # 1
@@ -126,8 +126,11 @@ class FourWallsBase(object):
         # [str(x) for x in self.mesh[:, :, PZ].flatten().tolist()]), 80)
 
         base_shape = Template(vrml_templates.IndexedFaceSet).substitute(
+            comment='Model Base',
+            solid='TRUE',
+            ccw='FALSE',
             points=get_point_list(coords),
-            coordinates=", ".join([str(x) for x in faces]),
+            coordinates=', '.join([str(x) for x in faces]),
             convex='TRUE')
 
         return base_shape
@@ -160,9 +163,9 @@ class FourWallsCreator(object):
         ceiling_vrml = self.ceiling.get_irregular_grid_vrml()
         walls_vrml = self.get_walls_vrml()
 
-        return "\n".join([base_vrml, walls_vrml, ceiling_vrml, top_vrml])
+        return '\n'.join([base_vrml, walls_vrml, ceiling_vrml, top_vrml])
 
-    def get_vrml_wall(self, c0, c1, c2, c3, edge):
+    def get_vrml_wall(self, c0, c1, c2, c3, edge, ccw, name):
         '''
             Build a wall that contains a top edge from
             a Mesh, a bottom from Base.  May be the
@@ -182,50 +185,46 @@ class FourWallsCreator(object):
         face_indices.extend(range(4, 2+len(edge)))  # end is4 minus corners
 
         wall_vrml = Template(vrml_templates.IndexedFaceSet).substitute(
+            comment='Model Wall ' + name,
+            ccw=ccw,
+            solid='TRUE',
             points=points_to_text(coords),
-            coordinates=(", ".join([str(x) for x in face_indices])),
+            coordinates=(', '.join([str(x) for x in face_indices])),
             convex='FALSE')
 
         return wall_vrml
 
-    def get_wall_helper(self, mesh_edge, mesh_corners, base_corners, left_side, right_side):
-        return self.get_vrml_wall(mesh_corners[left_side],
-                                  base_corners[left_side],
-                                  base_corners[right_side],
-                                  mesh_corners[right_side],
-                                  mesh_edge)  # trim corners, reverse order
-
     def get_walls_vrml(self):
         nodes = []
 
-        # outer
-        edge = self.top.get_edge("west")[1:-1][::-1]
-        nodes.append(self.get_wall_helper(edge, self.top_corners, self.base.outer_corners, 0, 1))
+        dirs = ['west', 'south', 'east', 'north']
+        for i, direction in enumerate(dirs):
+            # outer walls
+            ccw = 'TRUE'
+            edge = self.top.get_edge(direction)[1:-1]
+            if direction == 'west' or direction == 'south':
+                edge = edge[::-1]
+            nodes.append(self.get_vrml_wall(self.top_corners[i],
+                                            self.base.outer_corners[i],
+                                            self.base.outer_corners[(i+1) % 4],
+                                            self.top_corners[(i+1) % 4],
+                                            edge,
+                                            'TRUE',
+                                            'outer ' + direction))
 
-        edge = self.top.get_edge("south")[1:-1][::-1]
-        nodes.append(self.get_wall_helper(edge, self.top_corners, self.base.outer_corners, 1, 2))
+            # inner walls
+            edge = self.ceiling.get_edge(direction)[1:-1]
+            if direction == 'west' or direction == 'south':
+                edge = edge[::-1]
+            nodes.append(self.get_vrml_wall(self.ceiling_corners[i],
+                                            self.base.inner_corners[i],
+                                            self.base.inner_corners[(i+1) % 4],
+                                            self.ceiling_corners[(i+1) % 4],
+                                            edge,
+                                            'FALSE',
+                                            'inner ' + direction))
 
-        edge = self.top.get_edge("east")[1:-1]
-        nodes.append(self.get_wall_helper(edge, self.top_corners, self.base.outer_corners, 2, 3))
-
-        edge = self.top.get_edge("north")[1:-1]
-        nodes.append(self.get_wall_helper(edge, self.top_corners, self.base.outer_corners, 3, 0))
-
-        # # inner
-
-        edge = self.ceiling.get_edge("west")[1:-1][::-1]
-        nodes.append(self.get_wall_helper(edge, self.ceiling_corners, self.base.inner_corners, 0, 1))
-
-        edge = self.ceiling.get_edge("south")[1:-1][::-1]
-        nodes.append(self.get_wall_helper(edge, self.ceiling_corners, self.base.inner_corners, 1, 2))
-
-        edge = self.ceiling.get_edge("east")[1:-1]
-        nodes.append(self.get_wall_helper(edge, self.ceiling_corners, self.base.inner_corners, 2, 3))
-
-        edge = self.ceiling.get_edge("north")[1:-1]
-        nodes.append(self.get_wall_helper(edge, self.ceiling_corners, self.base.inner_corners, 3, 0))
-
-        return "\n".join(nodes)
+        return '\n'.join(nodes)
 
     def triangulate(self):
         triangles = self.top.triangulate()
