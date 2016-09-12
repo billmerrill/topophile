@@ -163,6 +163,7 @@ class FourWallsModel(Model):
                           self.builder.get_min_thickness()[PZ],
                           self.builder.get_z_factor())
 
+
         cdf = self.builder.get_ceiling_decimation_factor()
         interior_ceiling = top.create_ceiling(
             self.builder.get_min_thickness(), cdf)
