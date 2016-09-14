@@ -298,7 +298,7 @@ class Mesh(GridShape):
     def create_ceiling(self, nz_mm, dezfactor):
         '''
         nz_mm: the size, in mm, of the walls of the hollowed model
-        ceil_size: the resolution of the ceiling mesh
+        dezfactor: the resolution of the ceiling mesh
         '''
         dezfactor = np.array(dezfactor)
 
@@ -426,8 +426,7 @@ class Mesh(GridShape):
                 elevations = cell[:, :, 2]
                 cell_min = elevations.argmin()
                 # get the x,y,z
-                cell_mesh[y][
-                    x] = cell.ravel()[3 * cell_min:3 * cell_min + 3] - [0, 0, nz_mm[PZ]]
+                cell_mesh[y][x] = cell.ravel()[3 * cell_min:3 * cell_min + 3] - [0, 0, nz_mm[PZ]]
 
         c = Mesh()
         # print cell_mesh
