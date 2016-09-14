@@ -187,7 +187,7 @@ class FourWallsModel(Model):
         output_filename = self.builder.get_output_file_name()
         fn, ext = os.path.splitext(output_filename)
         vrml_name = ".".join([fn, 'wrl'])
-        canvas.write_vrml(vrml_name)
+        canvas.write_vrml(vrml_name, show_axes=False)
 
         desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),

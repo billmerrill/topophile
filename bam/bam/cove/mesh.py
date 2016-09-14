@@ -181,31 +181,49 @@ class Mesh(GridShape):
         return grid_vrml
 
     def get_vrml(self, is_terrain=True):
+        coords = []
+        faces = []
+
+        x_max = self.x_max()
+        y_max = self.y_max()
+
+        print x_max, y_max
+        for sy in range(0, y_max+1):
+            for sx in range(0, x_max+1):
+                coords.append(self.get(sx, sy))
+
+        for sy in range(0, y_max):
+            for sx in range(0, x_max):
+                faces.extend(self.triangulate_square_vrml([sy * (x_max+1) + sx,
+                                                           sy * (x_max+1) + sx + 1,
+                                                           (sy + 1) * (x_max+1) + sx,
+                                                           (sy + 1) * (x_max+1) + sx + 1]))
+
         # topophile-stl code puts elevation on Z, vrml puts it on Y
         x_dim = self.x_max() + 1
         z_dim = self.y_max() + 1
         x_spacing = self.get(1, 0)[PX] - self.get(0, 0)[PX]
         z_spacing = abs(self.get(0, 1)[PY] - self.get(0, 0)[PY])
 
-        height_scalar = textwrap.fill(" ".join(
-            [str(x) for x in self.mesh[:, :, PZ].flatten().tolist()]), 80)
+        mesh_points = len(self.mesh[:, :, PZ].flatten())
 
-        if is_terrain:
-            app = vrml_templates.TerrainAppearance
-        else:
-            app = vrml_templates.BasicAppearance
+        tc = []
+        tc_points = 0
 
-        elevation_grid_shape = Template(vrml_templates.ElevationGrid).substitute(
-                x_dimension=x_dim,
-                z_dimension=z_dim,
-                x_spacing=x_spacing,
-                z_spacing=z_spacing,
-                height_scalar=height_scalar,
-                appearance=app,
-                comment="Elevation Top"
+        for u in range(z_dim-1, -1, -1):
+            for v in range(x_dim):
+                tc.append(str(float(v)/(x_dim-1)) + ' ' + str(float(u)/(z_dim-1)))
+                tc_points += 1
+        tex_coords = ',\n'.join(tc)
+
+        ifs = Template(vrml_templates.TerrainIndexedFaceSet).substitute(
+                points=points_to_text(coords),
+                coordinates=(", ".join([str(x) for x in faces])),
+                comment="Elevation Top",
+                tex_coord=tex_coords
             )
 
-        return elevation_grid_shape
+        return ifs
 
     def add_row(self, row):
         self.mesh.append(row)

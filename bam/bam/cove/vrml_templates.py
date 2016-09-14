@@ -11,36 +11,24 @@ WorldInfo {
 }
 '''
 
-BasicAppearance = '''
-    appearance Appearance {
-		material Material { }
-    }'''
-
-TerrainAppearance = '''
-    appearance Appearance {
-		texture ImageTexture { url "terrain.png" }
-        textureTransform TextureTransform{
-            scale 1 -1
-            rotation 0
-            center 0 0
-            translation 0 0
-        }
-    }'''
-
-ElevationGrid = '''Shape {
+TerrainIndexedFaceSet =''' Shape {
     # $comment
-	$appearance
-	geometry ElevationGrid {
+	appearance Appearance {
+		texture ImageTexture { url "terrain.png" }
+
+	}
+
+	geometry IndexedFaceSet {
+		convex FALSE
 		solid TRUE
-		xDimension $x_dimension
-		zDimension $z_dimension
-		xSpacing $x_spacing
-		zSpacing $z_spacing
-		height [
-			$height_scalar
-		]
+        ccw TRUE
+		coord Coordinate { point [ $points ] }
+		coordIndex [ $coordinates ]
+        texCoord TextureCoordinate { point [ $tex_coord ]}
 	}
 }'''
+
+
 
 IndexedFaceSet =''' Shape {
     # $comment
