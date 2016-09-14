@@ -246,7 +246,8 @@ TOPO.BUILD1.Model = (function() {
                     'size': modelSpec.modelSize,
                     'rez': TOPO.BUILD1.getConfig('modelRez'), //400 dots per 100 mm ~= 100dpi
                     'zfactor': modelSpec.zfactor,
-                    'hollow': 1};
+                    'hollow': 1,
+                    'model_style': 'plain'};
 
             if (TOPO.BUILD1.getConfig('enableMsScaling')) {
                 var imageSize = TOPO.BUILD1.Utils.scaleRectToMaxLength(modelSpec.selectRect,

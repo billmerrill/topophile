@@ -1,3 +1,5 @@
+import numpy as np
+
 from indicies import *
 
 
@@ -53,8 +55,14 @@ class Builder(object):
     def get_z_factor(self):
         return self.z_factor
 
-    def get_min_thickness(self):
-        return self.min_model_thickness
+    def get_min_thickness(self, feature_height=None):
+        # scale z thickness by the vertical exageration
+        zmod = 0
+        if feature_height:
+            zmod = feature_height * 0.01
+
+        return [self.min_model_thickness[0], self.min_model_thickness[1],
+                self.min_model_thickness[2] + zmod]
 
     def get_ceiling_decimation_factor(self):
         return self.ceiling_decimation_factor

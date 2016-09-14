@@ -11,12 +11,13 @@ class STLModelService(object):
     def __init__(self, app_config):
         self.app_config = app_config
 
-    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, hollow=False, model_style="cube", **kwargs):
+    def GET(self, nwlat, nwlon, selat, selon, size, rez, zfactor, model_style, hollow=False, **kwargs):
         '''
         use the bounding box to query for elevation data, and build a model
         return the stl file
         '''
-        ticket = mt.get_ticket(style=model_style,
+        ticket = mt.get_ticket(app_config=self.app_config,
+                               style=model_style,
                                bbox=BoundingBox(float(nwlat), float(nwlon),
                                                 float(selat), float(selon)),
                                size=int(size),
@@ -35,4 +36,11 @@ class STLModelService(object):
 
         model['url'] = self.app_config[
             'model_home_url'] + model['model_id'] + ".stl"
+
+        if self.app_config['run_vrml']:
+            ticket.inputs.style = 'frosted'
+            ticket.data.init_files()
+            newgig = job.BoundingBoxJob(self.app_config, ticket)
+            newmodel = newgig.run()
+
         return json.dumps(model)

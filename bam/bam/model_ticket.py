@@ -2,6 +2,10 @@ import UserDict
 import os
 from basethirtysix import to_base36
 
+import cherrypy
+
+import elevation.cay_src as el_src
+
 
 BBOX = 'cube'
 
@@ -20,6 +24,75 @@ class DotDict(object):
     def __setattr(self, key, value):
         self.d[key] = value
 
+class ModelDataManager(object):
+
+    def __init__(self, app_config, ticket):
+        self.app_config = app_config
+        self.ticket = ticket
+        self.elevation_dir = app_config['elevation_dir']
+        self.model_dir = app_config['model_dir']
+
+        self.elevation_filename = ''
+        self.image_filename = ''
+        self.model_filename = ''
+        self.metadata_filename = ''
+
+        self.elevation_data = None
+        self.image_data = None
+        self.model_data = None
+
+    def init_files(self, flavor=None):
+        if not flavor:
+            flavor = self.ticket.get_style()
+
+        uniq = self.ticket.get_model_name()
+        self.elevation_filename = os.path.join(self.elevation_dir, uniq + '.tif')
+
+        self.metadata_filename = os.path.join(self.model_dir, uniq + ".json")
+
+        if flavor == 'preview' or flavor == 'plain':
+            self.model_filename = os.path.join(self.model_dir, uniq + '.stl')
+        elif flavor == 'frosted':
+            try:
+                os.mkdir(os.path.join(self.model_dir, uniq))
+            except OSError:
+                pass
+            self.image_filename = os.path.join(self.model_dir, uniq, 'terrain.png')
+            self.model_filename = os.path.join(self.model_dir, uniq, 'model.wrl')
+        else:
+            cherrypy.log("This is not flavor country, setup error.")
+
+    def query_data(self, flavor=None):
+        if not flavor:
+            flavor = self.ticket.get_style()
+
+        self.query_elevation()
+        if flavor == 'frosted':
+            self.query_image()
+
+    def query_elevation(self):
+        elevation_data = {}
+        if not os.path.exists(self.elevation_filename):
+            bbox = self.ticket.inputs.bbox
+            elevation_data = el_src.get_scaled_elevation(self.app_config,
+                                                         self.elevation_filename,
+                                                         bbox.north, bbox.west, bbox.south, bbox.east,
+                                                         self.ticket.get_elevation_dimensions())
+        else:
+            cherrypy.log("Elevation Cached!")
+        self.elevation_data = elevation_data
+
+    def query_image(self):
+        image_data = {}
+        bbox = self.ticket.inputs.bbox
+        image_data = el_src.get_bluemarble(self.app_config,
+                                           self.image_filename,
+                                           bbox.north, bbox.west, bbox.south, bbox.east,
+                                           self.ticket.get_elevation_dimensions())
+        self.image_data = image_data
+
+
+
 
 class BBoxModelTicket(object):
     '''
@@ -33,7 +106,7 @@ class BBoxModelTicket(object):
     outputs:
     '''
 
-    def __init__(self, bbox, size, rez, zmult, hollow, style, resample):
+    def __init__(self, app_config, bbox, size, rez, zmult, hollow, style, resample):
         self.inputs = DotDict({
             'bbox': bbox,
             'size': size,
@@ -52,6 +125,13 @@ class BBoxModelTicket(object):
             'area-mm2':  None,
             'volume-mm3': None})
 
+        self.data = ModelDataManager(app_config, self)
+        self.data.init_files()
+
+
+    def get_style(self):
+        return self.inputs.style
+
     def get_elevation_name(self):
         return '{geohash}-{size}-{rez}'.format( geohash=self.inputs.bbox.get_geohash(), style=self.inputs.style, size=self.inputs.size, rez=self.inputs.rez)
 
@@ -69,20 +149,16 @@ class BBoxModelTicket(object):
                 'resample_elevation': self.inputs.resample_elevation}
 
     def get_model_filepath(self):
-        return self.outputs.model_filename
+        return self.data.model_filename
 
     def get_model_metadata_filepath(self):
-        return self.outputs.model_metadata
+        return self.data.metadata_filename
 
     def get_elevation_filepath(self):
-        return self.outputs.elevation_filename
+        return self.data.elevation_filename
 
-    def set_model_filepaths(self, dst_dir, model_ext):
-        self.outputs.model_filename = os.path.join(dst_dir, self.get_model_name() + model_ext)
-        self.outputs.model_metadata = os.path.join(dst_dir, self.get_model_name() + ".json")
-
-    def set_elevation_filepath(self, dst_dir, ele_ext):
-        self.outputs.elevation_filename = os.path.join(dst_dir, self.get_elevation_name() + ele_ext)
+    def get_image_filepath(self):
+        return self.data.image_filename
 
     def get_hollow(self):
         return self.inputs.hollow

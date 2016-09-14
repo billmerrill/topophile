@@ -29,6 +29,9 @@ class Model(object):
 
 class PreviewTerrainModel(Model):
 
+    def build(self, style):
+        return self.build_stl()
+
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
@@ -78,6 +81,10 @@ class SolidElevationModel(Model):
     def _compute_model_z_size(self, sandwich):
         top_max_z = sandwich.top.get_high_z()
         return top_max_z - sandwich.bottom.elevation
+
+    def build(self, style):
+        print "\n****\nWarning: ignoring style\n*****\n"
+        return self.build_stl()
 
     def build_stl(self):
         elevation = Elevation(self.builder)
@@ -136,6 +143,12 @@ class FourWallsModel(Model):
 
         return True
 
+    def build(self, style):
+        if style == 'frosted':
+            return self.build_vrml()
+        else:
+            return self.build_stl()
+
     def build_vrml(self):
         print "STARTING FOUR WALLS VRML MODEL", self.builder
         elevation = Elevation(self.builder)
@@ -149,6 +162,7 @@ class FourWallsModel(Model):
         top.finalize_form(self.builder.get_physical_max(),
                           self.builder.get_min_thickness()[PZ],
                           self.builder.get_z_factor())
+
 
         cdf = self.builder.get_ceiling_decimation_factor()
         interior_ceiling = top.create_ceiling(
@@ -173,7 +187,7 @@ class FourWallsModel(Model):
         output_filename = self.builder.get_output_file_name()
         fn, ext = os.path.splitext(output_filename)
         vrml_name = ".".join([fn, 'wrl'])
-        canvas.write_vrml(vrml_name)
+        canvas.write_vrml(vrml_name, show_axes=False)
 
         desc = {'size': self.builder.get_physical_max(),
                 'x-size-mm': top.get_data_x_size(),
