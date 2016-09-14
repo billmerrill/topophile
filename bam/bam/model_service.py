@@ -37,9 +37,10 @@ class STLModelService(object):
         model['url'] = self.app_config[
             'model_home_url'] + model['model_id'] + ".stl"
 
-        ticket.inputs.style = 'frosted'
-        ticket.data.init_files()
-        newgig = job.BoundingBoxJob(self.app_config, ticket)
-        newmodel = newgig.run()
+        if self.app_config['run_vrml']:
+            ticket.inputs.style = 'frosted'
+            ticket.data.init_files()
+            newgig = job.BoundingBoxJob(self.app_config, ticket)
+            newmodel = newgig.run()
 
         return json.dumps(model)
