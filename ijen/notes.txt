@@ -1,0 +1,20 @@
+how to make a state 
+
+1. generate a mask for the state.  
+    - on value is inside the state boundary.
+    - each mask will require decision and joining for multiple parts and islands
+2. generate an raw rectangular elevation source for the state
+    - this is the boudning box for the state record
+3. generate a VRML IndexedFaceSet for the elevation and base
+    - AND the mask and the elevation source
+4. generate a wrapping polygon from the outer edge of the mesh.
+5. generate a wrapping IndexFaceSet or Sets for the exterior walls
+
+
+---
+
+Generate a mask
+
+1. extract a single state
+2. query mapserver for that bounding box
+
