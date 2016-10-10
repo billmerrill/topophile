@@ -25,3 +25,6 @@ class BoundingBox(object):
 
     def get_geohash(self):
         return "%s-%s" % (self.get_nw_corner().get_geohash(), self.get_se_corner().get_geohash())
+
+    def __str__(self):
+        return "{},{},{},{}".format(self.north, self.west, self.south, self.east)

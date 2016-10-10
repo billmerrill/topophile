@@ -55,5 +55,4 @@ docs/_build/
 target/
 
 .DS_Store
-bam/bam/test-data
 bam/bam/app*
