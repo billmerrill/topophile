@@ -1,7 +1,8 @@
 import shapefile
 
 from geo import BoundingBox
-from topoconfig import local_app_config as app_config
+import model_ticket
+from topoconf import local_app_config as app_config
 
 # Given a state shapefile, get the appropriate elevation DEM
 
@@ -12,7 +13,7 @@ class StateElevationMaker(object):
         self.state_bbox = None
         self.ticket = None
         self.init_state_bbox()
-        self._make_ticket
+        self._make_ticket()
 
 
     def init_state_bbox(self):
@@ -27,14 +28,20 @@ class StateElevationMaker(object):
         size = 200
         rez = 100
         zfactor = 5.0
-        ticket = mt.get_ticket(app_config=self.app_config,
-                               style=model_style,
+        self.ticket = model_ticket.get_ticket(app_config=app_config,
+                               style='state-color',
                                bbox=self.state_bbox,
                                size=size,
                                rez=rez,
                                zmult=zfactor,
-                               hollow=hollow)
+                               hollow=True)
 
-    def query_bbox_elevation(self):
+        # XXX TODO figure out sizing, this is not the way to do it
+        width = abs(self.state_bbox.west - self.state_bbox.east) * 100
+        height = abs(self.state_bbox.north - self.state_bbox.south) * 100
+        self.ticket.set_elevation_dimensions(int(round(float(width))),
+                                       int(round(float(height))))
 
-        pass
+    def query_elevation(self):
+
+        self.ticket.data.query_elevation()

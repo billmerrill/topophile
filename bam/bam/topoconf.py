@@ -14,7 +14,8 @@ prod_app_config = {
     'map_file_dir':     '/home/billmerrill/releases/vcs/topophile/cay',
     'map_file':         '/home/billmerrill/releases/vcs/topophile/cay/prod-srtm-wcs.map',
     'app_url':          'topophile.com/build/',
-    'run_vrml':         False}
+    'run_vrml':         False,
+    'disable_elevation_cache': False}
 
 
 local_app_config = {
@@ -29,4 +30,5 @@ local_app_config = {
     'map_file':         '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
     'bluemarble_file':  '/Library/WebServer/Documents/cay/blue-marble-local.map',
     'app_url':          'topophile.com/build/',
-    'run_vrml':         True}
+    'run_vrml':         True,
+    'disable_elevation_cache': True}

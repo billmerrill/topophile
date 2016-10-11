@@ -12,6 +12,12 @@ class StateTests(unittest.TestCase):
         self.assertEqual(sem.state_bbox.south, 45.543541)
         self.assertEqual(sem.state_bbox.east, -116.915989)
 
+    def test_bbox_query(self):
+        sem = StateElevationMaker(self.wa_shp)
+        sem.query_elevation()
+        self.assertTrue(False)
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -52,7 +52,7 @@ class ModelDataManager(object):
 
         if flavor == 'preview' or flavor == 'plain':
             self.model_filename = os.path.join(self.model_dir, uniq + '.stl')
-        elif flavor == 'frosted':
+        elif flavor == 'frosted' or flavor == 'state-color':
             try:
                 os.mkdir(os.path.join(self.model_dir, uniq))
             except OSError:
@@ -72,7 +72,7 @@ class ModelDataManager(object):
 
     def query_elevation(self):
         elevation_data = {}
-        if not os.path.exists(self.elevation_filename):
+        if not os.path.exists(self.elevation_filename) or self.app_config['disable_elevation_cache']:
             bbox = self.ticket.inputs.bbox
             elevation_data = el_src.get_scaled_elevation(self.app_config,
                                                          self.elevation_filename,
