@@ -35,11 +35,7 @@ class PreviewTerrainModel(Model):
     def build_stl(self):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
-        # elevation.display_summary()
-        if self.builder.get_resample_elevation():
-            elevation_data = elevation.get_meters_ndarray()
-        else:
-            elevation_data = elevation.get_raw_meters()
+        elevation_data = elevation.get_raw_meters()
 
         real_world_specs = self._get_real_world_specs(elevation_data)
 
@@ -90,7 +86,7 @@ class SolidElevationModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        elevation_data = elevation.get_meters_ndarray()
+        elevation_data = elevation.get_raw_meters()
 
         real_world_specs = self._get_real_world_specs(elevation_data)
 
@@ -154,7 +150,7 @@ class FourWallsModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        elevation_data = elevation.get_meters_ndarray()
+        elevation_data = elevation.get_raw_meters()
         real_world_specs = self._get_real_world_specs(elevation_data)
 
         top = Mesh()
@@ -214,7 +210,7 @@ class FourWallsModel(Model):
         elevation = Elevation(self.builder)
         elevation.load_dataset()
         # elevation.display_summary()
-        elevation_data = elevation.get_meters_ndarray()
+        elevation_data = elevation.get_raw_meters()
         real_world_specs = self._get_real_world_specs(elevation_data)
 
         top = Mesh()

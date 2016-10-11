@@ -33,8 +33,7 @@ class StateElevationMaker(object):
                                size=size,
                                rez=rez,
                                zmult=zfactor,
-                               hollow=hollow,
-                               resample=(not self.app_config['ms_scaling']))
+                               hollow=hollow)
 
     def query_bbox_elevation(self):
 

@@ -23,8 +23,7 @@ class STLModelService(object):
                                size=int(size),
                                rez=int(rez),
                                zmult=float(zfactor),
-                               hollow=hollow,
-                               resample=(not self.app_config['ms_scaling']))
+                               hollow=hollow)
         if 'width' in kwargs and 'height' in kwargs:
             ticket.set_elevation_dimensions(int(round(float(kwargs['width']))),
                                             int(round(float(kwargs['height']))))
@@ -38,9 +37,10 @@ class STLModelService(object):
             'model_home_url'] + model['model_id'] + ".stl"
 
         if self.app_config['run_vrml']:
-            ticket.inputs.style = 'frosted'
-            ticket.data.init_files()
-            newgig = job.BoundingBoxJob(self.app_config, ticket)
-            newmodel = newgig.run()
+            if model_style != 'preview':
+                ticket.inputs.style = 'frosted'
+                ticket.data.init_files()
+                newgig = job.BoundingBoxJob(self.app_config, ticket)
+                newmodel = newgig.run()
 
         return json.dumps(model)

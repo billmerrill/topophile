@@ -106,15 +106,14 @@ class BBoxModelTicket(object):
     outputs:
     '''
 
-    def __init__(self, app_config, bbox, size, rez, zmult, hollow, style, resample):
+    def __init__(self, app_config, bbox, size, rez, zmult, hollow, style):
         self.inputs = DotDict({
             'bbox': bbox,
             'size': size,
             'rez': rez,
             'zmult': zmult,
             'hollow': hollow,
-            'style': style,
-            'resample_elevation': resample})
+            'style': style})
 
         self.outputs = DotDict({
             'model_filename': None,
@@ -145,8 +144,7 @@ class BBoxModelTicket(object):
                 'output_resolution': self.inputs.rez,
                 'output_physical_max': self.inputs.size,
                 'z_factor': self.inputs.zmult,
-                'hollow': self.inputs.hollow,
-                'resample_elevation': self.inputs.resample_elevation}
+                'hollow': self.inputs.hollow}
 
     def get_model_filepath(self):
         return self.data.model_filename

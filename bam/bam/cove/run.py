@@ -15,7 +15,6 @@ fw_model_config = {
     'hollow': u'1',
     'output_physical_max': 100,
     'output_resolution': 200,
-    'resample_elevation': False,
     'src': '/home/billmerrill/topo-cache/b1/elevation_cache/c28gb66h0j84-c294bcjjb021-100-200.tif',
     'z_factor': 1.5}
 
@@ -25,7 +24,6 @@ local_vrml_model_config = {
     'hollow': u'1',
     'output_physical_max': 100,
     'output_resolution': 200,
-    'resample_elevation': False,
     # 'src': '/Users/bill/topo/bam/bam/apptest/elevation_cache/c28gb66h0j84-c294bcjjb021-100-200.tif',
     'src': '/Users/bill/topo/bam/bam/apptest/elevation_cache/9q9jn4n5b5bn-9q97yf2gzgxb-100-200.tif',
     # 'src': '/Users/bill/topo/bam/bam/apptest/elevation_cache/c22zvjb084b5-c23n7uyn0n0h-100-200.tif',

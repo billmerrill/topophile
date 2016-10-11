@@ -97,6 +97,10 @@ class Elevation(object):
         return (int(x_r), int(y_r))
 
     def get_meters_ndarray(self):
+        # XXX It appears I left get_meters_ndarray and reproject_and_resample
+        # in after figuring out how to get Mapserver to do this work for me.
+        # clean up by removing this and associated code paths
+        print 'running reproject and resample'
         scaled_dataset = self.reproject_and_resample()
         arr = scaled_dataset.ReadAsArray()
         geo_xform = scaled_dataset.GetGeoTransform()
