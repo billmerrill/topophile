@@ -24,9 +24,25 @@ class StateElevationMaker(object):
         bbox = state_shp.bbox
         self.state_bbox = BoundingBox(bbox[3], bbox[0], bbox[1], bbox[2])
 
+    def _scale_state_extent_to_rez(self, rez):
+        '''
+        '''
+        width = abs(self.state_bbox.west - self.state_bbox.east)
+        height = abs(self.state_bbox.north - self.state_bbox.south)
+
+        if width > height:
+            height = rez * (height / width)
+            width = rez
+        else:
+            width = rez * (width / height)
+            height = rez
+        return (width, height)
+
+
+
     def _make_ticket(self):
-        size = 200
-        rez = 100
+        size = 100
+        rez = 200
         zfactor = 5.0
         self.ticket = model_ticket.get_ticket(app_config=app_config,
                                style='state-color',
@@ -36,9 +52,12 @@ class StateElevationMaker(object):
                                zmult=zfactor,
                                hollow=True)
 
-        # XXX TODO figure out sizing, this is not the way to do it
-        width = abs(self.state_bbox.west - self.state_bbox.east) * 100
-        height = abs(self.state_bbox.north - self.state_bbox.south) * 100
+        # in the web app, the front end controls the resolution, resolution is
+        # specified by the rez param, which is really the number of data points on
+        # long side (regardless of the physical size, so not really rez.)
+        # anyways, here, take the ratio of the state extent sides and scale
+        # them to the rez to control the elevation query size
+        (width, height) = self._scale_state_extent_to_rez(rez)
         self.ticket.set_elevation_dimensions(int(round(float(width))),
                                        int(round(float(height))))
 
