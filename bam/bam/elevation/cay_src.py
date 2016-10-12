@@ -53,8 +53,8 @@ def get_bluemarble_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=
         'STYLES':   '',
         'SRS':      'epsg:4326',
         'BBOX':     bbox,
-        'WIDTH':     str(int(dimensions['x']) * 10),
-        'HEIGHT':    str(int(dimensions['y']) * 10),
+        'WIDTH':     str(int(dimensions['x'])),
+        'HEIGHT':    str(int(dimensions['y'])),
 
         # 'WIDTH':    '300',
         # 'HEIGHT':   '300',
