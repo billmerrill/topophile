@@ -30,7 +30,6 @@ def get_rezs(bbox, dims):
 
 def get_bluemarble_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=False):
     bbox = "%s,%s,%s,%s" % (nwlon, selat, selon, nwlat)
-
     '''
     required get map parameters
 
@@ -43,7 +42,7 @@ def get_bluemarble_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=
     WIDTH=output_width: Width in pixels of map picture.
     HEIGHT=output_height: Height in pixels of map picture.
     FORMAT=output_format: Output format of map.
-'''
+    '''
     params = {
         'MAP':      app_config['bluemarble_file'],
         'SERVICE':  'WMS',
@@ -63,72 +62,67 @@ def get_bluemarble_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=
     return app_config['elevation_server'], params
 
 
-def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=False):
+def get_3857_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=False):
     # http://climb.local/cgi-bin/mapserv?FORMAT=image/tiff&REQUEST=GetCoverage&map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.0.0&coverage=gmted&CRS=epsg:4236&BBOX=-121.9870000,46.6867333,-121.5270000,47.0084000&RESX=0.002083&RESY=0.002083
-
-    # server_base = "http://127.0.0.1/cgi-bin/mapserv?"
     server_base = app_config['elevation_server']
-
-    # gmted_params = {
-    #     'map':      '/Library/WebServer/Documents/cay/wcs.map',
-    #     'SERVICE':  'WCS',
-    #     'VERSION':  '1.0.0',
-    #     'REQUEST':  'GetCoverage',
-    #     'coverage': 'gmted_ds',
-    #     'CRS':      'epsg:4236',
-    #     'BBOX':     bbox,
-    #     'RESX':     '0.002083',
-    #     'RESY':     '0.002083',
-    #     'FORMAT':   'image/tiff'
-    # }
-    if dimensions:
-        bbox = get_sphere_merc_bbox(nwlat, nwlon, selat, selon)
-        rezs = get_rezs(bbox, dimensions)
-        # Get elevation data by resolution or dimension,
-        # turns out about the same
-        if True:
-            srtm_params = {
-                # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
-                'map':      app_config['map_file'],
-                'SERVICE':  'WCS',
-                'VERSION':  '1.0.0',
-                'REQUEST':  'GetCoverage',
-                'coverage': 'srtmgl1',
-                'CRS':      'epsg:3857',
-                'BBOX':      bbox,
-                'RESX':      rezs['x'],
-                'RESY':      rezs['y'],
-                'FORMAT':   'image/tiff'}
-        else:
-            srtm_params = {
-                # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
-                'map':      app_config['map_file'],
-                'SERVICE':  'WCS',
-                'VERSION':  '1.0.0',
-                'REQUEST':  'GetCoverage',
-                'coverage': 'srtmgl1',
-                'CRS':      'epsg:3857',
-                'BBOX':      bbox,
-                'WIDTH':     dimensions['x'],
-                'HEIGHT':    dimensions['y'],
-                'FORMAT':   'image/tiff'}
-    else:
-        bbox = "%s,%s,%s,%s" % (nwlon, selat, selon, nwlat)  # -90,38,-89,39
-        srtm_params = {
-            # 'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
-            'map':      os.path.join(app_config['map_file_dir'], 'wcs-srtm.map'),
-            'SERVICE':  'WCS',
-            'VERSION':  '1.0.0',
-            'REQUEST':  'GetCoverage',
-            'coverage': 'srtmgl1',
-            'CRS':      'epsg:4326',
-            'BBOX':     bbox,
-            'RESX':     '0.000277777777778',
-            'RESY':     '0.000277777777778',
-            'FORMAT':   'image/tiff'
-        }
+    bbox = ",".join(map(str,[nwlon, selat, selon, nwlat]))
+    rezs = get_rezs(bbox, dimensions)
+    srtm_params = {
+        'map':      app_config['map_file'],
+        'SERVICE':  'WCS',
+        'VERSION':  '1.0.0',
+        'REQUEST':  'GetCoverage',
+        'coverage': 'srtmgl1',
+        'CRS':      'epsg:3857',
+        'BBOX':      bbox,
+        'RESX':      rezs['x'],
+        'RESY':      rezs['y'],
+        'FORMAT':   'image/tiff'}
 
     return server_base, srtm_params
+
+def get_elevation_url_parts(app_config, nwlat, nwlon, selat, selon, dimensions=False):
+    # http://climb.local/cgi-bin/mapserv?FORMAT=image/tiff&REQUEST=GetCoverage&map=/Library/WebServer/Documents/cay/wcs.map&SERVICE=WCS&VERSION=1.0.0&coverage=gmted&CRS=epsg:4236&BBOX=-121.9870000,46.6867333,-121.5270000,47.0084000&RESX=0.002083&RESY=0.002083
+    server_base = app_config['elevation_server']
+
+    bbox = get_sphere_merc_bbox(nwlat, nwlon, selat, selon)
+    rezs = get_rezs(bbox, dimensions)
+    srtm_params = {
+        # 'map':      '/Library/WebServer/Documents/cay/new-srtm-wcs.map',
+        'map':      app_config['map_file'],
+        'SERVICE':  'WCS',
+        'VERSION':  '1.0.0',
+        'REQUEST':  'GetCoverage',
+        'coverage': 'srtmgl1',
+        'CRS':      'epsg:3857',
+        'BBOX':      bbox,
+        'RESX':      rezs['x'],
+        'RESY':      rezs['y'],
+        'FORMAT':   'image/tiff'}
+
+
+    return server_base, srtm_params
+
+def get_4326_elevation_url_parts(app_config, nwlat, nwlon, selat, selon):
+
+    server_base = app_config['elevation_server']
+    bbox = "%s,%s,%s,%s" % (nwlon, selat, selon, nwlat)  # -90,38,-89,39
+    srtm_params = {
+        # 'map':      '/Library/WebServer/Documents/cay/wcs-srtm.map',
+        'map':      os.path.join(app_config['map_file_dir'], 'wcs-srtm.map'),
+        'SERVICE':  'WCS',
+        'VERSION':  '1.0.0',
+        'REQUEST':  'GetCoverage',
+        'coverage': 'srtmgl1',
+        'CRS':      'epsg:4326',
+        'BBOX':     bbox,
+        'RESX':     '0.000277777777778',
+        'RESY':     '0.000277777777778',
+        'FORMAT':   'image/tiff'
+    }
+
+    return server_base, srtm_params
+
 
 
 def get_bluemarble(app_config, image_filename, nwlat, nwlon, selat, selon, dimensions, retry=0):
@@ -165,12 +159,17 @@ def get_elevation(app_config, elevation_filename, nwlat, nwlon, selat, selon, re
             'status': status['status']}
 
 
-def get_scaled_elevation(app_config, elevation_filename, nwlat, nwlon, selat, selon, dimensions, retry=0):
+def get_scaled_elevation(app_config, elevation_filename, nwlat, nwlon, selat, selon, dimensions, retry=0, proj='4236'):
     if retry == 2:
         return None
 
-    base_url, params = get_elevation_url_parts(
-        app_config, nwlat, nwlon, selat, selon, dimensions)
+    if proj =='3857':
+        base_url, params = get_3857_elevation_url_parts(
+            app_config, nwlat, nwlon, selat, selon, dimensions)
+    else:
+        base_url, params = get_elevation_url_parts(
+            app_config, nwlat, nwlon, selat, selon, dimensions)
+
     status = get_elevation_image(elevation_filename, base_url, params)
 
     return {'filename': status['file'],
