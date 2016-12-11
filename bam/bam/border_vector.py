@@ -1,5 +1,5 @@
 
-
+global_grid = None
 class BorderSegment(object):
 
     def __init__(self, initial_pt=None):
@@ -74,9 +74,13 @@ class BorderSegment(object):
             self.add_to_head(pt)
 
     def add_to_head(self, pt):
+        global global_grid
+        global_grid[pt[1]][pt[0]] = 128
         self.pts.insert(0, pt)
 
     def add_to_tail(self, pt):
+        global global_grid
+        global_grid[pt[1]][pt[0]] = 128
         self.pts.append(pt)
         self.tail = len(self.pts) - 1
 
@@ -156,26 +160,39 @@ class BorderVectorSegments(object):
 class BorderVector(object):
 
     def __init__(self, border_raster, border_value=255):
+        global global_grid
         self.segments = BorderVectorSegments()
         self.input_raster = border_raster
         self.border_value = border_value
         self.grid = self.input_raster.ReadAsArray()
+        global_grid = self.grid
+
         self.border_pixel_count = 0
 
     def generate(self):
         for row_index in range(self.input_raster.RasterYSize):
-            print "row ", row_index
             self.process_row(row_index)
-            if row_index == 200:
+            if row_index == 1000:
                 break
 
-        print 'found pixels', self.border_pixel_count
         tot = 0
         for s in self.segments.segments:
             tot += len(s.pts)
             print 'seg size: ', len(s.pts)
 
-        print "total in segments: ", tot
+        final_border = self.connect_segments()
+
+    def connect_segments(self):
+        final_seg = []
+
+        for s in self.segments:
+            if len(final_seg) == 0:
+                final_seg.extend(s)
+            else:
+                if s.is_adjacent('head'], final_seg[-1]):
+                    final_seg
+
+
 
     def gather_row_clusters(self, row):
         row_clusters = []
@@ -222,6 +239,10 @@ class BorderVector(object):
             seg_index = self.segments.is_cluster_mid_or_trail_adjacent(cluster, row)
             if seg_index is not None:
                 deferred.append(cluster)
+                continue
+
+            # capture unattached segments
+            deferred.append(cluster)
 
         return deferred
 

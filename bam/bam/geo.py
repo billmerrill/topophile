@@ -16,7 +16,8 @@ class LatLon(object):
     def reproject(self, in_lat, in_lon, src_srs):
         in_proj = Proj(init=src_srs)
         out_proj = Proj(init='epsg:4326')
-        lon,lat = transform(in_proj,out_proj,in_lon,in_lat)
+        lon,lat = transform(in_proj, out_proj, in_lon, in_lat)
+        print 'reproj {},{} to {},{}'.format(in_lat, in_lon, lat,lon)
         return (lon, lat)
 
     def get_geohash(self):
@@ -48,4 +49,4 @@ class BoundingBox(object):
         return "%s-%s" % (self.get_nw_corner().get_geohash(), self.get_se_corner().get_geohash())
 
     def __str__(self):
-        return "{},{},{},{}".format(self.north, self.west, self.south, self.east)
+        return "(n,w,s,e){},{},{},{}".format(self.north, self.west, self.south, self.east)

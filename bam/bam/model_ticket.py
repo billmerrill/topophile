@@ -5,9 +5,7 @@ from basethirtysix import to_base36
 import cherrypy
 
 import elevation.cay_src as el_src
-
-
-BBOX = 'cube'
+import geo
 
 
 def get_ticket(**kwargs):
@@ -78,6 +76,20 @@ class ModelDataManager(object):
                                                          self.elevation_filename,
                                                          bbox.north, bbox.west, bbox.south, bbox.east,
                                                          self.ticket.get_elevation_dimensions())
+        else:
+            cherrypy.log("Elevation Cached!")
+        self.elevation_data = elevation_data
+
+    def query_statemaker_elevation(self):
+        elevation_data = {}
+        if not os.path.exists(self.elevation_filename) or self.app_config['disable_elevation_cache']:
+            bbox = self.ticket.inputs.bbox
+            print 'ticket statemaker bbox', bbox, bbox.north
+            elevation_data = el_src.get_scaled_elevation(self.app_config,
+                                                         self.elevation_filename,
+                                                         bbox.north, bbox.west, bbox.south, bbox.east,
+                                                         self.ticket.get_elevation_dimensions(),
+                                                         proj='3857')
         else:
             cherrypy.log("Elevation Cached!")
         self.elevation_data = elevation_data
