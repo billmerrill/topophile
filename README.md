@@ -9,3 +9,5 @@ topophile
 - gaua: landing pages (root, 'gone fishing', etc)
 - hakone: deployment (fabric)
 - ibu: stats and tracking
+
+![simplified user flow](user-flow.png)
